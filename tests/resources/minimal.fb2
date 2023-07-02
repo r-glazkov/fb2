@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FictionBook xmlns="http://www.gribuser.ru/xml/fictionbook/2.0"
+             xmlns:l="http://www.w3.org/1999/xlink">
+    <description>
+        <title-info>
+            <genre>nonf_biography</genre>
+            <genre>sci_history</genre>
+            <genre>nonfiction</genre>
+            <author>
+                <first-name>Уинстон</first-name>
+                <middle-name>Спенсер</middle-name>
+                <last-name>Черчилль</last-name>
+                <id>7dc6a193-2a83-102a-9ae1-2dfe723fe7c7</id>
+            </author>
+            <book-title>Вторая мировая война</book-title>
+            <annotation>
+                <p>Шеститомный труд У. Черчилля – героическая эпопея народов, выступивших против планетарной опасности, написанная выдающимся политиком, скрупулезным историком и талантливым литератором. Это летопись повседневного руководства страной государственного деятеля, чей вклад в общее дело победы антигитлеровской коалиции ни у кого не вызывает сомнений. Это размышления над прошлым, призванные послужить назиданием потомкам. В первой книге публикуются в сокращенном переводе с английского I и II тома мемуаров и описаны события с 1919 года по декабрь 1940 года, которые привели к ненужной, по словам автора, войне, которой можно было избежать. Во второй книге публикуются третий и четвертый тома мемуаров и описаны события в период с января 1941 по июнь 1943 г.: вторжение фашистской Германии в Советский Союз, нападение милитаристской Японии на США, создание антигитлеровской коалиции, переход союзников от обороны к наступлению. В третьей книге публикуются пятый и шестой тома мемуаров и описаны события в период с июня 1943 г. по июль 1945 г. – капитуляция союзников Германии, Тегеранская, Ялтинская и Потсдамская конференции, высадка американских, английских и канадских войск в Нормандии, разгром гитлеровских войск в результате исторических побед Советской армии и союзников, капитуляция Германии. <emphasis>4-е издание.</emphasis></p>
+            </annotation>
+            <keywords>Вторая мировая война,военная история,Великобритания,политическая публицистика,знаменитые политики</keywords>
+            <date value="1953-01-01">1948-53</date>
+            <coverpage>
+                <image l:href="#cover.jpg"/>
+            </coverpage>
+            <lang>ru</lang>
+            <src-lang>en</src-lang>
+            <translator>
+                <first-name>Александр</first-name>
+                <last-name>Орлов</last-name>
+                <id>14fc587f-0911-11e5-99b8-0025905a069a</id>
+            </translator>
+        </title-info>
+        <document-info>
+            <author>
+                <nickname>On84ly</nickname>
+            </author>
+            <program-used>FictionBook Editor Release 2.6.6</program-used>
+            <date value="2014-06-11">11 June 2014</date>
+            <src-url>http://www.litres.ru/pages/biblio_book/?art=7003942&amp;lfrom=700971545</src-url>
+            <src-ocr>Текст предоставлен издательством</src-ocr>
+            <id>a75a6f71-f140-11e3-871d-0025905a0812</id>
+            <version>1.0</version>
+            <history>
+                <p>v 1.0 – создание fb2 – (On84ly)</p>
+            </history>
+            <publisher>
+                <first-name>Литагент</first-name>
+                <last-name>Альпина</last-name>
+                <id>6bdeff1e-120c-11e2-86b3-b737ee03444a</id>
+            </publisher>
+        </document-info>
+        <publish-info>
+            <book-name>Вторая мировая война: В 6 тт. Т. 1: Надвигающаяся буря; Т. 2: Их звездный
+                час; Т. 3: Великий союз; Т. 4: Поворот судьбы; Т. 5: Кольцо смыкается; Т. 6: Триумф
+                и трагедия / Уинстон Черчилль; Сокр. пер. с англ. 4-е изд.</book-name>
+            <publisher>Альпина нон-фикшн</publisher>
+            <city>Москва</city>
+            <year>2013</year>
+            <isbn>978-5-9614-3115-5</isbn>
+        </publish-info>
+    </description>
+    <body>
+        <title>
+            <p>Уинстон Черчилль</p>
+            <p>Вторая мировая война</p>
+        </title>
+        <section>
+            <p>Руководитель проекта <emphasis>А. Шувалова</emphasis></p>
+            <p>Технический редактор <emphasis>Н. Лисицына</emphasis></p>
+            <p>Корректор <emphasis>Е. Аксёнова</emphasis></p>
+            <p>Компьютерная верстка <emphasis>М. Поташкин, А. Фоминов</emphasis></p>
+            <p>Художник обложки <emphasis>Ю. Буга</emphasis></p>
+            <empty-line />
+            <p>I: The Gathering Storm © The Estate of Sir Winston S Churchill</p>
+            <p>First published by Casell 1948</p>
+            <p>II: Their Finest Hour © The Estate of Sir Winston S Churchill</p>
+            <p>First published by Casell 1949</p>
+            <p>III: The Grand Alliance © The Estate of Sir Winston S Churchill</p>
+            <p>First published by Casell 1950</p>
+            <p>IV: The Hinge of Fate © The Estate of Sir Winston S Churchill</p>
+            <p>First published by Casell 1950</p>
+            <p>V: Triumph and Tragedy © The Estate of Sir Winston S Churchill</p>
+            <p>First published by Casell 1951</p>
+            <p>VI: Closing the Ring © The Estate of Sir Winston S Churchill</p>
+            <p>First published by Casell 1953</p>
+            <empty-line/>
+            <p>© Издание на русском языке, оформление. «Альпина нон-фикшн», 2010</p>
+            <empty-line/>
+            <p>
+                <emphasis>Все права защищены. Никакая часть электронной версии этой книги не может быть воспроизведена в какой бы то ни было форме и какими бы то ни было средствами, включая размещение в сети Интернет и в корпоративных сетях, для частного и публичного использования без письменного разрешения владельца авторских прав.</emphasis>
+            </p>
+            <empty-line/>
+            <p/>
+            <subtitle>* * *</subtitle>
+        </section>
+    </body>
+</FictionBook>

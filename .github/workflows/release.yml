@@ -1,0 +1,17 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  release:
+    name: Create release
+    steps:
+      - uses: actions/checkout@main
+      - run: |
+          echo "Releasing $GITHUB_REF_NAME"
+          echo "${{ secrets.GITHUB_TOKEN }}" | gh auth login --hostname github.com --with-token
+          gh release create $GITHUB_REF_NAME --generate-notes
+

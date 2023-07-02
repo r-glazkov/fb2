@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FictionBook xmlns="http://www.gribuser.ru/xml/fictionbook/2.0"
+             xmlns:l="http://www.w3.org/1999/xlink">
+    <stylesheet type="text/css">body { padding: 1px; }</stylesheet>
+    <stylesheet type="text/css">footer { padding: 1px; }</stylesheet>
+    <description>
+        <title-info>
+            <genre>nonf_biography</genre>
+            <genre match="10">sci_history</genre>
+            <genre>nonfiction</genre>
+            <author>
+                <first-name xml:lang="ru">Уинстон</first-name>
+                <middle-name xml:lang="ru-RU">Спенсер</middle-name>
+                <last-name xml:lang="ru-LT">Черчилль</last-name>
+                <nickname xml:lang="en">winston_cigarette</nickname>
+                <home-page>winston.example.com</home-page>
+                <home-page>churchill.example.com</home-page>
+                <email>winston@example.com</email>
+                <email>churchill@example.com</email>
+                <id>7dc6a193-2a83-102a-9ae1-2dfe723fe7c7</id>
+            </author>
+            <author>
+                <nickname xml:lang="en">vovchik</nickname>
+                <home-page>profile.example.com</home-page>
+                <home-page>blog.example.com</home-page>
+                <email>vovchik@example.com</email>
+                <email>vladimir@example.com</email>
+                <id>fe6b1dae-acf9-4bd1-947e-78065eda64c2</id>
+            </author>
+            <book-title xml:lang="ru">Вторая мировая война</book-title>
+            <annotation id="ID-1" xml:lang="ru">
+                <p id="ID-2" style="some style" xml:lang="ru">Шеститомный труд У. Черчилля – героическая эпопея народов, выступивших против
+                    планетарной опасности, написанная выдающимся политиком, скрупулезным историком и талантливым литератором. Это летопись
+                    повседневного руководства страной государственного деятеля, чей вклад в общее дело победы антигитлеровской коалиции ни у
+                    кого не вызывает сомнений. Это размышления над прошлым, призванные послужить назиданием потомкам. В первой книге
+                    публикуются в сокращенном переводе с английского I и II тома мемуаров и описаны события с 1919 года по декабрь 1940
+                    года, которые привели к ненужной, по словам автора, войне, которой можно было избежать. Во второй книге публикуются
+                    третий и четвертый тома мемуаров и описаны события в период с января 1941 по июнь 1943 г.: вторжение фашистской Германии
+                    в Советский Союз, нападение милитаристской Японии на США, создание антигитлеровской коалиции, переход союзников от
+                    обороны к наступлению. В третьей книге публикуются пятый и шестой тома мемуаров и описаны события в период с июня
+                    1943 г. по июль 1945 г. – капитуляция союзников Германии, Тегеранская, Ялтинская и Потсдамская конференции, высадка
+                    американских, английских и канадских войск в Нормандии, разгром гитлеровских войск в результате исторических побед
+                    Советской армии и союзников, капитуляция Германии.
+                    <emphasis xml:lang="ru">4-е издание.</emphasis>
+                </p>
+            </annotation>
+            <keywords xml:lang="ru">Вторая мировая война,военная история,Великобритания,политическая публицистика,знаменитые политики
+            </keywords>
+            <date xml:lang="en" value="1953-01-01">1948-53</date>
+            <coverpage>
+                <image l:type="simple" l:href="#cover.jpg"/>
+                <image l:href="#cover.jpg"/>
+            </coverpage>
+            <lang>ru</lang>
+            <src-lang>en</src-lang>
+            <translator>
+                <first-name>Александр</first-name>
+                <middle-name>Владимирович</middle-name>
+                <last-name>Орлов</last-name>
+                <nickname>alfa</nickname>
+                <home-page>orlov.example.com</home-page>
+                <home-page>alex.example.com</home-page>
+                <email>orlov@example.com</email>
+                <email>alex@example.com</email>
+                <id>14fc587f-0911-11e5-99b8-0025905a069a</id>
+            </translator>
+            <translator>
+                <nickname>alfa</nickname>
+                <home-page>orlov.example.com</home-page>
+                <home-page>alex.example.com</home-page>
+                <email>orlov@example.com</email>
+                <email>alex@example.com</email>
+                <id>14fc587f-0911-11e5-99b8-0025905a069a</id>
+            </translator>
+            <sequence xml:lang="ru" name="Книга, чё" number="1">
+                <sequence xml:lang="ru-RU" name="Два" number="2"/>
+                <sequence xml:lang="en-AU" name="Three" number="3"/>
+            </sequence>
+            <sequence xml:lang="ru-KZ" name="Зачем это нужно" number="1">
+                <sequence xml:lang="ru-RU" name="Два" number="2"/>
+                <sequence xml:lang="en-AU" name="Three" number="3"/>
+            </sequence>
+        </title-info>
+        <document-info>
+            <author>
+                <nickname>On84ly</nickname>
+            </author>
+            <program-used xml:lang="en">FictionBook Editor Release 2.6.6</program-used>
+            <date xml:lang="en" value="2014-06-11">11 June 2014</date>
+            <src-url>http://www.litres.ru/pages/biblio_book/?art=7003942&amp;lfrom=700971545</src-url>
+            <src-url>http://example.com</src-url>
+            <src-ocr xml:lang="ru">Текст предоставлен издательством</src-ocr>
+            <id>a75a6f71-f140-11e3-871d-0025905a0812</id>
+            <version>1.0</version>
+            <history xml:lang="ru" id="ID-3">
+                <p id="ID-4" style="sss" xml:lang="ru">v 1.0 – создание fb2 – (On84ly)</p>
+            </history>
+            <publisher>
+                <first-name>Литагент</first-name>
+                <last-name>Альпина</last-name>
+                <id>6bdeff1e-120c-11e2-86b3-b737ee03444a</id>
+            </publisher>
+        </document-info>
+        <publish-info>
+            <book-name xml:lang="ru">Вторая мировая война: В 6 тт. Т. 1: Надвигающаяся буря; Т. 2: Их звездный
+                час; Т. 3: Великий союз; Т. 4: Поворот судьбы; Т. 5: Кольцо смыкается; Т. 6: Триумф
+                и трагедия / Уинстон Черчилль; Сокр. пер. с англ. 4-е изд.
+            </book-name>
+            <publisher xml:lang="ru">Альпина нон-фикшн</publisher>
+            <city xml:lang="ru">Москва</city>
+            <year>2013</year>
+            <isbn xml:lang="en">978-5-9614-3115-5</isbn>
+            <sequence name="Очередная последовательность" xml:lang="ru" number="6"/>
+            <sequence name="Очередная посредственность" xml:lang="ru" number="7">
+                <sequence name="yep" xml:lang="en" number="8"/>
+                <sequence name="nope" xml:lang="en" number="9"/>
+            </sequence>
+        </publish-info>
+        <custom-info info-type="test-custom-info" xml:lang="ru">вот немного нетипичного текста</custom-info>
+        <custom-info info-type="test-custom-info-2" xml:lang="en">here is some custom text</custom-info>
+        <output mode="paid" include-all="require" price="10" currency="RUB">
+            <part l:href="http://example.com" include="allow"/>
+            <output-document-class name="paid-doc" price="10" create="allow">
+                <part l:href="#ID-3" include="deny" l:type="simple"/>
+            </output-document-class>
+        </output>
+        <output mode="free" include-all="deny"/>
+    </description>
+    <body xml:lang="ru">
+        <image id="ID-5" l:type="simple" alt="подмена" l:href="#body.jpg" title="Заголовок"/>
+        <title xml:lang="ru">
+            <p id="ID-6" xml:lang="ru" style="wip">Уинстон Черчилль</p>
+            <empty-line/>
+        </title>
+        <epigraph id="ep-1">
+            <p id="pg-1" xml:lang="ru" style="pg-s-1">Content</p>
+            <poem id="po-1" xml:lang="ru">
+                <title xml:lang="ru">
+                    <p>Some title</p>
+                </title>
+                <epigraph id="ep-2">
+                    <empty-line/>
+                </epigraph>
+                <epigraph id="ep-3">
+                    <empty-line/>
+                </epigraph>
+                <subtitle id="st-1" xml:lang="en" style="st-s-1">fasdf</subtitle>
+                <stanza xml:lang="ru">
+                    <title xml:lang="ru">
+                        <p>Танечка</p>
+                    </title>
+                    <subtitle id="st-2" xml:lang="en" style="st-s-2">Subtitle</subtitle>
+                    <v id="v-1" xml:lang="ru" style="v-s-1">Плач</v>
+                    <v id="v-2" xml:lang="ru" style="v-s-2">Мяч</v>
+                </stanza>
+                <text-author id="ta-2" xml:lang="ru" style="ta-s-2">Барто</text-author>
+                <text-author id="ta-3" xml:lang="ru" style="ta-s-3">Агния</text-author>
+                <date xml:lang="ru" value="0010-10-21">Лохматые</date>
+            </poem>
+            <cite id="ci-1" xml:lang="ru">
+                <p>fasdf</p>
+                <poem>
+                    <stanza>
+                        <v>s</v>
+                    </stanza>
+                </poem>
+            </cite>
+            <empty-line/>
+            <text-author id="ta-1" style="ta-style" xml:lang="ru">Автор</text-author>
+            <text-author id="ta-4" style="ta-s-4" xml:lang="ru">Ещё Автор</text-author>
+        </epigraph>
+        <section id="ID-8" xml:lang="ru">
+            <title xml:lang="ru">
+                <empty-line/>
+            </title>
+            <section>
+                <epigraph id="ID-9">
+                    <empty-line/>
+                    <p id="ID-10" xml:lang="ru" style="st">Parag</p>
+                    <cite id="ID-12" xml:lang="ru"/>
+                </epigraph>
+                <subtitle>* * *</subtitle>
+            </section>
+        </section>
+    </body>
+    <body name="notes">
+        <section>
+            <p>yep</p>
+        </section>
+    </body>
+    <binary content-type="image/jpeg" id="cover.jpg">YXNkZgo=</binary>
+    <binary content-type="image/jpeg" id="c1.jpg">MTIzNAo=</binary>
+</FictionBook>

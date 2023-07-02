@@ -1,0 +1,20 @@
+[package]
+name = "fb2"
+version = "0.0.0"
+authors = ["Руслан Глазков <glazkov@skiff.com>"]
+description = "Parser of the FB2 format"
+readme = "README.md"
+homepage = "https://github.com/r-glazkov/fb2"
+repository = "https://github.com/r-glazkov/fb2"
+keywords = ["fb2"]
+categories = ["parser-implementations"]
+license = "MIT"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+chrono = "0.4"
+language-tags = "0.3"
+xml-rs = "0.8"
+
