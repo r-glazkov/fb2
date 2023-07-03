@@ -5,7 +5,7 @@ The library almost conforms to the [standard XSD schema](https://github.com/grib
 with a few exceptions:
 
 - strings normalization is not verified nor performed, i.e. strings are deserialized as is
-- binaries are not associated with the image references, e.g. Rc<Binary>
+- binaries are not associated with the image references, e.g. `Rc<Binary>`
 - xs:ID uniqueness is not verified
 - minOccurs/maxOccurs are not verified, i.e. the parser doesn't verify whether there is at most 2 "output" elements
 - xs:gYear timezone is ignored
@@ -15,10 +15,12 @@ with a few exceptions:
 
 ```rust
 use std::fs::File;
+use std::io::BufReader;
 
 fn main() {
     let file = File::open("examples/books/churchill_trial.fb2").unwrap();
-    let book = fb2::parse(file).unwrap();
+    let reader = BufReader::new(file);
+    let book = fb2::parse(reader).unwrap();
     println!("{:#?}", book);
 }
 ```
@@ -27,4 +29,3 @@ Try with:
 ```shell
 cargo run --example parse_sample
 ```
-

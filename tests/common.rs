@@ -1,12 +1,13 @@
 use std::fs::File;
-use std::io::Read;
+use std::io::{BufReader, Read};
 
 use fb2::*;
 
 pub fn compare(path: &str, expected: FictionBook) {
-    let mut file = File::open(path).unwrap();
+    let file = File::open(path).unwrap();
+    let mut reader = BufReader::new(file);
     let mut content = String::new();
-    file.read_to_string(&mut content).unwrap();
+    reader.read_to_string(&mut content).unwrap();
 
     let book = parse(content.as_bytes());
 
