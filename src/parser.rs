@@ -51,18 +51,6 @@ impl<T: Read> Parser<T> {
         self.reader.position()
     }
 
-    fn parse_empty_line(&mut self, _: XmlEvent) -> Result<XmlEvent, Error> {
-        let seed = self.seed()?;
-        self.consume_end_element(el::EMPTY_LINE, seed)?;
-        Ok(self.seed()?)
-    }
-
-    fn parse_version(&mut self, content: &str) -> Result<f64, Error> {
-        content
-            .parse()
-            .map_err(|e| Error::invalid_float_element_value(el::VERSION, e, self.position()))
-    }
-
     fn parse_element<U: Parse<T>>(
         &mut self,
         element: &str,
@@ -135,50 +123,10 @@ impl<T: Read> Parser<T> {
         }
     }
 
-    fn take_single_attribute(
-        &self,
-        expected_name: &str,
-        attributes: Vec<OwnedAttribute>,
-    ) -> Result<String, Error> {
-        for OwnedAttribute { name, value } in attributes {
-            if name.local_name == expected_name {
-                return Ok(value);
-            }
-        }
-        Err(Error::missing_attribute(expected_name, self.position()))
-    }
-
-    fn take_single_attribute_or_none(
-        &self,
-        expected_name: &str,
-        attributes: Vec<OwnedAttribute>,
-    ) -> Option<String> {
-        for OwnedAttribute { name, value } in attributes {
-            if name.local_name == expected_name {
-                return Some(value);
-            }
-        }
-        None
-    }
-
-    fn require_attribute(&self, name: &str, attribute: Option<String>) -> Result<String, Error> {
-        match attribute {
-            None => Err(Error::missing_attribute(name, self.position())),
-            Some(it) => Ok(it),
-        }
-    }
-
-    fn parse_link_type(&self, value: Option<String>) -> Result<&'static str, Error> {
-        if let Some(value) = value {
-            if value != LINK_TYPE {
-                return Err(Error::unrecognized_attribute_value(
-                    attr::TYPE,
-                    value,
-                    self.position(),
-                ));
-            }
-        }
-        Ok(LINK_TYPE)
+    fn parse_empty_line(&mut self, _: XmlEvent) -> Result<XmlEvent, Error> {
+        let seed = self.seed()?;
+        self.consume_end_element(el::EMPTY_LINE, seed)?;
+        Ok(self.seed()?)
     }
 
     fn parse_style_link(&mut self) -> Result<(Vec<StyleLinkElement>, XmlEvent), Error> {
@@ -304,6 +252,87 @@ impl<T: Read> Parser<T> {
         Ok((elements, seed))
     }
 
+    fn take_single_attribute(
+        &self,
+        expected_name: &str,
+        attributes: Vec<OwnedAttribute>,
+    ) -> Result<String, Error> {
+        for OwnedAttribute { name, value } in attributes {
+            if name.local_name == expected_name {
+                return Ok(value);
+            }
+        }
+        Err(Error::missing_attribute(expected_name, self.position()))
+    }
+
+    fn take_single_attribute_or_none(
+        &self,
+        expected_name: &str,
+        attributes: Vec<OwnedAttribute>,
+    ) -> Option<String> {
+        for OwnedAttribute { name, value } in attributes {
+            if name.local_name == expected_name {
+                return Some(value);
+            }
+        }
+        None
+    }
+
+    fn require_attribute(&self, name: &str, attribute: Option<String>) -> Result<String, Error> {
+        match attribute {
+            None => Err(Error::missing_attribute(name, self.position())),
+            Some(it) => Ok(it),
+        }
+    }
+
+    fn parse_enum_element<U: FromStrOpt>(&self, name: &str, value: String) -> Result<U, Error> {
+        U::from_str_or_none(&value)
+            .ok_or_else(|| Error::unrecognized_element_value(name, value, self.position()))
+    }
+
+    fn parse_enum_attribute<U: FromStrOpt>(&self, name: &str, value: String) -> Result<U, Error> {
+        U::from_str_or_none(&value)
+            .ok_or_else(|| Error::unrecognized_attribute_value(name, value, self.position()))
+    }
+
+    fn parse_integer_attribute(&self, name: &str, value: String) -> Result<i32, Error> {
+        value
+            .parse()
+            .map_err(|e| Error::invalid_integer_attribute_value(name, e, self.position()))
+    }
+
+    fn parse_float_element(&mut self, name: &str, content: &str) -> Result<f64, Error> {
+        content
+            .parse()
+            .map_err(|e| Error::invalid_float_element_value(name, e, self.position()))
+    }
+
+    fn parse_float_attribute(&self, name: &str, value: String) -> Result<f64, Error> {
+        value
+            .parse()
+            .map_err(|e| Error::invalid_float_attribute_value(name, e, self.position()))
+    }
+
+    fn parse_link_type(&self, value: Option<String>) -> Result<&'static str, Error> {
+        if let Some(value) = value {
+            if value != LINK_TYPE {
+                return Err(Error::unrecognized_attribute_value(
+                    attr::TYPE,
+                    value,
+                    self.position(),
+                ));
+            }
+        }
+        Ok(LINK_TYPE)
+    }
+
+    fn parse_lang(&self, value: &str) -> Result<LanguageTag, Error> {
+        match value.parse() {
+            Ok(it) => Ok(it),
+            Err(e) => Err(Error::invalid_language(e, self.position())),
+        }
+    }
+
     /// Timezone/offset ignoring gYear parsing.
     fn parse_year(&self, mut content: String) -> Result<i32, Error> {
         let mut len = 0;
@@ -320,25 +349,6 @@ impl<T: Read> Parser<T> {
             .map_err(|e| Error::invalid_integer_element_value(el::YEAR, e, self.position()))
     }
 
-    fn parse_lang(&self, value: &str) -> Result<LanguageTag, Error> {
-        match value.parse() {
-            Ok(it) => Ok(it),
-            Err(e) => Err(Error::invalid_language(e, self.position())),
-        }
-    }
-
-    fn parse_integer_attribute(&self, name: &str, value: String) -> Result<i32, Error> {
-        value
-            .parse()
-            .map_err(|e| Error::invalid_integer_attribute_value(name, e, self.position()))
-    }
-
-    fn parse_float_attribute(&self, name: &str, value: String) -> Result<f64, Error> {
-        value
-            .parse()
-            .map_err(|e| Error::invalid_float_attribute_value(name, e, self.position()))
-    }
-
     fn parse_date(&self, value: &str) -> Result<NaiveDate, Error> {
         let err = match NaiveDate::parse_from_str(value, "%Y-%m-%d") {
             Ok(it) => return Ok(it),
@@ -351,16 +361,6 @@ impl<T: Read> Parser<T> {
             return Ok(date);
         }
         Err(Error::invalid_date(err, self.position()))
-    }
-
-    fn parse_enum_element<U: FromStrOpt>(&self, name: &str, value: String) -> Result<U, Error> {
-        U::from_str_or_none(&value)
-            .ok_or_else(|| Error::unrecognized_element_value(name, value, self.position()))
-    }
-
-    fn parse_enum_attribute<U: FromStrOpt>(&self, name: &str, value: String) -> Result<U, Error> {
-        U::from_str_or_none(&value)
-            .ok_or_else(|| Error::unrecognized_attribute_value(name, value, self.position()))
     }
 }
 
@@ -457,7 +457,7 @@ impl<T: Read> Parse<T> for DocumentInfo {
         let (src_ocr, seed) = parser.parse_element_or_none(el::SRC_OCR, seed)?;
         let (id, seed) = parser.parse_element(el::ID, seed)?;
         let (version, seed) = parser.parse_element::<String>(el::VERSION, seed)?;
-        let version = parser.parse_version(&version)?;
+        let version = parser.parse_float_element(el::VERSION, &version)?;
         let (history, seed) = parser.parse_element_or_none(el::HISTORY, seed)?;
         let (publishers, seed) = parser.parse_elements(el::PUBLISHER, seed)?;
         parser.consume_end_element(element, seed)?;
@@ -1719,4 +1719,3 @@ mod attr {
     pub(super) const VALUE: &str = "value";
     pub(super) const VERTICAL_ALIGN: &str = "valign";
 }
-

@@ -257,6 +257,7 @@ fn parse_minimal() {
         },
         body: Body {
             name: None,
+            lang: None,
             image: None,
             title: Some(
                 Title {
@@ -665,7 +666,6 @@ fn parse_minimal() {
                     ),
                 },
             ],
-            lang: None,
         },
         notes_body: None,
         binaries: vec![]
