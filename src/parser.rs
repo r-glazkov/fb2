@@ -370,14 +370,14 @@ impl<T: Read> Parse<T> for FictionBook {
         let (stylesheets, seed) = parser.parse_elements(el::STYLESHEET, seed)?;
         let (description, seed) = parser.parse_element(el::DESCRIPTION, seed)?;
         let (body, seed) = parser.parse_element(el::BODY, seed)?;
-        let (notes_body, seed) = parser.parse_element_or_none(el::BODY, seed)?;
+        let (extra_bodies, seed) = parser.parse_elements(el::BODY, seed)?;
         let (binaries, seed) = parser.parse_elements(el::BINARY, seed)?;
         parser.consume_end_element(element, seed)?;
         Ok(FictionBook {
             stylesheets,
             description,
             body,
-            notes_body,
+            extra_bodies,
             binaries,
         })
     }

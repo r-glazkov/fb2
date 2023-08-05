@@ -27,11 +27,11 @@ pub struct FictionBook {
     /// the other bodies should be accessible by hyperlinks. Name attribute should describe the meaning of this body,
     /// this is optional for the main body.
     pub body: Body,
-    /// Main content of the book, multiple bodies are used for additional information, like footnotes,
+    /// Multiple bodies are used for additional information, like footnotes or comments,
     /// that do not appear in the main book flow. The first body is presented to the reader by default, and content in
     /// the other bodies should be accessible by hyperlinks. Name attribute should describe the meaning of this body,
     /// this is optional for the main body.
-    pub notes_body: Option<Body>,
+    pub extra_bodies: Vec<Body>,
     /// Any binary data that is required for the presentation of this book in base64 format. Currently
     /// only images are used.
     pub binaries: Vec<Binary>,

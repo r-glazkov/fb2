@@ -469,7 +469,7 @@ fn parse_complex() {
                                     include: DocGenerationInstruction::Deny,
                                 }
                             ],
-                        })
+                        }),
                     ],
                 },
                 ShareInstruction {
@@ -930,7 +930,7 @@ fn parse_complex() {
                 },
             ],
         },
-        notes_body: Some(
+        extra_bodies: vec![
             Body {
                 name: Some(
                     "notes".into(),
@@ -973,7 +973,7 @@ fn parse_complex() {
                     },
                 ],
             },
-        ),
+        ],
         binaries: vec![
             Binary {
                 id: "cover.jpg".into(),

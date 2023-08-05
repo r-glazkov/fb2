@@ -7,7 +7,7 @@ use crate::common::compare;
 mod common;
 
 #[test]
-fn parse_minimal() {
+fn parse_many_bodies() {
     let expected = FictionBook {
         stylesheets: vec![],
         description: Description {
@@ -667,8 +667,159 @@ fn parse_minimal() {
                 },
             ],
         },
-        extra_bodies: vec![],
-        binaries: vec![]
+        extra_bodies: vec![
+            Body {
+                name: Some("notes".into()),
+                lang: None,
+                image: None,
+                title: Some(Title {
+                    lang: None,
+                    elements: vec![
+                        TitleElement::Paragraph(Paragraph {
+                            id: None,
+                            style: None,
+                            content: Style {
+                                lang: None,
+                                elements: vec![
+                                    StyleElement::Text("Примечания".into())
+                                ],
+                            },
+                        })
+                    ],
+                }),
+                epigraphs: vec![],
+                sections: vec![
+                    Section {
+                        id: Some("n_1".into()),
+                        lang: None,
+                        content: Some(SectionContent {
+                            title: Some(Title {
+                                lang: None,
+                                elements: vec![
+                                    TitleElement::Paragraph(Paragraph {
+                                        id: None,
+                                        style: None,
+                                        content: Style {
+                                            lang: None,
+                                            elements: vec![
+                                                StyleElement::Text("1".into())
+                                            ],
+                                        },
+                                    })
+                                ],
+                            }),
+                            epigraphs: vec![],
+                            image: None,
+                            annotation: None,
+                            value: SectionContentValue::SectionParts(SectionParts {
+                                first: FirstSectionPart::Paragraph(Paragraph {
+                                    id: None,
+                                    style: None,
+                                    content: Style {
+                                        lang: None,
+                                        elements: vec![
+                                            StyleElement::Emphasis(Style {
+                                                lang: None,
+                                                elements: vec![
+                                                    StyleElement::Text("Достоевский Ф. М.".into())
+                                                ],
+                                            }),
+                                            StyleElement::Text("Полн. собр. соч.: В. 30 т. Л., 1980. Т. 21. С. 133.".into()),
+                                        ],
+                                    },
+                                }),
+                                rest: vec![],
+                            }),
+                        }),
+                    }
+                ],
+            },
+            Body {
+                name: Some("comments".into()),
+                lang: None,
+                image: None,
+                title: Some(Title {
+                    lang: None,
+                    elements: vec![
+                        TitleElement::Paragraph(Paragraph {
+                            id: None,
+                            style: None,
+                            content: Style {
+                                lang: None,
+                                elements: vec![
+                                    StyleElement::Text("Комментарии".into())
+                                ],
+                            },
+                        })
+                    ],
+                }),
+                epigraphs: vec![],
+                sections: vec![
+                    Section {
+                        id: Some("c_1".into()),
+                        lang: None,
+                        content: Some(SectionContent {
+                            title: Some(Title {
+                                lang: None,
+                                elements: vec![
+                                    TitleElement::Paragraph(Paragraph {
+                                        id: None,
+                                        style: None,
+                                        content: Style {
+                                            lang: None,
+                                            elements: vec![
+                                                StyleElement::Text("1".into())
+                                            ],
+                                        },
+                                    })
+                                ],
+                            }),
+                            epigraphs: vec![],
+                            image: None,
+                            annotation: None,
+                            value: SectionContentValue::SectionParts(SectionParts {
+                                first: FirstSectionPart::Paragraph(Paragraph {
+                                    id: None,
+                                    style: None,
+                                    content: Style {
+                                        lang: None,
+                                        elements: vec![
+                                            StyleElement::Text("С. 31.".into()),
+                                            StyleElement::Emphasis(Style {
+                                                lang: None,
+                                                elements: vec![
+                                                    StyleElement::Text("Ох уж эти мне сказочники!..".into())
+                                                ],
+                                            }),
+                                            StyleElement::Text(" — Эпиграф взят из рассказа В. Ф. Одоевского «Живой мертвец» (1839; ср.:".into()),
+                                            StyleElement::Emphasis(Style {
+                                                lang: None,
+                                                elements: vec![
+                                                    StyleElement::Text("Одоевский В. Ф.".into())
+                                                ],
+                                            }),
+                                        ],
+                                    },
+                                }),
+                                rest: vec![
+                                    RestSectionPart::Paragraph(Paragraph {
+                                        id: None,
+                                        style: None,
+                                        content: Style {
+                                            lang: None,
+                                            elements: vec![
+                                                StyleElement::Text("Соч. СПб., 1844. Ч. 3. С. 140); в конце отрывка слово «запретить» переделано Достоевским на «запретил».".into()),
+                                            ],
+                                        },
+                                    })
+                                ],
+                            }),
+                        }),
+                    }
+                ],
+            },
+        ],
+        binaries: vec![],
     };
-    compare("tests/resources/minimal.fb2", expected)
+    compare("tests/resources/many_bodies.fb2", expected)
 }
