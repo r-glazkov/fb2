@@ -1,6 +1,6 @@
 [package]
 name = "fb2"
-version = "0.2.0"
+version = "0.2.1"
 authors = ["Руслан Глазков <glazkov@skiff.com>"]
 description = "Parser of the FB2 format"
 readme = "README.md"
