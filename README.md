@@ -29,3 +29,12 @@ Try with:
 ```shell
 cargo run --example parse_sample
 ```
+
+# TODO
+
+Plan for the next releases:
+
+- migrate to quick-xml because:
+  - it supports more encodings
+  - we can use `serde` support to get rid of the handwritten parser
+- fix the current library when, for example, non-standard, occur in the FB2 files (like the `prose_contemporary` genre)
