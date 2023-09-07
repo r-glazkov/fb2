@@ -1,7 +1,7 @@
 use std::fs::File;
 use std::io::{BufReader, Read};
 
-use fb2::*;
+use fb2::FictionBook;
 
 pub fn compare(path: &str, expected: FictionBook) {
     let file = File::open(path).unwrap();
@@ -9,10 +9,7 @@ pub fn compare(path: &str, expected: FictionBook) {
     let mut content = String::new();
     reader.read_to_string(&mut content).unwrap();
 
-    let book = parse(content.as_bytes());
+    let book: FictionBook = quick_xml::de::from_str(&content).unwrap();
 
-    match book {
-        Ok(it) => assert_eq!(it, expected),
-        Err(e) => assert_eq!(Some(e), None),
-    }
+    assert_eq!(book, expected);
 }

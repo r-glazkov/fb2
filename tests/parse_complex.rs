@@ -41,22 +41,22 @@ fn parse_complex() {
                         VerboseAuthorDetails {
                             first_name: LocalizedText {
                                 lang: Some(LanguageTag::parse("ru").unwrap()),
-                                content: "Уинстон".into(),
+                                value: "Уинстон".into(),
                             },
                             middle_name: Some(
                                 LocalizedText {
                                     lang: Some(LanguageTag::parse("ru-RU").unwrap()),
-                                    content: "Спенсер".into(),
+                                    value: "Спенсер".into(),
                                 },
                             ),
                             last_name: LocalizedText {
                                 lang: Some(LanguageTag::parse("ru-LT").unwrap()),
-                                content: "Черчилль".into(),
+                                value: "Черчилль".into(),
                             },
                             nickname: Some(
                                 LocalizedText {
                                     lang: Some(LanguageTag::parse("en").unwrap()),
-                                    content: "winston_cigarette".into(),
+                                    value: "winston_cigarette".into(),
                                 },
                             ),
                             home_pages: vec![
@@ -76,7 +76,7 @@ fn parse_complex() {
                         AnonymousAuthorDetails {
                             nickname: LocalizedText {
                                 lang: Some(LanguageTag::parse("en").unwrap()),
-                                content: "vovchik".into(),
+                                value: "vovchik".into(),
                             },
                             home_pages: vec![
                                 "profile.example.com".into(),
@@ -94,7 +94,7 @@ fn parse_complex() {
                 ],
                 book_title: LocalizedText {
                     lang: Some(LanguageTag::parse("ru").unwrap()),
-                    content: "Вторая мировая война".into(),
+                    value: "Вторая мировая война".into(),
                 },
                 annotation: Some(
                     Annotation {
@@ -108,27 +108,25 @@ fn parse_complex() {
                                     id: Some(
                                         "ID-2".into(),
                                     ),
+                                    lang: Some(LanguageTag::parse("ru").unwrap()),
                                     style: Some(
                                         "some style".into(),
                                     ),
-                                    content: Style {
-                                        lang: Some(LanguageTag::parse("ru").unwrap()),
-                                        elements: vec![
-                                            StyleElement::Text(
-                                                "Шеститомный труд У.\u{a0}Черчилля – героическая эпопея народов, выступивших против\n                    планетарной опасности, написанная выдающимся политиком, скрупулезным историком и талантливым литератором. Это летопись\n                    повседневного руководства страной государственного деятеля, чей вклад в общее дело победы антигитлеровской коалиции ни у\n                    кого не вызывает сомнений. Это размышления над прошлым, призванные послужить назиданием потомкам. В первой книге\n                    публикуются в сокращенном переводе с английского I и II тома мемуаров и описаны события с 1919 года по декабрь 1940\n                    года, которые привели к ненужной, по словам автора, войне, которой можно было избежать. Во второй книге публикуются\n                    третий и четвертый тома мемуаров и описаны события в период с января 1941 по июнь 1943\u{a0}г.: вторжение фашистской Германии\n                    в Советский Союз, нападение милитаристской Японии на США, создание антигитлеровской коалиции, переход союзников от\n                    обороны к наступлению. В третьей книге публикуются пятый и шестой тома мемуаров и описаны события в период с июня\n                    1943\u{a0}г. по июль 1945\u{a0}г.\u{a0}– капитуляция союзников Германии, Тегеранская, Ялтинская и Потсдамская конференции, высадка\n                    американских, английских и канадских войск в Нормандии, разгром гитлеровских войск в результате исторических побед\n                    Советской армии и союзников, капитуляция Германии.".into(),
-                                            ),
-                                            StyleElement::Emphasis(
-                                                Style {
-                                                    lang: Some(LanguageTag::parse("ru").unwrap()),
-                                                    elements: vec![
-                                                        StyleElement::Text(
-                                                            "4-е издание.".into(),
-                                                        ),
-                                                    ],
-                                                },
-                                            ),
-                                        ],
-                                    },
+                                    elements: vec![
+                                        StyleElement::Text(
+                                            "Шеститомный труд У.\u{a0}Черчилля – героическая эпопея народов, выступивших против\n                    планетарной опасности, написанная выдающимся политиком, скрупулезным историком и талантливым литератором. Это летопись\n                    повседневного руководства страной государственного деятеля, чей вклад в общее дело победы антигитлеровской коалиции ни у\n                    кого не вызывает сомнений. Это размышления над прошлым, призванные послужить назиданием потомкам. В первой книге\n                    публикуются в сокращенном переводе с английского I и II тома мемуаров и описаны события с 1919 года по декабрь 1940\n                    года, которые привели к ненужной, по словам автора, войне, которой можно было избежать. Во второй книге публикуются\n                    третий и четвертый тома мемуаров и описаны события в период с января 1941 по июнь 1943\u{a0}г.: вторжение фашистской Германии\n                    в Советский Союз, нападение милитаристской Японии на США, создание антигитлеровской коалиции, переход союзников от\n                    обороны к наступлению. В третьей книге публикуются пятый и шестой тома мемуаров и описаны события в период с июня\n                    1943\u{a0}г. по июль 1945\u{a0}г.\u{a0}– капитуляция союзников Германии, Тегеранская, Ялтинская и Потсдамская конференции, высадка\n                    американских, английских и канадских войск в Нормандии, разгром гитлеровских войск в результате исторических побед\n                    Советской армии и союзников, капитуляция Германии.".into(),
+                                        ),
+                                        StyleElement::Emphasis(
+                                            Style {
+                                                lang: Some(LanguageTag::parse("ru").unwrap()),
+                                                elements: vec![
+                                                    StyleElement::Text(
+                                                        "4-е издание.".into(),
+                                                    ),
+                                                ],
+                                            },
+                                        ),
+                                    ],
                                 },
                             ),
                         ],
@@ -137,31 +135,31 @@ fn parse_complex() {
                 keywords: Some(
                     LocalizedText {
                         lang: Some(LanguageTag::parse("ru").unwrap()),
-                        content: "Вторая мировая война,военная история,Великобритания,политическая публицистика,знаменитые политики".into(),
+                        value: "Вторая мировая война,военная история,Великобритания,политическая публицистика,знаменитые политики".into(),
                     },
                 ),
                 date: Some(
                     Date {
                         lang: Some(LanguageTag::parse("en").unwrap()),
-                        date: NaiveDate::from_ymd_opt(1953, 01, 01),
-                        display_date: "1948-53".into(),
+                        iso_date: NaiveDate::from_ymd_opt(1953, 01, 01),
+                        display_date: Some("1948-53".into()),
                     },
                 ),
                 cover_page: Some(
-                    CoverPage(
-                        vec![
+                    Covers {
+                        images: vec![
                             InlineImage {
-                                kind: "simple",
+                                kind: "simple".into(),
                                 href: Some("#cover.jpg".into()),
                                 alt: None,
                             },
                             InlineImage {
-                                kind: "simple",
+                                kind: "simple".into(),
                                 href: Some("#cover.jpg".into()),
                                 alt: None,
                             },
                         ],
-                    ),
+                    },
                 ),
                 lang: "ru".into(),
                 src_lang: Some(
@@ -172,22 +170,22 @@ fn parse_complex() {
                         VerboseAuthorDetails {
                             first_name: LocalizedText {
                                 lang: None,
-                                content: "Александр".into(),
+                                value: "Александр".into(),
                             },
                             middle_name: Some(
                                 LocalizedText {
                                     lang: None,
-                                    content: "Владимирович".into(),
+                                    value: "Владимирович".into(),
                                 },
                             ),
                             last_name: LocalizedText {
                                 lang: None,
-                                content: "Орлов".into(),
+                                value: "Орлов".into(),
                             },
                             nickname: Some(
                                 LocalizedText {
                                     lang: None,
-                                    content: "alfa".into(),
+                                    value: "alfa".into(),
                                 },
                             ),
                             home_pages: vec![
@@ -207,7 +205,7 @@ fn parse_complex() {
                         AnonymousAuthorDetails {
                             nickname: LocalizedText {
                                 lang: None,
-                                content: "alfa".into(),
+                                value: "alfa".into(),
                             },
                             home_pages: vec![
                                 "orlov.example.com".into(),
@@ -283,7 +281,7 @@ fn parse_complex() {
                         AnonymousAuthorDetails {
                             nickname: LocalizedText {
                                 lang: None,
-                                content: "On84ly".into(),
+                                value: "On84ly".into(),
                             },
                             home_pages: vec![],
                             emails: vec![],
@@ -294,13 +292,13 @@ fn parse_complex() {
                 program_used: Some(
                     LocalizedText {
                         lang: Some(LanguageTag::parse("en").unwrap()),
-                        content: "FictionBook Editor Release 2.6.6".into(),
+                        value: "FictionBook Editor Release 2.6.6".into(),
                     },
                 ),
                 date: Date {
                     lang: Some(LanguageTag::parse("en").unwrap()),
-                    date: NaiveDate::from_ymd_opt(2014, 6, 11),
-                    display_date: "11 June 2014".into(),
+                    iso_date: NaiveDate::from_ymd_opt(2014, 6, 11),
+                    display_date: Some("11 June 2014".into()),
                 },
                 src_urls: vec![
                     "http://www.litres.ru/pages/biblio_book/?art=7003942&lfrom=700971545".into(),
@@ -309,7 +307,7 @@ fn parse_complex() {
                 src_ocr: Some(
                     LocalizedText {
                         lang: Some(LanguageTag::parse("ru").unwrap()),
-                        content: "Текст предоставлен издательством".into(),
+                        value: "Текст предоставлен издательством".into(),
                     },
                 ),
                 id: "a75a6f71-f140-11e3-871d-0025905a0812".into(),
@@ -326,17 +324,15 @@ fn parse_complex() {
                                     id: Some(
                                         "ID-4".into(),
                                     ),
+                                    lang: Some(LanguageTag::parse("ru").unwrap()),
                                     style: Some(
                                         "sss".into(),
                                     ),
-                                    content: Style {
-                                        lang: Some(LanguageTag::parse("ru").unwrap()),
-                                        elements: vec![
-                                            StyleElement::Text(
-                                                "v 1.0 – создание fb2 – (On84ly)".into(),
-                                            ),
-                                        ],
-                                    },
+                                    elements: vec![
+                                        StyleElement::Text(
+                                            "v 1.0 – создание fb2 – (On84ly)".into(),
+                                        ),
+                                    ],
                                 },
                             ),
                         ],
@@ -347,12 +343,12 @@ fn parse_complex() {
                         VerboseAuthorDetails {
                             first_name: LocalizedText {
                                 lang: None,
-                                content: "Литагент".into(),
+                                value: "Литагент".into(),
                             },
                             middle_name: None,
                             last_name: LocalizedText {
                                 lang: None,
-                                content: "Альпина".into(),
+                                value: "Альпина".into(),
                             },
                             nickname: None,
                             home_pages: vec![],
@@ -369,19 +365,19 @@ fn parse_complex() {
                     book_name: Some(
                         LocalizedText {
                             lang: Some(LanguageTag::parse("ru").unwrap()),
-                            content: "Вторая мировая война: В 6 тт. Т. 1: Надвигающаяся буря; Т. 2: Их звездный\n                час; Т. 3: Великий союз; Т. 4: Поворот судьбы; Т. 5: Кольцо смыкается; Т. 6: Триумф\n                и трагедия / Уинстон Черчилль; Сокр. пер. с\u{a0}англ. 4-е изд.".into(),
+                            value: "Вторая мировая война: В 6 тт. Т. 1: Надвигающаяся буря; Т. 2: Их звездный\n                час; Т. 3: Великий союз; Т. 4: Поворот судьбы; Т. 5: Кольцо смыкается; Т. 6: Триумф\n                и трагедия / Уинстон Черчилль; Сокр. пер. с\u{a0}англ. 4-е изд.".into(),
                         },
                     ),
                     publisher: Some(
                         LocalizedText {
                             lang: Some(LanguageTag::parse("ru").unwrap()),
-                            content: "Альпина нон-фикшн".into(),
+                            value: "Альпина нон-фикшн".into(),
                         },
                     ),
                     city: Some(
                         LocalizedText {
                             lang: Some(LanguageTag::parse("ru").unwrap()),
-                            content: "Москва".into(),
+                            value: "Москва".into(),
                         },
                     ),
                     year: Some(
@@ -390,7 +386,7 @@ fn parse_complex() {
                     isbn: Some(
                         LocalizedText {
                             lang: Some(LanguageTag::parse("en").unwrap()),
-                            content: "978-5-9614-3115-5".into(),
+                            value: "978-5-9614-3115-5".into(),
                         },
                     ),
                     sequences: vec![
@@ -433,17 +429,13 @@ fn parse_complex() {
             custom_info: vec![
                 CustomInfo {
                     info_type: "test-custom-info".into(),
-                    content: LocalizedText {
-                        lang: Some(LanguageTag::parse("ru").unwrap()),
-                        content: "вот немного нетипичного текста".into(),
-                    },
+                    lang: Some(LanguageTag::parse("ru").unwrap()),
+                    content: "вот немного нетипичного текста".into(),
                 },
                 CustomInfo {
                     info_type: "test-custom-info-2".into(),
-                    content: LocalizedText {
-                        lang: Some(LanguageTag::parse("en").unwrap()),
-                        content: "here is some custom text".into(),
-                    },
+                    lang: Some(LanguageTag::parse("en").unwrap()),
+                    content: "here is some custom text".into(),
                 },
             ],
             output: vec![
@@ -454,7 +446,7 @@ fn parse_complex() {
                     currency: Some("RUB".into()),
                     elements: vec![
                         ShareInstructionElement::Part(PartShareInstruction {
-                            kind: "simple",
+                            kind: "simple".into(),
                             href: "http://example.com".into(),
                             include: DocGenerationInstruction::Allow,
                         }),
@@ -464,7 +456,7 @@ fn parse_complex() {
                             price: Some(10.0),
                             parts: vec![
                                 PartShareInstruction {
-                                    kind: "simple",
+                                    kind: "simple".into(),
                                     href: "#ID-3".into(),
                                     include: DocGenerationInstruction::Deny,
                                 }
@@ -481,12 +473,12 @@ fn parse_complex() {
                 },
             ],
         },
-        body: Body {
+        bodies: vec![Body {
             name: None,
             lang: Some(LanguageTag::parse("ru").unwrap()),
             image: Some(
                 Image {
-                    kind: "simple",
+                    kind: "simple".into(),
                     href: Some("#body.jpg".into()),
                     alt: Some(
                         "подмена".into(),
@@ -508,17 +500,15 @@ fn parse_complex() {
                                 id: Some(
                                     "ID-6".into(),
                                 ),
+                                lang: Some(LanguageTag::parse("ru").unwrap()),
                                 style: Some(
                                     "wip".into(),
                                 ),
-                                content: Style {
-                                    lang: Some(LanguageTag::parse("ru").unwrap()),
-                                    elements: vec![
-                                        StyleElement::Text(
-                                            "Уинстон Черчилль".into(),
-                                        ),
-                                    ],
-                                },
+                                elements: vec![
+                                    StyleElement::Text(
+                                        "Уинстон Черчилль".into(),
+                                    ),
+                                ],
                             },
                         ),
                         TitleElement::EmptyLine,
@@ -536,17 +526,15 @@ fn parse_complex() {
                                 id: Some(
                                     "pg-1".into(),
                                 ),
+                                lang: Some(LanguageTag::parse("ru").unwrap()),
                                 style: Some(
                                     "pg-s-1".into(),
                                 ),
-                                content: Style {
-                                    lang: Some(LanguageTag::parse("ru").unwrap()),
-                                    elements: vec![
-                                        StyleElement::Text(
-                                            "Content".into(),
-                                        ),
-                                    ],
-                                },
+                                elements: vec![
+                                    StyleElement::Text(
+                                        "Content".into(),
+                                    ),
+                                ],
                             },
                         ),
                         EpigraphElement::Poem(
@@ -562,15 +550,13 @@ fn parse_complex() {
                                             TitleElement::Paragraph(
                                                 Paragraph {
                                                     id: None,
+                                                    lang: None,
                                                     style: None,
-                                                    content: Style {
-                                                        lang: None,
-                                                        elements: vec![
-                                                            StyleElement::Text(
-                                                                "Some title".into(),
-                                                            ),
-                                                        ],
-                                                    },
+                                                    elements: vec![
+                                                        StyleElement::Text(
+                                                            "Some title".into(),
+                                                        ),
+                                                    ],
                                                 },
                                             ),
                                         ],
@@ -602,17 +588,15 @@ fn parse_complex() {
                                             id: Some(
                                                 "st-1".into(),
                                             ),
+                                            lang: Some(LanguageTag::parse("en").unwrap()),
                                             style: Some(
                                                 "st-s-1".into(),
                                             ),
-                                            content: Style {
-                                                lang: Some(LanguageTag::parse("en").unwrap()),
-                                                elements: vec![
-                                                    StyleElement::Text(
-                                                        "fasdf".into(),
-                                                    ),
-                                                ],
-                                            },
+                                            elements: vec![
+                                                StyleElement::Text(
+                                                    "fasdf".into(),
+                                                ),
+                                            ],
                                         },
                                     ),
                                     PoemStanza::Stanza(
@@ -625,15 +609,13 @@ fn parse_complex() {
                                                         TitleElement::Paragraph(
                                                             Paragraph {
                                                                 id: None,
+                                                                lang: None,
                                                                 style: None,
-                                                                content: Style {
-                                                                    lang: None,
-                                                                    elements: vec![
-                                                                        StyleElement::Text(
-                                                                            "Танечка".into(),
-                                                                        ),
-                                                                    ],
-                                                                },
+                                                                elements: vec![
+                                                                    StyleElement::Text(
+                                                                        "Танечка".into(),
+                                                                    ),
+                                                                ],
                                                             },
                                                         ),
                                                     ],
@@ -644,17 +626,15 @@ fn parse_complex() {
                                                     id: Some(
                                                         "st-2".into(),
                                                     ),
+                                                    lang: Some(LanguageTag::parse("en").unwrap()),
                                                     style: Some(
                                                         "st-s-2".into(),
                                                     ),
-                                                    content: Style {
-                                                        lang: Some(LanguageTag::parse("en").unwrap()),
-                                                        elements: vec![
-                                                            StyleElement::Text(
-                                                                "Subtitle".into(),
-                                                            ),
-                                                        ],
-                                                    },
+                                                    elements: vec![
+                                                        StyleElement::Text(
+                                                            "Subtitle".into(),
+                                                        ),
+                                                    ],
                                                 },
                                             ),
                                             lines: vec![
@@ -662,33 +642,29 @@ fn parse_complex() {
                                                     id: Some(
                                                         "v-1".into(),
                                                     ),
+                                                    lang: Some(LanguageTag::parse("ru").unwrap()),
                                                     style: Some(
                                                         "v-s-1".into(),
                                                     ),
-                                                    content: Style {
-                                                        lang: Some(LanguageTag::parse("ru").unwrap()),
-                                                        elements: vec![
-                                                            StyleElement::Text(
-                                                                "Плач".into(),
-                                                            ),
-                                                        ],
-                                                    },
+                                                    elements: vec![
+                                                        StyleElement::Text(
+                                                            "Плач".into(),
+                                                        ),
+                                                    ],
                                                 },
                                                 Paragraph {
                                                     id: Some(
                                                         "v-2".into(),
                                                     ),
+                                                    lang: Some(LanguageTag::parse("ru").unwrap()),
                                                     style: Some(
                                                         "v-s-2".into(),
                                                     ),
-                                                    content: Style {
-                                                        lang: Some(LanguageTag::parse("ru").unwrap()),
-                                                        elements: vec![
-                                                            StyleElement::Text(
-                                                                "Мяч".into(),
-                                                            ),
-                                                        ],
-                                                    },
+                                                    elements: vec![
+                                                        StyleElement::Text(
+                                                            "Мяч".into(),
+                                                        ),
+                                                    ],
                                                 },
                                             ],
                                         },
@@ -699,40 +675,36 @@ fn parse_complex() {
                                         id: Some(
                                             "ta-2".into(),
                                         ),
+                                        lang: Some(LanguageTag::parse("ru").unwrap()),
                                         style: Some(
                                             "ta-s-2".into(),
                                         ),
-                                        content: Style {
-                                            lang: Some(LanguageTag::parse("ru").unwrap()),
-                                            elements: vec![
-                                                StyleElement::Text(
-                                                    "Барто".into(),
-                                                ),
-                                            ],
-                                        },
+                                        elements: vec![
+                                            StyleElement::Text(
+                                                "Барто".into(),
+                                            ),
+                                        ],
                                     },
                                     Paragraph {
                                         id: Some(
                                             "ta-3".into(),
                                         ),
+                                        lang: Some(LanguageTag::parse("ru").unwrap()),
                                         style: Some(
                                             "ta-s-3".into(),
                                         ),
-                                        content: Style {
-                                            lang: Some(LanguageTag::parse("ru").unwrap()),
-                                            elements: vec![
-                                                StyleElement::Text(
-                                                    "Агния".into(),
-                                                ),
-                                            ],
-                                        },
+                                        elements: vec![
+                                            StyleElement::Text(
+                                                "Агния".into(),
+                                            ),
+                                        ],
                                     },
                                 ],
                                 date: Some(
                                     Date {
                                         lang: Some(LanguageTag::parse("ru").unwrap()),
-                                        date: NaiveDate::from_ymd_opt(10, 10, 21),
-                                        display_date: "Лохматые".into(),
+                                        iso_date: NaiveDate::from_ymd_opt(10, 10, 21),
+                                        display_date: Some("Лохматые".into()),
                                     },
                                 ),
                             },
@@ -747,15 +719,13 @@ fn parse_complex() {
                                     CiteElement::Paragraph(
                                         Paragraph {
                                             id: None,
+                                            lang: None,
                                             style: None,
-                                            content: Style {
-                                                lang: None,
-                                                elements: vec![
-                                                    StyleElement::Text(
-                                                        "fasdf".into(),
-                                                    ),
-                                                ],
-                                            },
+                                            elements: vec![
+                                                StyleElement::Text(
+                                                    "fasdf".into(),
+                                                ),
+                                            ],
                                         },
                                     ),
                                     CiteElement::Poem(
@@ -772,15 +742,13 @@ fn parse_complex() {
                                                         lines: vec![
                                                             Paragraph {
                                                                 id: None,
+                                                                lang: None,
                                                                 style: None,
-                                                                content: Style {
-                                                                    lang: None,
-                                                                    elements: vec![
-                                                                        StyleElement::Text(
-                                                                            "s".into(),
-                                                                        ),
-                                                                    ],
-                                                                },
+                                                                elements: vec![
+                                                                    StyleElement::Text(
+                                                                        "s".into(),
+                                                                    ),
+                                                                ],
                                                             },
                                                         ],
                                                         lang: None,
@@ -802,33 +770,29 @@ fn parse_complex() {
                             id: Some(
                                 "ta-1".into(),
                             ),
+                            lang: Some(LanguageTag::parse("ru").unwrap()),
                             style: Some(
                                 "ta-style".into(),
                             ),
-                            content: Style {
-                                lang: Some(LanguageTag::parse("ru").unwrap()),
-                                elements: vec![
-                                    StyleElement::Text(
-                                        "Автор".into(),
-                                    ),
-                                ],
-                            },
+                            elements: vec![
+                                StyleElement::Text(
+                                    "Автор".into(),
+                                ),
+                            ],
                         },
                         Paragraph {
                             id: Some(
                                 "ta-4".into(),
                             ),
+                            lang: Some(LanguageTag::parse("ru").unwrap()),
                             style: Some(
                                 "ta-s-4".into(),
                             ),
-                            content: Style {
-                                lang: Some(LanguageTag::parse("ru").unwrap()),
-                                elements: vec![
-                                    StyleElement::Text(
-                                        "Ещё Автор".into(),
-                                    ),
-                                ],
-                            },
+                            elements: vec![
+                                StyleElement::Text(
+                                    "Ещё Автор".into(),
+                                ),
+                            ],
                         },
                     ],
                 },
@@ -852,7 +816,7 @@ fn parse_complex() {
                             epigraphs: vec![],
                             image: None,
                             annotation: None,
-                            value: SectionContentValue::ChildSections(
+                            value: SectionContentValue::NestedSections(
                                 vec![
                                     Section {
                                         id: None,
@@ -872,17 +836,15 @@ fn parse_complex() {
                                                                     id: Some(
                                                                         "ID-10".into(),
                                                                     ),
+                                                                    lang: Some(LanguageTag::parse("ru").unwrap()),
                                                                     style: Some(
                                                                         "st".into(),
                                                                     ),
-                                                                    content: Style {
-                                                                        lang: Some(LanguageTag::parse("ru").unwrap()),
-                                                                        elements: vec![
-                                                                            StyleElement::Text(
-                                                                                "Parag".into(),
-                                                                            ),
-                                                                        ],
-                                                                    },
+                                                                    elements: vec![
+                                                                        StyleElement::Text(
+                                                                            "Parag".into(),
+                                                                        ),
+                                                                    ],
                                                                 },
                                                             ),
                                                             EpigraphElement::Cite(
@@ -902,23 +864,19 @@ fn parse_complex() {
                                                 image: None,
                                                 annotation: None,
                                                 value: SectionContentValue::SectionParts(
-                                                    SectionParts {
-                                                        first: FirstSectionPart::Subtitle(
-                                                            Paragraph {
-                                                                id: None,
-                                                                style: None,
-                                                                content: Style {
-                                                                    lang: None,
-                                                                    elements: vec![
-                                                                        StyleElement::Text(
-                                                                            "* * *".into(),
-                                                                        ),
-                                                                    ],
-                                                                },
-                                                            },
-                                                        ),
-                                                        rest: vec![],
-                                                    },
+                                                    FirstSectionPart::Subtitle(
+                                                        Paragraph {
+                                                            id: None,
+                                                            lang: None,
+                                                            style: None,
+                                                            elements: vec![
+                                                                StyleElement::Text(
+                                                                    "* * *".into(),
+                                                                ),
+                                                            ],
+                                                        },
+                                                    ),
+                                                    vec![],
                                                 ),
                                             },
                                         ),
@@ -930,49 +888,44 @@ fn parse_complex() {
                 },
             ],
         },
-        extra_bodies: vec![
-            Body {
-                name: Some(
-                    "notes".into(),
-                ),
-                lang: None,
-                image: None,
-                title: None,
-                epigraphs: vec![],
-                sections: vec![
-                    Section {
-                        id: None,
-                        lang: None,
-                        content: Some(
-                            SectionContent {
-                                title: None,
-                                epigraphs: vec![],
-                                image: None,
-                                annotation: None,
-                                value: SectionContentValue::SectionParts(
-                                    SectionParts {
-                                        first: FirstSectionPart::Paragraph(
-                                            Paragraph {
-                                                id: None,
-                                                style: None,
-                                                content: Style {
-                                                    lang: None,
-                                                    elements: vec![
-                                                        StyleElement::Text(
-                                                            "yep".into(),
-                                                        ),
-                                                    ],
-                                                },
-                                            },
-                                        ),
-                                        rest: vec![],
-                                    },
-                                ),
-                            },
-                        ),
-                    },
-                ],
-            },
+                     Body {
+                         name: Some(
+                             "notes".into(),
+                         ),
+                         lang: None,
+                         image: None,
+                         title: None,
+                         epigraphs: vec![],
+                         sections: vec![
+                             Section {
+                                 id: None,
+                                 lang: None,
+                                 content: Some(
+                                     SectionContent {
+                                         title: None,
+                                         epigraphs: vec![],
+                                         image: None,
+                                         annotation: None,
+                                         value: SectionContentValue::SectionParts(
+                                             FirstSectionPart::Paragraph(
+                                                 Paragraph {
+                                                     id: None,
+                                                     lang: None,
+                                                     style: None,
+                                                     elements: vec![
+                                                         StyleElement::Text(
+                                                             "yep".into(),
+                                                         ),
+                                                     ],
+                                                 },
+                                             ),
+                                             vec![],
+                                         ),
+                                     },
+                                 ),
+                             },
+                         ],
+                     },
         ],
         binaries: vec![
             Binary {
