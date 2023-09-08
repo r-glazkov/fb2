@@ -124,6 +124,7 @@ pub struct TitleInfo {
     #[serde(rename = "coverpage", skip_serializing_if = "Option::is_none")]
     pub cover_page: Option<Covers>,
     /// Book's language
+    #[serde(default)]
     pub lang: String,
     /// Book's source language if this is a translation
     #[serde(rename = "src-lang", skip_serializing_if = "Option::is_none")]
