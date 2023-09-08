@@ -386,7 +386,7 @@ pub struct GenreWithMatch {
 
 /// Information about a single author
 #[derive(Debug, PartialEq, Deserialize)]
-#[serde(try_from = "AuthorInternal")]
+#[serde(from = "AuthorInternal")]
 pub enum Author {
     Verbose(VerboseAuthorDetails),
     Anonymous(AnonymousAuthorDetails),
@@ -415,8 +415,8 @@ pub struct VerboseAuthorDetails {
     pub middle_name: Option<MaybeEmptyLocalizedText>,
     #[serde(rename = "last-name")]
     pub last_name: MaybeEmptyLocalizedText,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub nickname: Option<LocalizedText>,
+    #[serde(skip_serializing_if = "defaults::should_skip_serializing_text")]
+    pub nickname: Option<MaybeEmptyLocalizedText>,
     #[serde(rename = "home-page")]
     pub home_pages: Vec<String>,
     #[serde(rename = "email")]
@@ -430,7 +430,8 @@ pub struct VerboseAuthorDetails {
 
 #[derive(Debug, PartialEq, Serialize)]
 pub struct AnonymousAuthorDetails {
-    pub nickname: LocalizedText,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub nickname: Option<MaybeEmptyLocalizedText>,
     #[serde(rename = "home-page")]
     pub home_pages: Vec<String>,
     #[serde(rename = "email")]
@@ -450,7 +451,7 @@ struct AuthorInternal {
     middle_name: Option<MaybeEmptyLocalizedText>,
     #[serde(rename = "last-name")]
     last_name: Option<MaybeEmptyLocalizedText>,
-    nickname: Option<LocalizedText>,
+    nickname: Option<MaybeEmptyLocalizedText>,
     #[serde(default, rename = "home-page")]
     home_pages: Vec<String>,
     #[serde(default, rename = "email")]
@@ -459,10 +460,8 @@ struct AuthorInternal {
     id: Option<String>,
 }
 
-impl TryFrom<AuthorInternal> for Author {
-    type Error = String;
-
-    fn try_from(
+impl From<AuthorInternal> for Author {
+    fn from(
         AuthorInternal {
             first_name,
             middle_name,
@@ -472,11 +471,11 @@ impl TryFrom<AuthorInternal> for Author {
             emails,
             id,
         }: AuthorInternal,
-    ) -> Result<Self, Self::Error> {
+    ) -> Self {
         let verbose = first_name.is_some() || middle_name.is_some() || last_name.is_some();
 
         if verbose {
-            Ok(Author::Verbose(VerboseAuthorDetails {
+            Author::Verbose(VerboseAuthorDetails {
                 first_name: first_name.unwrap_or_else(|| MaybeEmptyLocalizedText {
                     lang: None,
                     value: String::new(),
@@ -490,16 +489,14 @@ impl TryFrom<AuthorInternal> for Author {
                 home_pages,
                 emails,
                 id,
-            }))
-        } else if let Some(nickname) = nickname {
-            Ok(Author::Anonymous(AnonymousAuthorDetails {
+            })
+        } else {
+            Author::Anonymous(AnonymousAuthorDetails {
                 nickname,
                 home_pages,
                 emails,
                 id,
-            }))
-        } else {
-            Err("author must have either a nickname or first, last names".to_string())
+            })
         }
     }
 }
