@@ -350,7 +350,7 @@ pub struct GenreWithMatch {
         skip_serializing_if = "defaults::is_default_genre_match"
     )]
     pub match_percentage: i32,
-    #[serde(rename = "$text")]
+    #[serde(default, rename = "$text")]
     pub value: Genre,
 }
 
@@ -1440,4 +1440,10 @@ pub enum Genre {
     VampireBook,
     VisualArts,
     Unrecognised,
+}
+
+impl Default for Genre {
+    fn default() -> Self {
+        Genre::Unrecognised
+    }
 }
