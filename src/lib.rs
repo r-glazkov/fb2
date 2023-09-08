@@ -100,8 +100,8 @@ pub struct Description {
     #[serde(rename = "src-title-info", skip_serializing_if = "Option::is_none")]
     pub src_title_info: Option<TitleInfo>,
     /// Information about this particular (xml) document
-    #[serde(rename = "document-info")]
-    pub document_info: DocumentInfo,
+    #[serde(rename = "document-info", skip_serializing_if = "Option::is_none")]
+    pub document_info: Option<DocumentInfo>,
     /// Information about some paper/outher published document, that was used as a source of
     /// this xml document
     #[serde(rename = "publish-info", skip_serializing_if = "Option::is_none")]
@@ -157,7 +157,7 @@ pub struct TitleInfo {
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
 pub struct DocumentInfo {
     /// Author(s) of this particular document
-    #[serde(rename = "author")]
+    #[serde(default, rename = "author")]
     pub authors: Vec<Author>,
     /// Any software used in preparation of this document, in free format
     #[serde(
@@ -167,7 +167,8 @@ pub struct DocumentInfo {
     pub program_used: Option<MaybeEmptyLocalizedText>,
     /// Date this document was created, same guidelines as in the &lt;title-info&gt;
     /// section apply
-    pub date: Date,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub date: Option<Date>,
     /// Source URL if this document is a conversion of some other (online)
     /// document
     #[serde(default, rename = "src-url")]
@@ -179,10 +180,12 @@ pub struct DocumentInfo {
     )]
     pub src_ocr: Option<MaybeEmptyLocalizedText>,
     /// This is a unique identifier for a document. this must not change
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// Document version, in free format, should be incremented if the document is
     /// changed and re-released to the public
-    pub version: f64,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub version: Option<f64>,
     /// Short description for all changes made to this document, like "Added
     /// missing chapter 6", in free form.
     #[serde(skip_serializing_if = "Option::is_none")]
