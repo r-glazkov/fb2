@@ -194,9 +194,9 @@ pub struct PublishInfo {
 pub struct CustomInfo {
     #[serde(rename = "@lang", skip_serializing_if = "Option::is_none")]
     pub lang: Option<LanguageTag>,
-    #[serde(rename = "@info-type")]
+    #[serde(default, rename = "@info-type")]
     pub info_type: String,
-    #[serde(rename = "$text")]
+    #[serde(default, rename = "$text")]
     pub content: String,
 }
 
