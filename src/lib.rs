@@ -991,16 +991,17 @@ impl TryFrom<SectionInternal> for Section {
 
 /// A cut-down version of section used in annotations
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[serde(from = "AnnotationInternal")]
 pub struct Annotation {
     #[serde(rename = "@id", skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(rename = "@lang", skip_serializing_if = "Option::is_none")]
     pub lang: Option<LanguageTag>,
-    #[serde(default, rename = "$value")]
+    #[serde(rename = "$value")]
     pub elements: Vec<AnnotationElement>,
 }
 
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Debug, PartialEq, Serialize)]
 pub enum AnnotationElement {
     #[serde(rename = "p")]
     Paragraph(Paragraph),
@@ -1014,6 +1015,58 @@ pub enum AnnotationElement {
     Table(Table),
     #[serde(rename = "empty-line")]
     EmptyLine,
+}
+
+/// A cut-down version of section used in annotations
+#[derive(Debug, PartialEq, Deserialize)]
+struct AnnotationInternal {
+    #[serde(rename = "@id")]
+    id: Option<String>,
+    #[serde(rename = "@lang")]
+    lang: Option<LanguageTag>,
+    #[serde(default, rename = "$value")]
+    elements: Vec<AnnotationChoice>,
+}
+
+#[derive(Debug, PartialEq, Deserialize)]
+enum AnnotationChoice {
+    #[serde(rename = "p")]
+    Paragraph(Paragraph),
+    #[serde(rename = "poem")]
+    Poem(Poem),
+    #[serde(rename = "cite")]
+    Cite(Cite),
+    #[serde(rename = "subtitle")]
+    Subtitle(Paragraph),
+    #[serde(rename = "table")]
+    Table(Table),
+    #[serde(rename = "empty-line")]
+    EmptyLine,
+    #[serde(rename = "$text")]
+    Text(String),
+}
+
+impl From<AnnotationInternal> for Annotation {
+    fn from(AnnotationInternal { id, lang, elements }: AnnotationInternal) -> Self {
+        let elements = elements
+            .into_iter()
+            .map(|element| match element {
+                AnnotationChoice::Paragraph(p) => AnnotationElement::Paragraph(p),
+                AnnotationChoice::Poem(p) => AnnotationElement::Poem(p),
+                AnnotationChoice::Cite(c) => AnnotationElement::Cite(c),
+                AnnotationChoice::Subtitle(s) => AnnotationElement::Subtitle(s),
+                AnnotationChoice::Table(t) => AnnotationElement::Table(t),
+                AnnotationChoice::EmptyLine => AnnotationElement::EmptyLine,
+                AnnotationChoice::Text(text) => AnnotationElement::Paragraph(Paragraph {
+                    id: None,
+                    lang: None,
+                    style: None,
+                    elements: vec![StyleElement::Text(text)],
+                }),
+            })
+            .collect();
+        Annotation { id, lang, elements }
+    }
 }
 
 /// An epigraph
