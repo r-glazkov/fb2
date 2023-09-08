@@ -617,6 +617,11 @@ enum SectionChoice {
     Table(Table),
     #[serde(rename = "empty-line")]
     EmptyLine,
+    // will be converted to Paragraph if occurs
+    // some real FB2 files have text where it is prohibited
+    // so trying to fix those files without failing parsing
+    #[serde(rename = "$text")]
+    Text(String),
 }
 
 impl TryFrom<SectionInternal> for Section {
@@ -682,6 +687,13 @@ impl TryFrom<SectionInternal> for Section {
                 SectionChoice::Cite(c) => first_part = Some(FirstSectionPart::Cite(c)),
                 SectionChoice::Table(t) => first_part = Some(FirstSectionPart::Table(t)),
                 SectionChoice::EmptyLine => first_part = Some(FirstSectionPart::EmptyLine),
+                // trying to fix invalid FB2 without losing information
+                SectionChoice::Text(text) => first_part = Some(FirstSectionPart::Paragraph(Paragraph {
+                    id: None,
+                    lang: None,
+                    style: None,
+                    elements: vec![StyleElement::Text(text)],
+                })),
             }
         }
 
@@ -733,6 +745,21 @@ impl TryFrom<SectionInternal> for Section {
                     first_part = Some(FirstSectionPart::EmptyLine);
                 } else {
                     rest_parts.push(RestSectionPart::EmptyLine);
+                }
+                SectionChoice::Text(text) => if first_part.is_none() {
+                    first_part = Some(FirstSectionPart::Paragraph(Paragraph {
+                        id: None,
+                        lang: None,
+                        style: None,
+                        elements: vec![StyleElement::Text(text)],
+                    }));
+                } else {
+                    rest_parts.push(RestSectionPart::Paragraph(Paragraph {
+                        id: None,
+                        lang: None,
+                        style: None,
+                        elements: vec![StyleElement::Text(text)],
+                    }));
                 }
             }
         }
