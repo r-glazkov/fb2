@@ -50,7 +50,7 @@ mod defaults {
 pub struct FictionBook {
     /// This element contains an arbitrary stylesheet that is interpreted by a some processing programs,
     /// e.g. text/css stylesheets can be used by XSLT stylesheets to generate better looking html
-    #[serde(default, rename = "stylesheet", skip_serializing_if = "Vec::is_empty")]
+    #[serde(default, rename = "stylesheet")]
     pub stylesheets: Vec<Stylesheet>,
     /// Book description
     pub description: Description,
@@ -62,7 +62,7 @@ pub struct FictionBook {
     pub bodies: Vec<Body>,
     /// Any binary data that is required for the presentation of this book in base64 format. Currently
     /// only images are used.
-    #[serde(default, rename = "binary", skip_serializing_if = "Vec::is_empty")]
+    #[serde(default, rename = "binary")]
     pub binaries: Vec<Binary>,
 }
 
@@ -90,11 +90,11 @@ pub struct Description {
     #[serde(rename = "publish-info", skip_serializing_if = "Option::is_none")]
     pub publish_info: Option<PublishInfo>,
     /// Any other information about the book/document that didnt fit in the above groups
-    #[serde(default, rename = "custom-info", skip_serializing_if = "Vec::is_empty")]
+    #[serde(default, rename = "custom-info")]
     pub custom_info: Vec<CustomInfo>,
     /// Describes, how the document should be presented to end-user, what parts are free, what
     /// parts should be sold and what price should be used
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[serde(default)]
     pub output: Vec<ShareInstruction>,
 }
 
@@ -129,10 +129,10 @@ pub struct TitleInfo {
     #[serde(rename = "src-lang", skip_serializing_if = "Option::is_none")]
     pub src_lang: Option<String>,
     /// Translators if this is a translation
-    #[serde(default, rename = "translator", skip_serializing_if = "Vec::is_empty")]
+    #[serde(default, rename = "translator")]
     pub translators: Vec<Author>,
     /// Any sequences this book might be part of
-    #[serde(default, rename = "sequence", skip_serializing_if = "Vec::is_empty")]
+    #[serde(default, rename = "sequence")]
     pub sequences: Vec<Sequence>,
 }
 
@@ -149,7 +149,7 @@ pub struct DocumentInfo {
     pub date: Date,
     /// Source URL if this document is a conversion of some other (online)
     /// document
-    #[serde(default, rename = "src-url", skip_serializing_if = "Vec::is_empty")]
+    #[serde(default, rename = "src-url")]
     pub src_urls: Vec<String>,
     /// Author of the original (online) document, if this is a conversion
     #[serde(rename = "src-ocr", skip_serializing_if = "Option::is_none")]
@@ -164,7 +164,7 @@ pub struct DocumentInfo {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub history: Option<Annotation>,
     /// Owner of the fb2 document copyrights
-    #[serde(default, rename = "publisher", skip_serializing_if = "Vec::is_empty")]
+    #[serde(default, rename = "publisher")]
     pub publishers: Vec<Author>,
 }
 
@@ -184,7 +184,7 @@ pub struct PublishInfo {
     pub year: Option<i32>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub isbn: Option<LocalizedText>,
-    #[serde(default, rename = "sequence", skip_serializing_if = "Vec::is_empty")]
+    #[serde(default, rename = "sequence")]
     pub sequences: Vec<Sequence>,
 }
 
@@ -210,7 +210,7 @@ pub struct ShareInstruction {
     pub price: Option<f64>,
     #[serde(rename = "@currency", skip_serializing_if = "Option::is_none")]
     pub currency: Option<String>,
-    #[serde(default, rename = "$value", skip_serializing_if = "Vec::is_empty")]
+    #[serde(default, rename = "$value")]
     pub elements: Vec<ShareInstructionElement>,
 }
 
@@ -240,7 +240,7 @@ pub struct OutputDocumentClass {
     pub create: Option<DocGenerationInstruction>,
     #[serde(rename = "@price", skip_serializing_if = "Option::is_none")]
     pub price: Option<f64>,
-    #[serde(default, rename = "part", skip_serializing_if = "Vec::is_empty")]
+    #[serde(default, rename = "part")]
     pub parts: Vec<PartShareInstruction>,
 }
 
@@ -289,7 +289,7 @@ pub struct Body {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<Title>,
     /// Epigraph(s) for the entire book, if any
-    #[serde(default, rename = "epigraph", skip_serializing_if = "Vec::is_empty")]
+    #[serde(default, rename = "epigraph")]
     pub epigraphs: Vec<Epigraph>,
     #[serde(rename = "section")]
     pub sections: Vec<Section>,
@@ -304,7 +304,7 @@ pub struct Sequence {
     pub number: Option<i32>,
     #[serde(rename = "@lang", skip_serializing_if = "Option::is_none")]
     pub lang: Option<LanguageTag>,
-    #[serde(default, rename = "sequence", skip_serializing_if = "Vec::is_empty")]
+    #[serde(default, rename = "sequence")]
     pub sequences: Vec<Sequence>,
 }
 
@@ -358,9 +358,9 @@ pub struct VerboseAuthorDetails {
     pub last_name: LocalizedText,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub nickname: Option<LocalizedText>,
-    #[serde(rename = "home-page", skip_serializing_if = "Vec::is_empty")]
+    #[serde(rename = "home-page")]
     pub home_pages: Vec<String>,
-    #[serde(rename = "email", skip_serializing_if = "Vec::is_empty")]
+    #[serde(rename = "email")]
     pub emails: Vec<String>,
     #[serde(rename = "id", skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -369,9 +369,9 @@ pub struct VerboseAuthorDetails {
 #[derive(Debug, PartialEq, Serialize)]
 pub struct AnonymousAuthorDetails {
     pub nickname: LocalizedText,
-    #[serde(rename = "home-page", skip_serializing_if = "Vec::is_empty")]
+    #[serde(rename = "home-page")]
     pub home_pages: Vec<String>,
-    #[serde(rename = "email", skip_serializing_if = "Vec::is_empty")]
+    #[serde(rename = "email")]
     pub emails: Vec<String>,
     #[serde(rename = "id", skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -465,7 +465,7 @@ pub struct SectionContent {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<Title>,
     /// Epigraph(s) for this section
-    #[serde(rename = "epigraph", skip_serializing_if = "Vec::is_empty")]
+    #[serde(rename = "epigraph")]
     pub epigraphs: Vec<Epigraph>,
     /// Image to be displayed at the top of this section
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -677,7 +677,7 @@ pub struct Annotation {
     pub id: Option<String>,
     #[serde(rename = "@lang", skip_serializing_if = "Option::is_none")]
     pub lang: Option<LanguageTag>,
-    #[serde(default, rename = "$value", skip_serializing_if = "Vec::is_empty")]
+    #[serde(default, rename = "$value")]
     pub elements: Vec<AnnotationElement>,
 }
 
@@ -702,9 +702,9 @@ pub enum AnnotationElement {
 pub struct Epigraph {
     #[serde(rename = "@id", skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
-    #[serde(default, rename = "$value", skip_serializing_if = "Vec::is_empty")]
+    #[serde(default, rename = "$value")]
     pub elements: Vec<EpigraphElement>,
-    #[serde(default, rename = "text-author", skip_serializing_if = "Vec::is_empty")]
+    #[serde(default, rename = "text-author")]
     pub text_authors: Vec<Paragraph>,
 }
 
@@ -727,9 +727,9 @@ pub struct Cite {
     pub id: Option<String>,
     #[serde(rename = "@lang", skip_serializing_if = "Option::is_none")]
     pub lang: Option<LanguageTag>,
-    #[serde(default, rename = "$value", skip_serializing_if = "Vec::is_empty")]
+    #[serde(default, rename = "$value")]
     pub elements: Vec<CiteElement>,
-    #[serde(default, rename = "text-author", skip_serializing_if = "Vec::is_empty")]
+    #[serde(default, rename = "text-author")]
     pub text_authors: Vec<Paragraph>,
 }
 
@@ -755,11 +755,11 @@ pub struct Poem {
     pub lang: Option<LanguageTag>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<Title>,
-    #[serde(default, rename = "epigraph", skip_serializing_if = "Vec::is_empty")]
+    #[serde(default, rename = "epigraph")]
     pub epigraphs: Vec<Epigraph>,
     #[serde(rename = "$value")]
     pub stanzas: Vec<PoemStanza>,
-    #[serde(default, rename = "text-author", skip_serializing_if = "Vec::is_empty")]
+    #[serde(default, rename = "text-author")]
     pub text_authors: Vec<Paragraph>,
     /// Date this poem was written.
     #[serde(skip_serializing_if = "defaults::should_skip_serializing_date")]
@@ -793,7 +793,7 @@ pub struct Stanza {
 pub struct Title {
     #[serde(rename = "@lang", skip_serializing_if = "Option::is_none")]
     pub lang: Option<LanguageTag>,
-    #[serde(default, rename = "$value", skip_serializing_if = "Vec::is_empty")]
+    #[serde(default, rename = "$value")]
     pub elements: Vec<TitleElement>,
 }
 
@@ -814,7 +814,7 @@ pub struct Paragraph {
     pub lang: Option<LanguageTag>,
     #[serde(rename = "@style", skip_serializing_if = "Option::is_none")]
     pub style: Option<String>,
-    #[serde(default, rename = "$value", skip_serializing_if = "Vec::is_empty")]
+    #[serde(default, rename = "$value")]
     pub elements: Vec<StyleElement>,
 }
 
@@ -873,7 +873,7 @@ pub struct TableCell {
         skip_serializing_if = "defaults::is_default_vertical_align"
     )]
     pub vertical_align: VerticalAlign,
-    #[serde(default, rename = "$value", skip_serializing_if = "Vec::is_empty")]
+    #[serde(default, rename = "$value")]
     pub elements: Vec<StyleElement>,
 }
 
@@ -917,7 +917,7 @@ pub struct NamedStyle {
     pub name: String,
     #[serde(rename = "@lang", skip_serializing_if = "Option::is_none")]
     pub lang: Option<LanguageTag>,
-    #[serde(default, rename = "$value", skip_serializing_if = "Vec::is_empty")]
+    #[serde(default, rename = "$value")]
     pub elements: Vec<StyleElement>,
 }
 
@@ -925,7 +925,7 @@ pub struct NamedStyle {
 pub struct Style {
     #[serde(rename = "@lang", skip_serializing_if = "Option::is_none")]
     pub lang: Option<LanguageTag>,
-    #[serde(default, rename = "$value", skip_serializing_if = "Vec::is_empty")]
+    #[serde(default, rename = "$value")]
     pub elements: Vec<StyleElement>,
 }
 
@@ -1024,7 +1024,7 @@ pub struct Link {
     pub href: String,
     #[serde(rename = "@type", skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    #[serde(default, rename = "$value", skip_serializing_if = "Vec::is_empty")]
+    #[serde(default, rename = "$value")]
     pub elements: Vec<StyleLinkElement>,
 }
 
