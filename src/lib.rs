@@ -131,7 +131,7 @@ pub struct TitleInfo {
     #[serde(rename = "genre", default = "defaults::genres")]
     pub genres: Vec<GenreWithMatch>,
     /// Author(s) of this book
-    #[serde(rename = "author")]
+    #[serde(default, rename = "author")]
     pub authors: Vec<Author>,
     /// Book title
     #[serde(rename = "book-title")]
