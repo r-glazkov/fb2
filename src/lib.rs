@@ -650,7 +650,7 @@ impl TryFrom<SectionInternal> for Section {
             epigraphs.push(e);
             element = iter.next();
         }
-        let image = if let Some(SectionChoice::Image(i)) = element {
+        let mut image = if let Some(SectionChoice::Image(i)) = element {
             element = iter.next();
             Some(i)
         } else {
@@ -668,18 +668,115 @@ impl TryFrom<SectionInternal> for Section {
 
         if let Some(element) = element {
             match element {
-                SectionChoice::Title(_) => return if title.is_some() {
-                    Err("duplicate field `title`".to_string())
-                } else {
-                    Err("section can have a single title, which must be the first section element".to_string())
-                },
-                SectionChoice::Epigraph(_) => return Err("section epigraphs must be declared in the second step after declaring the title".to_string()),
-                SectionChoice::Image(_) => return Err("the first section content element must not be an image, a section image should be declared once and right after the section title and epigraphs".to_string()),
-                SectionChoice::Annotation(_) => return if annotation.is_some() {
-                    Err("duplicate field `annotation`".to_string())
-                } else {
-                    Err("section annotation should be declared right after the section title, epigraphs and image".to_string())
-                },
+                SectionChoice::Title(t) => {
+                    for element in t.elements {
+                        match element {
+                            TitleElement::Paragraph(p) => {
+                                if first_part.is_none() {
+                                    first_part = Some(FirstSectionPart::Paragraph(p));
+                                } else {
+                                    rest_parts.push(RestSectionPart::Paragraph(p));
+                                }
+                            }
+                            TitleElement::EmptyLine => {
+                                if first_part.is_none() {
+                                    first_part = Some(FirstSectionPart::EmptyLine);
+                                } else {
+                                    rest_parts.push(RestSectionPart::EmptyLine);
+                                }
+                            }
+                        }
+                    }
+                }
+                SectionChoice::Epigraph(e) => {
+                    for element in e.elements {
+                        match element {
+                            EpigraphElement::Paragraph(p) => {
+                                if first_part.is_none() {
+                                    first_part = Some(FirstSectionPart::Paragraph(p));
+                                } else {
+                                    rest_parts.push(RestSectionPart::Paragraph(p));
+                                }
+                            }
+                            EpigraphElement::Poem(p) => {
+                                if first_part.is_none() {
+                                    first_part = Some(FirstSectionPart::Poem(p));
+                                } else {
+                                    rest_parts.push(RestSectionPart::Poem(p));
+                                }
+                            }
+                            EpigraphElement::Cite(c) => {
+                                if first_part.is_none() {
+                                    first_part = Some(FirstSectionPart::Cite(c));
+                                } else {
+                                    rest_parts.push(RestSectionPart::Cite(c));
+                                }
+                            }
+                            EpigraphElement::EmptyLine => {
+                                if first_part.is_none() {
+                                    first_part = Some(FirstSectionPart::EmptyLine);
+                                } else {
+                                    rest_parts.push(RestSectionPart::EmptyLine);
+                                }
+                            }
+                        }
+                    }
+                }
+                SectionChoice::Image(i) => {
+                    if image.is_some() {
+                        return Err("the first section content element must not be an image, a section image should be declared once and right after the section title and epigraphs".to_string());
+                    } else {
+                        image = Some(i);
+                    }
+                }
+                SectionChoice::Annotation(a) => {
+                    for element in a.elements {
+                        match element {
+                            AnnotationElement::Paragraph(p) => {
+                                if first_part.is_none() {
+                                    first_part = Some(FirstSectionPart::Paragraph(p));
+                                } else {
+                                    rest_parts.push(RestSectionPart::Paragraph(p));
+                                }
+                            }
+                            AnnotationElement::Poem(p) => {
+                                if first_part.is_none() {
+                                    first_part = Some(FirstSectionPart::Poem(p));
+                                } else {
+                                    rest_parts.push(RestSectionPart::Poem(p));
+                                }
+                            }
+                            AnnotationElement::Cite(c) => {
+                                if first_part.is_none() {
+                                    first_part = Some(FirstSectionPart::Cite(c));
+                                } else {
+                                    rest_parts.push(RestSectionPart::Cite(c));
+                                }
+                            }
+                            AnnotationElement::Subtitle(s) => {
+                                if first_part.is_none() {
+                                    first_part = Some(FirstSectionPart::Subtitle(s));
+                                } else {
+                                    rest_parts.push(RestSectionPart::Subtitle(s));
+                                }
+                            }
+                            AnnotationElement::Table(t) => {
+                                if first_part.is_none() {
+                                    first_part = Some(FirstSectionPart::Table(t));
+                                } else {
+                                    rest_parts.push(RestSectionPart::Table(t));
+                                }
+                            }
+                            AnnotationElement::EmptyLine => {
+                                if first_part.is_none() {
+                                    first_part = Some(FirstSectionPart::EmptyLine);
+                                } else {
+                                    rest_parts.push(RestSectionPart::EmptyLine);
+                                }
+                            }
+                        }
+                    }
+                }
                 SectionChoice::Section(s) => sections.push(s),
                 SectionChoice::Paragraph(p) => first_part = Some(FirstSectionPart::Paragraph(p)),
                 SectionChoice::Poem(p) => first_part = Some(FirstSectionPart::Poem(p)),
@@ -688,78 +785,191 @@ impl TryFrom<SectionInternal> for Section {
                 SectionChoice::Table(t) => first_part = Some(FirstSectionPart::Table(t)),
                 SectionChoice::EmptyLine => first_part = Some(FirstSectionPart::EmptyLine),
                 // trying to fix invalid FB2 without losing information
-                SectionChoice::Text(text) => first_part = Some(FirstSectionPart::Paragraph(Paragraph {
-                    id: None,
-                    lang: None,
-                    style: None,
-                    elements: vec![StyleElement::Text(text)],
-                })),
-            }
-        }
-
-        for element in iter {
-            match element {
-                SectionChoice::Title(_) => return if title.is_some() {
-                    Err("duplicate field `title`".to_string())
-                } else {
-                    Err("section can have a single title, which must be the first section element".to_string())
-                },
-                SectionChoice::Epigraph(_) => return Err("section epigraphs must be declared in the second step after declaring the title".to_string()),
-                SectionChoice::Image(i) => if first_part.is_none() {
-                    return Err("the first section content element must not be an image, a section image should be declared once and right after the section title and epigraphs".to_string());
-                } else {
-                    rest_parts.push(RestSectionPart::Image(i));
-                },
-                SectionChoice::Annotation(_) => return if annotation.is_some() {
-                    Err("duplicate field `annotation`".to_string())
-                } else {
-                    Err("section annotation should be declared right after the section title, epigraphs and image".to_string())
-                },
-                SectionChoice::Section(s) => sections.push(s),
-                SectionChoice::Paragraph(p) => if first_part.is_none() {
-                    first_part = Some(FirstSectionPart::Paragraph(p));
-                } else {
-                    rest_parts.push(RestSectionPart::Paragraph(p));
-                }
-                SectionChoice::Poem(p) => if first_part.is_none() {
-                    first_part = Some(FirstSectionPart::Poem(p));
-                } else {
-                    rest_parts.push(RestSectionPart::Poem(p));
-                }
-                SectionChoice::Subtitle(s) => if first_part.is_none() {
-                    first_part = Some(FirstSectionPart::Subtitle(s));
-                } else {
-                    rest_parts.push(RestSectionPart::Subtitle(s));
-                }
-                SectionChoice::Cite(c) => if first_part.is_none() {
-                    first_part = Some(FirstSectionPart::Cite(c));
-                } else {
-                    rest_parts.push(RestSectionPart::Cite(c));
-                }
-                SectionChoice::Table(t) => if first_part.is_none() {
-                    first_part = Some(FirstSectionPart::Table(t));
-                } else {
-                    rest_parts.push(RestSectionPart::Table(t));
-                }
-                SectionChoice::EmptyLine => if first_part.is_none() {
-                    first_part = Some(FirstSectionPart::EmptyLine);
-                } else {
-                    rest_parts.push(RestSectionPart::EmptyLine);
-                }
-                SectionChoice::Text(text) => if first_part.is_none() {
+                SectionChoice::Text(text) => {
                     first_part = Some(FirstSectionPart::Paragraph(Paragraph {
                         id: None,
                         lang: None,
                         style: None,
                         elements: vec![StyleElement::Text(text)],
-                    }));
-                } else {
-                    rest_parts.push(RestSectionPart::Paragraph(Paragraph {
-                        id: None,
-                        lang: None,
-                        style: None,
-                        elements: vec![StyleElement::Text(text)],
-                    }));
+                    }))
+                }
+            }
+        }
+
+        for element in iter {
+            match element {
+                SectionChoice::Title(t) => {
+                    for element in t.elements {
+                        match element {
+                            TitleElement::Paragraph(p) => {
+                                if first_part.is_none() {
+                                    first_part = Some(FirstSectionPart::Paragraph(p));
+                                } else {
+                                    rest_parts.push(RestSectionPart::Paragraph(p));
+                                }
+                            }
+                            TitleElement::EmptyLine => {
+                                if first_part.is_none() {
+                                    first_part = Some(FirstSectionPart::EmptyLine);
+                                } else {
+                                    rest_parts.push(RestSectionPart::EmptyLine);
+                                }
+                            }
+                        }
+                    }
+                }
+                SectionChoice::Epigraph(e) => {
+                    for element in e.elements {
+                        match element {
+                            EpigraphElement::Paragraph(p) => {
+                                if first_part.is_none() {
+                                    first_part = Some(FirstSectionPart::Paragraph(p));
+                                } else {
+                                    rest_parts.push(RestSectionPart::Paragraph(p));
+                                }
+                            }
+                            EpigraphElement::Poem(p) => {
+                                if first_part.is_none() {
+                                    first_part = Some(FirstSectionPart::Poem(p));
+                                } else {
+                                    rest_parts.push(RestSectionPart::Poem(p));
+                                }
+                            }
+                            EpigraphElement::Cite(c) => {
+                                if first_part.is_none() {
+                                    first_part = Some(FirstSectionPart::Cite(c));
+                                } else {
+                                    rest_parts.push(RestSectionPart::Cite(c));
+                                }
+                            }
+                            EpigraphElement::EmptyLine => {
+                                if first_part.is_none() {
+                                    first_part = Some(FirstSectionPart::EmptyLine);
+                                } else {
+                                    rest_parts.push(RestSectionPart::EmptyLine);
+                                }
+                            }
+                        }
+                    }
+                }
+                SectionChoice::Image(i) => {
+                    if first_part.is_none() {
+                        if image.is_none() {
+                            image = Some(i);
+                        } else {
+                            return Err("the first section content element must not be an image, a section image should be declared once and right after the section title and epigraphs".to_string());
+                        }
+                    } else {
+                        rest_parts.push(RestSectionPart::Image(i));
+                    }
+                }
+                SectionChoice::Annotation(a) => {
+                    for element in a.elements {
+                        match element {
+                            AnnotationElement::Paragraph(p) => {
+                                if first_part.is_none() {
+                                    first_part = Some(FirstSectionPart::Paragraph(p));
+                                } else {
+                                    rest_parts.push(RestSectionPart::Paragraph(p));
+                                }
+                            }
+                            AnnotationElement::Poem(p) => {
+                                if first_part.is_none() {
+                                    first_part = Some(FirstSectionPart::Poem(p));
+                                } else {
+                                    rest_parts.push(RestSectionPart::Poem(p));
+                                }
+                            }
+                            AnnotationElement::Cite(c) => {
+                                if first_part.is_none() {
+                                    first_part = Some(FirstSectionPart::Cite(c));
+                                } else {
+                                    rest_parts.push(RestSectionPart::Cite(c));
+                                }
+                            }
+                            AnnotationElement::Subtitle(s) => {
+                                if first_part.is_none() {
+                                    first_part = Some(FirstSectionPart::Subtitle(s));
+                                } else {
+                                    rest_parts.push(RestSectionPart::Subtitle(s));
+                                }
+                            }
+                            AnnotationElement::Table(t) => {
+                                if first_part.is_none() {
+                                    first_part = Some(FirstSectionPart::Table(t));
+                                } else {
+                                    rest_parts.push(RestSectionPart::Table(t));
+                                }
+                            }
+                            AnnotationElement::EmptyLine => {
+                                if first_part.is_none() {
+                                    first_part = Some(FirstSectionPart::EmptyLine);
+                                } else {
+                                    rest_parts.push(RestSectionPart::EmptyLine);
+                                }
+                            }
+                        }
+                    }
+                }
+                SectionChoice::Section(s) => sections.push(s),
+                SectionChoice::Paragraph(p) => {
+                    if first_part.is_none() {
+                        first_part = Some(FirstSectionPart::Paragraph(p));
+                    } else {
+                        rest_parts.push(RestSectionPart::Paragraph(p));
+                    }
+                }
+                SectionChoice::Poem(p) => {
+                    if first_part.is_none() {
+                        first_part = Some(FirstSectionPart::Poem(p));
+                    } else {
+                        rest_parts.push(RestSectionPart::Poem(p));
+                    }
+                }
+                SectionChoice::Subtitle(s) => {
+                    if first_part.is_none() {
+                        first_part = Some(FirstSectionPart::Subtitle(s));
+                    } else {
+                        rest_parts.push(RestSectionPart::Subtitle(s));
+                    }
+                }
+                SectionChoice::Cite(c) => {
+                    if first_part.is_none() {
+                        first_part = Some(FirstSectionPart::Cite(c));
+                    } else {
+                        rest_parts.push(RestSectionPart::Cite(c));
+                    }
+                }
+                SectionChoice::Table(t) => {
+                    if first_part.is_none() {
+                        first_part = Some(FirstSectionPart::Table(t));
+                    } else {
+                        rest_parts.push(RestSectionPart::Table(t));
+                    }
+                }
+                SectionChoice::EmptyLine => {
+                    if first_part.is_none() {
+                        first_part = Some(FirstSectionPart::EmptyLine);
+                    } else {
+                        rest_parts.push(RestSectionPart::EmptyLine);
+                    }
+                }
+                SectionChoice::Text(text) => {
+                    if first_part.is_none() {
+                        first_part = Some(FirstSectionPart::Paragraph(Paragraph {
+                            id: None,
+                            lang: None,
+                            style: None,
+                            elements: vec![StyleElement::Text(text)],
+                        }));
+                    } else {
+                        rest_parts.push(RestSectionPart::Paragraph(Paragraph {
+                            id: None,
+                            lang: None,
+                            style: None,
+                            elements: vec![StyleElement::Text(text)],
+                        }));
+                    }
                 }
             }
         }
