@@ -141,8 +141,8 @@ pub struct TitleInfo {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub annotation: Option<Annotation>,
     /// Any keywords for this book, intended for use in search engines
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub keywords: Option<LocalizedText>,
+    #[serde(skip_serializing_if = "defaults::should_skip_serializing_text")]
+    pub keywords: Option<MaybeEmptyLocalizedText>,
     /// Date this book was written, can be not exact, e.g. 1863-1867. If an optional attribute is present,
     /// then it should contain some computer-readable date from the interval for use by search and indexingengines
     #[serde(skip_serializing_if = "defaults::should_skip_serializing_date")]
