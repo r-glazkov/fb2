@@ -206,23 +206,59 @@ pub struct DocumentInfo {
 }
 
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[serde(from = "PublishInfoInternal")]
 pub struct PublishInfo {
     /// Original (paper) book name
     #[serde(rename = "book-name", skip_serializing_if = "Option::is_none")]
     pub book_name: Option<LocalizedText>,
     /// Original (paper) book publisher
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub publisher: Option<LocalizedText>,
+    #[serde(skip_serializing_if = "defaults::should_skip_serializing_text")]
+    pub publisher: Option<MaybeEmptyLocalizedText>,
     /// City where the original (paper) book was published
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub city: Option<LocalizedText>,
+    #[serde(skip_serializing_if = "defaults::should_skip_serializing_text")]
+    pub city: Option<MaybeEmptyLocalizedText>,
     /// Year of the original (paper) publication
     #[serde(skip_serializing_if = "Option::is_none")]
     pub year: Option<i32>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub isbn: Option<LocalizedText>,
-    #[serde(default, rename = "sequence")]
+    #[serde(skip_serializing_if = "defaults::should_skip_serializing_text")]
+    pub isbn: Option<MaybeEmptyLocalizedText>,
+    #[serde(rename = "sequence")]
     pub sequences: Vec<Sequence>,
+}
+
+#[derive(Debug, PartialEq, Deserialize)]
+struct PublishInfoInternal {
+    #[serde(rename = "book-name")]
+    book_name: Option<LocalizedText>,
+    publisher: Option<MaybeEmptyLocalizedText>,
+    city: Option<MaybeEmptyLocalizedText>,
+    year: Option<String>,
+    isbn: Option<MaybeEmptyLocalizedText>,
+    #[serde(default, rename = "sequence")]
+    sequences: Vec<Sequence>,
+}
+
+impl From<PublishInfoInternal> for PublishInfo {
+    fn from(
+        PublishInfoInternal {
+            book_name,
+            publisher,
+            city,
+            year,
+            isbn,
+            sequences,
+        }: PublishInfoInternal,
+    ) -> Self {
+        let year = year.and_then(|year| year.parse().ok());
+        PublishInfo {
+            book_name,
+            publisher,
+            city,
+            year,
+            isbn,
+            sequences,
+        }
+    }
 }
 
 /// Any other information about the book/document that didnt fit in the above groups
