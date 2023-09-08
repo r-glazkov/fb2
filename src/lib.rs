@@ -503,14 +503,9 @@ pub struct SectionContent {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub annotation: Option<Annotation>,
     #[serde(rename = "$value")]
-    pub value: SectionContentValue,
-}
-
-#[derive(Debug, PartialEq, Serialize)]
-pub enum SectionContentValue {
+    pub content: Option<(FirstSectionPart, Vec<RestSectionPart>)>,
     #[serde(rename = "section")]
-    NestedSections(Vec<Section>),
-    SectionParts(FirstSectionPart, Vec<RestSectionPart>),
+    pub sections: Vec<Section>,
 }
 
 #[derive(Debug, PartialEq, Serialize)]
@@ -622,68 +617,85 @@ impl TryFrom<SectionInternal> for Section {
         } else {
             None
         };
-        let content = if let Some(SectionChoice::Section(section)) = element {
-            let mut sections = vec![section];
-            for element in iter {
-                if let SectionChoice::Section(section) = element {
-                    sections.push(section);
-                } else {
-                    return Err(
-                        "sections containing nested sections must not have content".to_string()
-                    );
-                }
-            }
-            SectionContentValue::NestedSections(sections)
-        } else if let Some(element) = element {
-            let first_part = match element {
+        let mut sections = Vec::new();
+        let mut first_part = None;
+        let mut rest_parts = Vec::new();
+
+        if let Some(element) = element {
+            match element {
                 SectionChoice::Title(_) => return if title.is_some() {
-                    Err("duplicate section title".to_string())
+                    Err("duplicate field `title`".to_string())
                 } else {
                     Err("section can have a single title, which must be the first section element".to_string())
                 },
                 SectionChoice::Epigraph(_) => return Err("section epigraphs must be declared in the second step after declaring the title".to_string()),
                 SectionChoice::Image(_) => return Err("the first section content element must not be an image, a section image should be declared once and right after the section title and epigraphs".to_string()),
                 SectionChoice::Annotation(_) => return if annotation.is_some() {
-                    Err("duplicate section annotation".to_string())
+                    Err("duplicate field `annotation`".to_string())
                 } else {
                     Err("section annotation should be declared right after the section title, epigraphs and image".to_string())
                 },
-                SectionChoice::Section(_) => unreachable!(),
-                SectionChoice::Paragraph(p) => FirstSectionPart::Paragraph(p),
-                SectionChoice::Poem(p) => FirstSectionPart::Poem(p),
-                SectionChoice::Subtitle(s) => FirstSectionPart::Subtitle(s),
-                SectionChoice::Cite(c) => FirstSectionPart::Cite(c),
-                SectionChoice::Table(t) => FirstSectionPart::Table(t),
-                SectionChoice::EmptyLine => FirstSectionPart::EmptyLine,
-            };
-            let mut rest_parts = Vec::with_capacity(iter.len());
-            for element in iter {
-                rest_parts.push(match element {
-                    SectionChoice::Title(_) => return if title.is_some() {
-                        Err("duplicate section title".to_string())
-                    } else {
-                        Err("section can have a single title, which must be the first section element".to_string())
-                    },
-                    SectionChoice::Epigraph(_) => return Err("section epigraphs must be declared in the second step after declaring the title".to_string()),
-                    SectionChoice::Annotation(_) => return if annotation.is_some() {
-                        Err("duplicate section annotation".to_string())
-                    } else {
-                        Err("section annotation should be declared right after the section title, epigraphs and image".to_string())
-                    },
-                    SectionChoice::Section(_) => return Err("section containing content must not declare nested sections".to_string()),
-                    SectionChoice::Paragraph(p) => RestSectionPart::Paragraph(p),
-                    SectionChoice::Poem(p) => RestSectionPart::Poem(p),
-                    SectionChoice::Subtitle(s) => RestSectionPart::Subtitle(s),
-                    SectionChoice::Cite(c) => RestSectionPart::Cite(c),
-                    SectionChoice::Table(t) => RestSectionPart::Table(t),
-                    SectionChoice::Image(i) => RestSectionPart::Image(i),
-                    SectionChoice::EmptyLine => RestSectionPart::EmptyLine,
-                })
+                SectionChoice::Section(s) => sections.push(s),
+                SectionChoice::Paragraph(p) => first_part = Some(FirstSectionPart::Paragraph(p)),
+                SectionChoice::Poem(p) => first_part = Some(FirstSectionPart::Poem(p)),
+                SectionChoice::Subtitle(s) => first_part = Some(FirstSectionPart::Subtitle(s)),
+                SectionChoice::Cite(c) => first_part = Some(FirstSectionPart::Cite(c)),
+                SectionChoice::Table(t) => first_part = Some(FirstSectionPart::Table(t)),
+                SectionChoice::EmptyLine => first_part = Some(FirstSectionPart::EmptyLine),
             }
-            SectionContentValue::SectionParts(first_part, rest_parts)
-        } else {
-            return Err("section must have nested sections or an actual content when it has title, epigraph, image or annotation".to_string());
-        };
+        }
+
+        for element in iter {
+            match element {
+                SectionChoice::Title(_) => return if title.is_some() {
+                    Err("duplicate field `title`".to_string())
+                } else {
+                    Err("section can have a single title, which must be the first section element".to_string())
+                },
+                SectionChoice::Epigraph(_) => return Err("section epigraphs must be declared in the second step after declaring the title".to_string()),
+                SectionChoice::Image(i) => if first_part.is_none() {
+                    return Err("the first section content element must not be an image, a section image should be declared once and right after the section title and epigraphs".to_string());
+                } else {
+                    rest_parts.push(RestSectionPart::Image(i));
+                },
+                SectionChoice::Annotation(_) => return if annotation.is_some() {
+                    Err("duplicate field `annotation`".to_string())
+                } else {
+                    Err("section annotation should be declared right after the section title, epigraphs and image".to_string())
+                },
+                SectionChoice::Section(s) => sections.push(s),
+                SectionChoice::Paragraph(p) => if first_part.is_none() {
+                    first_part = Some(FirstSectionPart::Paragraph(p));
+                } else {
+                    rest_parts.push(RestSectionPart::Paragraph(p));
+                }
+                SectionChoice::Poem(p) => if first_part.is_none() {
+                    first_part = Some(FirstSectionPart::Poem(p));
+                } else {
+                    rest_parts.push(RestSectionPart::Poem(p));
+                }
+                SectionChoice::Subtitle(s) => if first_part.is_none() {
+                    first_part = Some(FirstSectionPart::Subtitle(s));
+                } else {
+                    rest_parts.push(RestSectionPart::Subtitle(s));
+                }
+                SectionChoice::Cite(c) => if first_part.is_none() {
+                    first_part = Some(FirstSectionPart::Cite(c));
+                } else {
+                    rest_parts.push(RestSectionPart::Cite(c));
+                }
+                SectionChoice::Table(t) => if first_part.is_none() {
+                    first_part = Some(FirstSectionPart::Table(t));
+                } else {
+                    rest_parts.push(RestSectionPart::Table(t));
+                }
+                SectionChoice::EmptyLine => if first_part.is_none() {
+                    first_part = Some(FirstSectionPart::EmptyLine);
+                } else {
+                    rest_parts.push(RestSectionPart::EmptyLine);
+                }
+            }
+        }
 
         Ok(Section {
             id,
@@ -693,7 +705,8 @@ impl TryFrom<SectionInternal> for Section {
                 epigraphs,
                 image,
                 annotation,
-                value: content,
+                content: first_part.map(|first_part| (first_part, rest_parts)),
+                sections,
             }),
         })
     }
