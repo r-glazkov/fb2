@@ -1,7 +1,8 @@
+use std::num::ParseIntError;
+
 use language_tags::LanguageTag;
 use serde::ser::{SerializeStructVariant, SerializeTupleVariant};
 use serde::{Deserialize, Serialize, Serializer};
-use std::num::ParseIntError;
 
 mod defaults {
     use super::{
@@ -515,7 +516,7 @@ pub struct Binary {
 
 /// A basic block of a book, can contain more child sections or textual content
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
-#[serde(try_from = "SectionInternal")]
+#[serde(from = "SectionInternal")]
 pub struct Section {
     #[serde(rename = "@id", skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -540,29 +541,13 @@ pub struct SectionContent {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub annotation: Option<Annotation>,
     #[serde(rename = "$value")]
-    pub content: Option<(FirstSectionPart, Vec<RestSectionPart>)>,
+    pub content: Vec<SectionPart>,
     #[serde(rename = "section")]
     pub sections: Vec<Section>,
 }
 
 #[derive(Debug, PartialEq, Serialize)]
-pub enum FirstSectionPart {
-    #[serde(rename = "p")]
-    Paragraph(Paragraph),
-    #[serde(rename = "poem")]
-    Poem(Poem),
-    #[serde(rename = "subtitle")]
-    Subtitle(Paragraph),
-    #[serde(rename = "cite")]
-    Cite(Cite),
-    #[serde(rename = "table")]
-    Table(Table),
-    #[serde(rename = "empty-line")]
-    EmptyLine,
-}
-
-#[derive(Debug, PartialEq, Serialize)]
-pub enum RestSectionPart {
+pub enum SectionPart {
     #[serde(rename = "p")]
     Paragraph(Paragraph),
     #[serde(rename = "poem")]
@@ -621,18 +606,14 @@ enum SectionChoice {
     Text(String),
 }
 
-impl TryFrom<SectionInternal> for Section {
-    type Error = String;
-
-    fn try_from(
-        SectionInternal { id, lang, elements }: SectionInternal,
-    ) -> Result<Self, Self::Error> {
+impl From<SectionInternal> for Section {
+    fn from(SectionInternal { id, lang, elements }: SectionInternal) -> Self {
         if elements.is_empty() {
-            return Ok(Section {
+            return Section {
                 id,
                 lang,
                 content: None,
-            });
+            };
         }
         let mut iter = elements.into_iter();
         let mut element = iter.next();
@@ -660,28 +641,15 @@ impl TryFrom<SectionInternal> for Section {
             None
         };
         let mut sections = Vec::new();
-        let mut first_part = None;
-        let mut rest_parts = Vec::new();
+        let mut content = Vec::new();
 
         if let Some(element) = element {
             match element {
                 SectionChoice::Title(t) => {
                     for element in t.elements {
                         match element {
-                            TitleElement::Paragraph(p) => {
-                                if first_part.is_none() {
-                                    first_part = Some(FirstSectionPart::Paragraph(p));
-                                } else {
-                                    rest_parts.push(RestSectionPart::Paragraph(p));
-                                }
-                            }
-                            TitleElement::EmptyLine => {
-                                if first_part.is_none() {
-                                    first_part = Some(FirstSectionPart::EmptyLine);
-                                } else {
-                                    rest_parts.push(RestSectionPart::EmptyLine);
-                                }
-                            }
+                            TitleElement::Paragraph(p) => content.push(SectionPart::Paragraph(p)),
+                            TitleElement::EmptyLine => content.push(SectionPart::EmptyLine),
                         }
                     }
                 }
@@ -689,107 +657,51 @@ impl TryFrom<SectionInternal> for Section {
                     for element in e.elements {
                         match element {
                             EpigraphElement::Paragraph(p) => {
-                                if first_part.is_none() {
-                                    first_part = Some(FirstSectionPart::Paragraph(p));
-                                } else {
-                                    rest_parts.push(RestSectionPart::Paragraph(p));
-                                }
+                                content.push(SectionPart::Paragraph(p))
                             }
-                            EpigraphElement::Poem(p) => {
-                                if first_part.is_none() {
-                                    first_part = Some(FirstSectionPart::Poem(p));
-                                } else {
-                                    rest_parts.push(RestSectionPart::Poem(p));
-                                }
-                            }
-                            EpigraphElement::Cite(c) => {
-                                if first_part.is_none() {
-                                    first_part = Some(FirstSectionPart::Cite(c));
-                                } else {
-                                    rest_parts.push(RestSectionPart::Cite(c));
-                                }
-                            }
-                            EpigraphElement::EmptyLine => {
-                                if first_part.is_none() {
-                                    first_part = Some(FirstSectionPart::EmptyLine);
-                                } else {
-                                    rest_parts.push(RestSectionPart::EmptyLine);
-                                }
-                            }
+                            EpigraphElement::Poem(p) => content.push(SectionPart::Poem(p)),
+                            EpigraphElement::Cite(c) => content.push(SectionPart::Cite(c)),
+                            EpigraphElement::EmptyLine => content.push(SectionPart::EmptyLine),
                         }
                     }
                 }
                 SectionChoice::Image(i) => {
-                    if image.is_some() {
-                        return Err("the first section content element must not be an image, a section image should be declared once and right after the section title and epigraphs".to_string());
-                    } else {
+                    if image.is_none() {
                         image = Some(i);
+                    } else {
+                        content.push(SectionPart::Image(i));
                     }
                 }
                 SectionChoice::Annotation(a) => {
                     for element in a.elements {
                         match element {
                             AnnotationElement::Paragraph(p) => {
-                                if first_part.is_none() {
-                                    first_part = Some(FirstSectionPart::Paragraph(p));
-                                } else {
-                                    rest_parts.push(RestSectionPart::Paragraph(p));
-                                }
+                                content.push(SectionPart::Paragraph(p))
                             }
-                            AnnotationElement::Poem(p) => {
-                                if first_part.is_none() {
-                                    first_part = Some(FirstSectionPart::Poem(p));
-                                } else {
-                                    rest_parts.push(RestSectionPart::Poem(p));
-                                }
-                            }
-                            AnnotationElement::Cite(c) => {
-                                if first_part.is_none() {
-                                    first_part = Some(FirstSectionPart::Cite(c));
-                                } else {
-                                    rest_parts.push(RestSectionPart::Cite(c));
-                                }
-                            }
+                            AnnotationElement::Poem(p) => content.push(SectionPart::Poem(p)),
+                            AnnotationElement::Cite(c) => content.push(SectionPart::Cite(c)),
                             AnnotationElement::Subtitle(s) => {
-                                if first_part.is_none() {
-                                    first_part = Some(FirstSectionPart::Subtitle(s));
-                                } else {
-                                    rest_parts.push(RestSectionPart::Subtitle(s));
-                                }
+                                content.push(SectionPart::Subtitle(s))
                             }
-                            AnnotationElement::Table(t) => {
-                                if first_part.is_none() {
-                                    first_part = Some(FirstSectionPart::Table(t));
-                                } else {
-                                    rest_parts.push(RestSectionPart::Table(t));
-                                }
-                            }
-                            AnnotationElement::EmptyLine => {
-                                if first_part.is_none() {
-                                    first_part = Some(FirstSectionPart::EmptyLine);
-                                } else {
-                                    rest_parts.push(RestSectionPart::EmptyLine);
-                                }
-                            }
+                            AnnotationElement::Table(t) => content.push(SectionPart::Table(t)),
+                            AnnotationElement::EmptyLine => content.push(SectionPart::EmptyLine),
                         }
                     }
                 }
                 SectionChoice::Section(s) => sections.push(s),
-                SectionChoice::Paragraph(p) => first_part = Some(FirstSectionPart::Paragraph(p)),
-                SectionChoice::Poem(p) => first_part = Some(FirstSectionPart::Poem(p)),
-                SectionChoice::Subtitle(s) => first_part = Some(FirstSectionPart::Subtitle(s)),
-                SectionChoice::Cite(c) => first_part = Some(FirstSectionPart::Cite(c)),
-                SectionChoice::Table(t) => first_part = Some(FirstSectionPart::Table(t)),
-                SectionChoice::EmptyLine => first_part = Some(FirstSectionPart::EmptyLine),
+                SectionChoice::Paragraph(p) => content.push(SectionPart::Paragraph(p)),
+                SectionChoice::Poem(p) => content.push(SectionPart::Poem(p)),
+                SectionChoice::Subtitle(s) => content.push(SectionPart::Subtitle(s)),
+                SectionChoice::Cite(c) => content.push(SectionPart::Cite(c)),
+                SectionChoice::Table(t) => content.push(SectionPart::Table(t)),
+                SectionChoice::EmptyLine => content.push(SectionPart::EmptyLine),
                 // trying to fix invalid FB2 without losing information
-                SectionChoice::Text(text) => {
-                    first_part = Some(FirstSectionPart::Paragraph(Paragraph {
-                        id: None,
-                        lang: None,
-                        style: None,
-                        elements: vec![StyleElement::Text(text)],
-                    }))
-                }
+                SectionChoice::Text(text) => content.push(SectionPart::Paragraph(Paragraph {
+                    id: None,
+                    lang: None,
+                    style: None,
+                    elements: vec![StyleElement::Text(text)],
+                })),
             }
         }
 
@@ -798,20 +710,8 @@ impl TryFrom<SectionInternal> for Section {
                 SectionChoice::Title(t) => {
                     for element in t.elements {
                         match element {
-                            TitleElement::Paragraph(p) => {
-                                if first_part.is_none() {
-                                    first_part = Some(FirstSectionPart::Paragraph(p));
-                                } else {
-                                    rest_parts.push(RestSectionPart::Paragraph(p));
-                                }
-                            }
-                            TitleElement::EmptyLine => {
-                                if first_part.is_none() {
-                                    first_part = Some(FirstSectionPart::EmptyLine);
-                                } else {
-                                    rest_parts.push(RestSectionPart::EmptyLine);
-                                }
-                            }
+                            TitleElement::Paragraph(p) => content.push(SectionPart::Paragraph(p)),
+                            TitleElement::EmptyLine => content.push(SectionPart::EmptyLine),
                         }
                     }
                 }
@@ -819,159 +719,55 @@ impl TryFrom<SectionInternal> for Section {
                     for element in e.elements {
                         match element {
                             EpigraphElement::Paragraph(p) => {
-                                if first_part.is_none() {
-                                    first_part = Some(FirstSectionPart::Paragraph(p));
-                                } else {
-                                    rest_parts.push(RestSectionPart::Paragraph(p));
-                                }
+                                content.push(SectionPart::Paragraph(p))
                             }
-                            EpigraphElement::Poem(p) => {
-                                if first_part.is_none() {
-                                    first_part = Some(FirstSectionPart::Poem(p));
-                                } else {
-                                    rest_parts.push(RestSectionPart::Poem(p));
-                                }
-                            }
-                            EpigraphElement::Cite(c) => {
-                                if first_part.is_none() {
-                                    first_part = Some(FirstSectionPart::Cite(c));
-                                } else {
-                                    rest_parts.push(RestSectionPart::Cite(c));
-                                }
-                            }
-                            EpigraphElement::EmptyLine => {
-                                if first_part.is_none() {
-                                    first_part = Some(FirstSectionPart::EmptyLine);
-                                } else {
-                                    rest_parts.push(RestSectionPart::EmptyLine);
-                                }
-                            }
+                            EpigraphElement::Poem(p) => content.push(SectionPart::Poem(p)),
+                            EpigraphElement::Cite(c) => content.push(SectionPart::Cite(c)),
+                            EpigraphElement::EmptyLine => content.push(SectionPart::EmptyLine),
                         }
                     }
                 }
                 SectionChoice::Image(i) => {
-                    if first_part.is_none() {
-                        if image.is_none() {
-                            image = Some(i);
-                        } else {
-                            return Err("the first section content element must not be an image, a section image should be declared once and right after the section title and epigraphs".to_string());
-                        }
+                    if content.is_empty() && image.is_none() {
+                        image = Some(i);
                     } else {
-                        rest_parts.push(RestSectionPart::Image(i));
+                        content.push(SectionPart::Image(i));
                     }
                 }
                 SectionChoice::Annotation(a) => {
                     for element in a.elements {
                         match element {
                             AnnotationElement::Paragraph(p) => {
-                                if first_part.is_none() {
-                                    first_part = Some(FirstSectionPart::Paragraph(p));
-                                } else {
-                                    rest_parts.push(RestSectionPart::Paragraph(p));
-                                }
+                                content.push(SectionPart::Paragraph(p))
                             }
-                            AnnotationElement::Poem(p) => {
-                                if first_part.is_none() {
-                                    first_part = Some(FirstSectionPart::Poem(p));
-                                } else {
-                                    rest_parts.push(RestSectionPart::Poem(p));
-                                }
-                            }
-                            AnnotationElement::Cite(c) => {
-                                if first_part.is_none() {
-                                    first_part = Some(FirstSectionPart::Cite(c));
-                                } else {
-                                    rest_parts.push(RestSectionPart::Cite(c));
-                                }
-                            }
+                            AnnotationElement::Poem(p) => content.push(SectionPart::Poem(p)),
+                            AnnotationElement::Cite(c) => content.push(SectionPart::Cite(c)),
                             AnnotationElement::Subtitle(s) => {
-                                if first_part.is_none() {
-                                    first_part = Some(FirstSectionPart::Subtitle(s));
-                                } else {
-                                    rest_parts.push(RestSectionPart::Subtitle(s));
-                                }
+                                content.push(SectionPart::Subtitle(s))
                             }
-                            AnnotationElement::Table(t) => {
-                                if first_part.is_none() {
-                                    first_part = Some(FirstSectionPart::Table(t));
-                                } else {
-                                    rest_parts.push(RestSectionPart::Table(t));
-                                }
-                            }
-                            AnnotationElement::EmptyLine => {
-                                if first_part.is_none() {
-                                    first_part = Some(FirstSectionPart::EmptyLine);
-                                } else {
-                                    rest_parts.push(RestSectionPart::EmptyLine);
-                                }
-                            }
+                            AnnotationElement::Table(t) => content.push(SectionPart::Table(t)),
+                            AnnotationElement::EmptyLine => content.push(SectionPart::EmptyLine),
                         }
                     }
                 }
                 SectionChoice::Section(s) => sections.push(s),
-                SectionChoice::Paragraph(p) => {
-                    if first_part.is_none() {
-                        first_part = Some(FirstSectionPart::Paragraph(p));
-                    } else {
-                        rest_parts.push(RestSectionPart::Paragraph(p));
-                    }
-                }
-                SectionChoice::Poem(p) => {
-                    if first_part.is_none() {
-                        first_part = Some(FirstSectionPart::Poem(p));
-                    } else {
-                        rest_parts.push(RestSectionPart::Poem(p));
-                    }
-                }
-                SectionChoice::Subtitle(s) => {
-                    if first_part.is_none() {
-                        first_part = Some(FirstSectionPart::Subtitle(s));
-                    } else {
-                        rest_parts.push(RestSectionPart::Subtitle(s));
-                    }
-                }
-                SectionChoice::Cite(c) => {
-                    if first_part.is_none() {
-                        first_part = Some(FirstSectionPart::Cite(c));
-                    } else {
-                        rest_parts.push(RestSectionPart::Cite(c));
-                    }
-                }
-                SectionChoice::Table(t) => {
-                    if first_part.is_none() {
-                        first_part = Some(FirstSectionPart::Table(t));
-                    } else {
-                        rest_parts.push(RestSectionPart::Table(t));
-                    }
-                }
-                SectionChoice::EmptyLine => {
-                    if first_part.is_none() {
-                        first_part = Some(FirstSectionPart::EmptyLine);
-                    } else {
-                        rest_parts.push(RestSectionPart::EmptyLine);
-                    }
-                }
-                SectionChoice::Text(text) => {
-                    if first_part.is_none() {
-                        first_part = Some(FirstSectionPart::Paragraph(Paragraph {
-                            id: None,
-                            lang: None,
-                            style: None,
-                            elements: vec![StyleElement::Text(text)],
-                        }));
-                    } else {
-                        rest_parts.push(RestSectionPart::Paragraph(Paragraph {
-                            id: None,
-                            lang: None,
-                            style: None,
-                            elements: vec![StyleElement::Text(text)],
-                        }));
-                    }
-                }
+                SectionChoice::Paragraph(p) => content.push(SectionPart::Paragraph(p)),
+                SectionChoice::Poem(p) => content.push(SectionPart::Poem(p)),
+                SectionChoice::Subtitle(s) => content.push(SectionPart::Subtitle(s)),
+                SectionChoice::Cite(c) => content.push(SectionPart::Cite(c)),
+                SectionChoice::Table(t) => content.push(SectionPart::Table(t)),
+                SectionChoice::EmptyLine => content.push(SectionPart::EmptyLine),
+                // trying to fix invalid FB2 without losing information
+                SectionChoice::Text(text) => content.push(SectionPart::Paragraph(Paragraph {
+                    id: None,
+                    lang: None,
+                    style: None,
+                    elements: vec![StyleElement::Text(text)],
+                })),
             }
         }
 
-        Ok(Section {
+        Section {
             id,
             lang,
             content: Some(SectionContent {
@@ -979,10 +775,10 @@ impl TryFrom<SectionInternal> for Section {
                 epigraphs,
                 image,
                 annotation,
-                content: first_part.map(|first_part| (first_part, rest_parts)),
+                content,
                 sections,
             }),
-        })
+        }
     }
 }
 
