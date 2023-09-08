@@ -1,6 +1,7 @@
 use language_tags::LanguageTag;
 use serde::ser::{SerializeStructVariant, SerializeTupleVariant};
 use serde::{Deserialize, Serialize, Serializer};
+use std::num::ParseIntError;
 
 mod defaults {
     use super::{Date, HorizontalAlign, MaybeEmptyLocalizedText, VerticalAlign};
@@ -327,11 +328,28 @@ pub struct Sequence {
     #[serde(rename = "@name")]
     pub name: String,
     #[serde(rename = "@number", skip_serializing_if = "Option::is_none")]
-    pub number: Option<i32>,
+    pub number: Option<SequenceNumber>,
     #[serde(rename = "@lang", skip_serializing_if = "Option::is_none")]
     pub lang: Option<LanguageTag>,
     #[serde(default, rename = "sequence")]
     pub sequences: Vec<Sequence>,
+}
+
+#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[serde(try_from = "SequenceNumberInternal")]
+pub struct SequenceNumber(pub i32);
+
+#[derive(Debug, PartialEq, Deserialize, Serialize)]
+struct SequenceNumberInternal(String);
+
+impl TryFrom<SequenceNumberInternal> for SequenceNumber {
+    type Error = ParseIntError;
+
+    fn try_from(
+        SequenceNumberInternal(value): SequenceNumberInternal,
+    ) -> Result<Self, Self::Error> {
+        Ok(SequenceNumber(value.trim().parse::<i32>()?))
+    }
 }
 
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
