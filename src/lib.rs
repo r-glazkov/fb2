@@ -4,9 +4,18 @@ use serde::{Deserialize, Serialize, Serializer};
 use std::num::ParseIntError;
 
 mod defaults {
-    use super::{Date, HorizontalAlign, MaybeEmptyLocalizedText, VerticalAlign};
+    use super::{
+        Date, Genre, GenreWithMatch, HorizontalAlign, MaybeEmptyLocalizedText, VerticalAlign,
+    };
 
     const DEFAULT_LINK_TYPE: &str = "simple";
+
+    pub(super) fn genres() -> Vec<GenreWithMatch> {
+        vec![GenreWithMatch {
+            match_percentage: genre_match(),
+            value: Genre::default(),
+        }]
+    }
 
     pub(super) const fn genre_match() -> i32 {
         100
@@ -119,7 +128,7 @@ pub struct Description {
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
 pub struct TitleInfo {
     /// Genre of this book, with the optional match percentage
-    #[serde(rename = "genre")]
+    #[serde(rename = "genre", default = "defaults::genres")]
     pub genres: Vec<GenreWithMatch>,
     /// Author(s) of this book
     #[serde(rename = "author")]
