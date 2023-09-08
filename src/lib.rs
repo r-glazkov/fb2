@@ -866,7 +866,7 @@ pub struct Stanza {
     pub title: Option<Title>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subtitle: Option<Paragraph>,
-    #[serde(rename = "v")]
+    #[serde(default, rename = "v")]
     pub lines: Vec<Paragraph>,
 }
 
