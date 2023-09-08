@@ -1303,6 +1303,7 @@ impl Serialize for StyleLinkElement {
 
 /// A human readable date, maybe not exact, with an optional computer readable variant
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[serde(from = "DateInternal")]
 pub struct Date {
     #[serde(rename = "@lang", skip_serializing_if = "Option::is_none")]
     pub lang: Option<LanguageTag>,
@@ -1310,6 +1311,33 @@ pub struct Date {
     pub iso_date: Option<chrono::NaiveDate>,
     #[serde(rename = "$text")]
     pub display_date: Option<String>,
+}
+
+#[derive(Debug, PartialEq, Deserialize)]
+struct DateInternal {
+    #[serde(rename = "@lang")]
+    lang: Option<LanguageTag>,
+    #[serde(rename = "@value")]
+    iso_date: Option<String>,
+    #[serde(rename = "$text")]
+    display_date: Option<String>,
+}
+
+impl From<DateInternal> for Date {
+    fn from(
+        DateInternal {
+            lang,
+            iso_date,
+            display_date,
+        }: DateInternal,
+    ) -> Self {
+        let iso_date = iso_date.and_then(|raw_date| raw_date.parse().ok());
+        Date {
+            lang,
+            iso_date,
+            display_date,
+        }
+    }
 }
 
 /// An empty element with an image name as an attribute
