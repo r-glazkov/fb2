@@ -178,7 +178,7 @@ pub struct DocumentInfo {
     )]
     pub src_ocr: Option<MaybeEmptyLocalizedText>,
     /// This is a unique identifier for a document. this must not change
-    pub id: String,
+    pub id: Option<String>,
     /// Document version, in free format, should be incremented if the document is
     /// changed and re-released to the public
     pub version: f64,
