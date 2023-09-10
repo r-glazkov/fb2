@@ -1212,6 +1212,8 @@ struct AnnotationInternal {
 
 #[derive(Debug, PartialEq, Deserialize)]
 enum AnnotationChoice {
+    #[serde(rename = "annotation")]
+    Annotation(Annotation),
     #[serde(rename = "p")]
     Paragraph(Paragraph),
     #[serde(rename = "poem")]
@@ -1233,31 +1235,42 @@ enum AnnotationChoice {
 }
 
 impl From<AnnotationInternal> for Annotation {
-    fn from(AnnotationInternal { id, lang, elements }: AnnotationInternal) -> Self {
-        let elements = elements
-            .into_iter()
-            .map(|element| match element {
-                AnnotationChoice::Paragraph(p) => AnnotationElement::Paragraph(p),
-                AnnotationChoice::Poem(p) => AnnotationElement::Poem(p),
-                AnnotationChoice::Cite(c) => AnnotationElement::Cite(c),
-                AnnotationChoice::Subtitle(s) => AnnotationElement::Subtitle(s),
-                AnnotationChoice::Table(t) => AnnotationElement::Table(t),
-                AnnotationChoice::EmptyLine => AnnotationElement::EmptyLine,
-                AnnotationChoice::Italics(i) => AnnotationElement::Paragraph(Paragraph {
-                    id: None,
-                    lang: None,
-                    style: None,
-                    elements: vec![StyleElement::Emphasis(i)],
-                }),
-                AnnotationChoice::TextAuthor(p) => AnnotationElement::Paragraph(p),
-                AnnotationChoice::Text(text) => AnnotationElement::Paragraph(Paragraph {
-                    id: None,
-                    lang: None,
-                    style: None,
-                    elements: vec![StyleElement::Text(text)],
-                }),
-            })
-            .collect();
+    fn from(
+        AnnotationInternal {
+            id,
+            lang,
+            elements: choices,
+        }: AnnotationInternal,
+    ) -> Self {
+        let mut elements = Vec::with_capacity(choices.len());
+        for element in choices {
+            match element {
+                AnnotationChoice::Annotation(a) => elements.extend(a.elements),
+                AnnotationChoice::Paragraph(p) => elements.push(AnnotationElement::Paragraph(p)),
+                AnnotationChoice::Poem(p) => elements.push(AnnotationElement::Poem(p)),
+                AnnotationChoice::Cite(c) => elements.push(AnnotationElement::Cite(c)),
+                AnnotationChoice::Subtitle(s) => elements.push(AnnotationElement::Subtitle(s)),
+                AnnotationChoice::Table(t) => elements.push(AnnotationElement::Table(t)),
+                AnnotationChoice::EmptyLine => elements.push(AnnotationElement::EmptyLine),
+                AnnotationChoice::Italics(i) => {
+                    elements.push(AnnotationElement::Paragraph(Paragraph {
+                        id: None,
+                        lang: None,
+                        style: None,
+                        elements: vec![StyleElement::Emphasis(i)],
+                    }))
+                }
+                AnnotationChoice::TextAuthor(p) => elements.push(AnnotationElement::Paragraph(p)),
+                AnnotationChoice::Text(text) => {
+                    elements.push(AnnotationElement::Paragraph(Paragraph {
+                        id: None,
+                        lang: None,
+                        style: None,
+                        elements: vec![StyleElement::Text(text)],
+                    }))
+                }
+            }
+        }
         Annotation { id, lang, elements }
     }
 }
