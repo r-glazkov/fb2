@@ -641,7 +641,7 @@ fn process_body_element(
 #[serde(try_from = "SequenceInternal")]
 pub struct Sequence {
     #[serde(rename = "@name")]
-    pub name: String,
+    pub name: Option<String>,
     #[serde(rename = "@number", skip_serializing_if = "Option::is_none")]
     pub number: Option<i32>,
     #[serde(rename = "@lang", skip_serializing_if = "Option::is_none")]
@@ -653,7 +653,7 @@ pub struct Sequence {
 #[derive(Debug, PartialEq, Deserialize)]
 struct SequenceInternal {
     #[serde(rename = "@name")]
-    name: String,
+    name: Option<String>,
     #[serde(rename = "@number")]
     number: Option<String>,
     #[serde(rename = "@lang")]
