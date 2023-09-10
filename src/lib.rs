@@ -1692,6 +1692,8 @@ enum TitleChoice {
     Paragraph(Paragraph),
     #[serde(rename = "title")]
     Title(Title),
+    #[serde(rename = "subtitle")]
+    Subtitle(Paragraph),
     #[serde(rename = "empty-line")]
     EmptyLine,
     #[serde(rename = "image")]
@@ -1712,6 +1714,7 @@ impl From<TitleInternal> for Title {
             match element {
                 TitleChoice::Paragraph(p) => elements.push(TitleElement::Paragraph(p)),
                 TitleChoice::Title(t) => elements.extend(t.elements),
+                TitleChoice::Subtitle(s) => elements.push(TitleElement::Paragraph(s)),
                 TitleChoice::EmptyLine => elements.push(TitleElement::EmptyLine),
                 TitleChoice::Image(i) => elements.push(TitleElement::Paragraph(Paragraph {
                     id: None,
