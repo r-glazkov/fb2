@@ -1345,6 +1345,8 @@ enum EpigraphChoice {
     Stanza(Stanza),
     #[serde(rename = "empty-line")]
     EmptyLine,
+    #[serde(rename = "$text")]
+    Text(String),
 }
 
 impl From<EpigraphInternal> for Epigraph {
@@ -1382,6 +1384,12 @@ impl From<EpigraphInternal> for Epigraph {
                     }
                 }
                 EpigraphChoice::EmptyLine => elements.push(EpigraphElement::EmptyLine),
+                EpigraphChoice::Text(t) => elements.push(EpigraphElement::Paragraph(Paragraph {
+                    id: None,
+                    lang: None,
+                    style: None,
+                    elements: vec![StyleElement::Text(t)],
+                })),
             }
         }
         Epigraph {
