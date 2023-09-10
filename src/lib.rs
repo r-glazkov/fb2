@@ -430,6 +430,8 @@ struct BodyInternal {
 
 #[derive(Debug, PartialEq, Deserialize)]
 enum BodyChoice {
+    #[serde(rename = "body")]
+    Body(Body),
     #[serde(rename = "annotation")]
     Annotation(Annotation),
     #[serde(rename = "image")]
@@ -520,6 +522,7 @@ fn process_body_element(
     sections: &mut Vec<Section>,
 ) {
     match element {
+        BodyChoice::Body(b) => sections.extend(b.sections),
         BodyChoice::Annotation(a) => {
             let content = a
                 .elements
