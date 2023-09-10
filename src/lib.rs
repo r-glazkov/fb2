@@ -638,31 +638,52 @@ fn process_body_element(
 
 /// Book sequences
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[serde(try_from = "SequenceInternal")]
 pub struct Sequence {
     #[serde(rename = "@name")]
     pub name: String,
     #[serde(rename = "@number", skip_serializing_if = "Option::is_none")]
-    pub number: Option<SequenceNumber>,
+    pub number: Option<i32>,
     #[serde(rename = "@lang", skip_serializing_if = "Option::is_none")]
     pub lang: Option<LanguageTag>,
-    #[serde(default, rename = "sequence")]
+    #[serde(rename = "sequence")]
     pub sequences: Vec<Sequence>,
 }
 
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
-#[serde(try_from = "SequenceNumberInternal")]
-pub struct SequenceNumber(pub i32);
+#[derive(Debug, PartialEq, Deserialize)]
+struct SequenceInternal {
+    #[serde(rename = "@name")]
+    name: String,
+    #[serde(rename = "@number")]
+    number: Option<String>,
+    #[serde(rename = "@lang")]
+    lang: Option<LanguageTag>,
+    #[serde(default, rename = "sequence")]
+    sequences: Vec<Sequence>,
+}
 
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
-struct SequenceNumberInternal(String);
-
-impl TryFrom<SequenceNumberInternal> for SequenceNumber {
+impl TryFrom<SequenceInternal> for Sequence {
     type Error = ParseIntError;
 
     fn try_from(
-        SequenceNumberInternal(value): SequenceNumberInternal,
+        SequenceInternal {
+            name,
+            number,
+            lang,
+            sequences,
+        }: SequenceInternal,
     ) -> Result<Self, Self::Error> {
-        Ok(SequenceNumber(value.trim().parse::<i32>()?))
+        let number = if let Some(n) = number {
+            Some(n.trim().parse()?)
+        } else {
+            None
+        };
+        Ok(Sequence {
+            name,
+            number,
+            lang,
+            sequences,
+        })
     }
 }
 
