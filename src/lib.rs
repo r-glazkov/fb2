@@ -5,9 +5,7 @@ use serde::ser::{SerializeStructVariant, SerializeTupleVariant};
 use serde::{Deserialize, Serialize, Serializer};
 
 mod defaults {
-    use super::{
-        Date, Genre, GenreWithMatch, HorizontalAlign, MaybeEmptyLocalizedText, VerticalAlign,
-    };
+    use super::{Date, Genre, GenreWithMatch, HorizontalAlign, LocalizedText, VerticalAlign};
 
     const DEFAULT_LINK_TYPE: &str = "simple";
     pub(super) const DEFAULT_GENRE_MATCH: i32 = 100;
@@ -52,7 +50,7 @@ mod defaults {
         }
     }
 
-    pub(super) fn should_skip_serializing_text(text: &Option<MaybeEmptyLocalizedText>) -> bool {
+    pub(super) fn should_skip_serializing_text(text: &Option<LocalizedText>) -> bool {
         if let Some(text) = text {
             text.value.is_empty()
         } else {
@@ -133,13 +131,13 @@ pub struct TitleInfo {
     pub authors: Vec<Author>,
     /// Book title
     #[serde(rename = "book-title")]
-    pub book_title: MaybeEmptyLocalizedText,
+    pub book_title: LocalizedText,
     /// Annotation for this book
     #[serde(skip_serializing_if = "Option::is_none")]
     pub annotation: Option<Annotation>,
     /// Any keywords for this book, intended for use in search engines
     #[serde(skip_serializing_if = "defaults::should_skip_serializing_text")]
-    pub keywords: Option<MaybeEmptyLocalizedText>,
+    pub keywords: Option<LocalizedText>,
     /// Date this book was written, can be not exact, e.g. 1863-1867. If an optional attribute is present,
     /// then it should contain some computer-readable date from the interval for use by search and indexingengines
     #[serde(skip_serializing_if = "defaults::should_skip_serializing_date")]
@@ -172,7 +170,7 @@ pub struct DocumentInfo {
         rename = "program-used",
         skip_serializing_if = "defaults::should_skip_serializing_text"
     )]
-    pub program_used: Option<MaybeEmptyLocalizedText>,
+    pub program_used: Option<LocalizedText>,
     /// Date this document was created, same guidelines as in the &lt;title-info&gt;
     /// section apply
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -186,7 +184,7 @@ pub struct DocumentInfo {
         rename = "src-ocr",
         skip_serializing_if = "defaults::should_skip_serializing_text"
     )]
-    pub src_ocr: Option<MaybeEmptyLocalizedText>,
+    pub src_ocr: Option<LocalizedText>,
     /// This is a unique identifier for a document. this must not change
     #[serde(skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -208,12 +206,12 @@ struct DocumentInfoInternal {
     #[serde(default, rename = "author")]
     authors: Vec<Author>,
     #[serde(rename = "program-used")]
-    program_used: Option<MaybeEmptyLocalizedText>,
+    program_used: Option<LocalizedText>,
     date: Option<Date>,
     #[serde(default, rename = "src-url")]
     src_urls: Vec<String>,
     #[serde(rename = "src-ocr")]
-    src_ocr: Option<MaybeEmptyLocalizedText>,
+    src_ocr: Option<LocalizedText>,
     id: Option<String>,
     version: Option<String>,
     history: Option<Annotation>,
@@ -258,18 +256,18 @@ pub struct PublishInfo {
         rename = "book-name",
         skip_serializing_if = "defaults::should_skip_serializing_text"
     )]
-    pub book_name: Option<MaybeEmptyLocalizedText>,
+    pub book_name: Option<LocalizedText>,
     /// Original (paper) book publisher
     #[serde(skip_serializing_if = "defaults::should_skip_serializing_text")]
-    pub publisher: Option<MaybeEmptyLocalizedText>,
+    pub publisher: Option<LocalizedText>,
     /// City where the original (paper) book was published
     #[serde(skip_serializing_if = "defaults::should_skip_serializing_text")]
-    pub city: Option<MaybeEmptyLocalizedText>,
+    pub city: Option<LocalizedText>,
     /// Year of the original (paper) publication
     #[serde(skip_serializing_if = "Option::is_none")]
     pub year: Option<i32>,
     #[serde(skip_serializing_if = "defaults::should_skip_serializing_text")]
-    pub isbn: Option<MaybeEmptyLocalizedText>,
+    pub isbn: Option<LocalizedText>,
     #[serde(rename = "sequence")]
     pub sequences: Vec<Sequence>,
 }
@@ -277,11 +275,11 @@ pub struct PublishInfo {
 #[derive(Debug, PartialEq, Deserialize)]
 struct PublishInfoInternal {
     #[serde(rename = "book-name")]
-    book_name: Option<MaybeEmptyLocalizedText>,
-    publisher: Option<MaybeEmptyLocalizedText>,
-    city: Option<MaybeEmptyLocalizedText>,
+    book_name: Option<LocalizedText>,
+    publisher: Option<LocalizedText>,
+    city: Option<LocalizedText>,
     year: Option<String>,
-    isbn: Option<MaybeEmptyLocalizedText>,
+    isbn: Option<LocalizedText>,
     #[serde(default, rename = "sequence")]
     sequences: Vec<Sequence>,
 }
@@ -736,16 +734,16 @@ impl Serialize for Author {
 #[derive(Debug, PartialEq, Serialize)]
 pub struct VerboseAuthorDetails {
     #[serde(rename = "first-name")]
-    pub first_name: MaybeEmptyLocalizedText,
+    pub first_name: LocalizedText,
     #[serde(
         rename = "middle-name",
         skip_serializing_if = "defaults::should_skip_serializing_text"
     )]
-    pub middle_name: Option<MaybeEmptyLocalizedText>,
+    pub middle_name: Option<LocalizedText>,
     #[serde(rename = "last-name")]
-    pub last_name: MaybeEmptyLocalizedText,
+    pub last_name: LocalizedText,
     #[serde(skip_serializing_if = "defaults::should_skip_serializing_text")]
-    pub nickname: Option<MaybeEmptyLocalizedText>,
+    pub nickname: Option<LocalizedText>,
     #[serde(rename = "home-page")]
     pub home_pages: Vec<String>,
     #[serde(rename = "email")]
@@ -760,7 +758,7 @@ pub struct VerboseAuthorDetails {
 #[derive(Debug, PartialEq, Serialize)]
 pub struct AnonymousAuthorDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub nickname: Option<MaybeEmptyLocalizedText>,
+    pub nickname: Option<LocalizedText>,
     #[serde(rename = "home-page")]
     pub home_pages: Vec<String>,
     #[serde(rename = "email")]
@@ -775,12 +773,12 @@ pub struct AnonymousAuthorDetails {
 #[derive(Debug, PartialEq, Deserialize)]
 struct AuthorInternal {
     #[serde(rename = "first-name")]
-    first_name: Option<MaybeEmptyLocalizedText>,
+    first_name: Option<LocalizedText>,
     #[serde(rename = "middle-name")]
-    middle_name: Option<MaybeEmptyLocalizedText>,
+    middle_name: Option<LocalizedText>,
     #[serde(rename = "last-name")]
-    last_name: Option<MaybeEmptyLocalizedText>,
-    nickname: Option<MaybeEmptyLocalizedText>,
+    last_name: Option<LocalizedText>,
+    nickname: Option<LocalizedText>,
     #[serde(default, rename = "home-page")]
     home_pages: Vec<String>,
     #[serde(default, rename = "email")]
@@ -805,12 +803,12 @@ impl From<AuthorInternal> for Author {
 
         if verbose {
             Author::Verbose(VerboseAuthorDetails {
-                first_name: first_name.unwrap_or_else(|| MaybeEmptyLocalizedText {
+                first_name: first_name.unwrap_or_else(|| LocalizedText {
                     lang: None,
                     value: String::new(),
                 }),
                 middle_name,
-                last_name: last_name.unwrap_or_else(|| MaybeEmptyLocalizedText {
+                last_name: last_name.unwrap_or_else(|| LocalizedText {
                     lang: None,
                     value: String::new(),
                 }),
@@ -2312,7 +2310,7 @@ pub struct InlineImage {
 }
 
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
-pub struct MaybeEmptyLocalizedText {
+pub struct LocalizedText {
     #[serde(rename = "@lang", skip_serializing_if = "Option::is_none")]
     pub lang: Option<LanguageTag>,
     /// Text fields sometimes have empty value to bypass field requirement
