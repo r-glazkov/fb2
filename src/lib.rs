@@ -1226,6 +1226,8 @@ enum AnnotationChoice {
     Table(Table),
     #[serde(rename = "empty-line")]
     EmptyLine,
+    #[serde(rename = "image")]
+    Image(InlineImage),
     #[serde(rename = "i")]
     Italics(Style),
     #[serde(rename = "text-author")]
@@ -1252,6 +1254,14 @@ impl From<AnnotationInternal> for Annotation {
                 AnnotationChoice::Subtitle(s) => elements.push(AnnotationElement::Subtitle(s)),
                 AnnotationChoice::Table(t) => elements.push(AnnotationElement::Table(t)),
                 AnnotationChoice::EmptyLine => elements.push(AnnotationElement::EmptyLine),
+                AnnotationChoice::Image(i) => {
+                    elements.push(AnnotationElement::Paragraph(Paragraph {
+                        id: None,
+                        lang: None,
+                        style: None,
+                        elements: vec![StyleElement::Image(i)],
+                    }))
+                }
                 AnnotationChoice::Italics(i) => {
                     elements.push(AnnotationElement::Paragraph(Paragraph {
                         id: None,
