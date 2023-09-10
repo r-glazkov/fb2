@@ -1345,6 +1345,8 @@ enum EpigraphChoice {
     Stanza(Stanza),
     #[serde(rename = "empty-line")]
     EmptyLine,
+    #[serde(rename = "subtitle")]
+    Subtitle(Paragraph),
     #[serde(rename = "$text")]
     Text(String),
 }
@@ -1384,6 +1386,7 @@ impl From<EpigraphInternal> for Epigraph {
                     }
                 }
                 EpigraphChoice::EmptyLine => elements.push(EpigraphElement::EmptyLine),
+                EpigraphChoice::Subtitle(s) => elements.push(EpigraphElement::Paragraph(s)),
                 EpigraphChoice::Text(t) => elements.push(EpigraphElement::Paragraph(Paragraph {
                     id: None,
                     lang: None,
