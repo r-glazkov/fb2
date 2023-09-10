@@ -1222,18 +1222,19 @@ pub enum EpigraphElement {
 
 /// A citation with an optional citation author at the end
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[serde(from = "CiteInternal")]
 pub struct Cite {
     #[serde(rename = "@id", skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     #[serde(rename = "@lang", skip_serializing_if = "Option::is_none")]
     pub lang: Option<LanguageTag>,
-    #[serde(default, rename = "$value")]
+    #[serde(rename = "$value")]
     pub elements: Vec<CiteElement>,
-    #[serde(default, rename = "text-author")]
+    #[serde(rename = "text-author")]
     pub text_authors: Vec<Paragraph>,
 }
 
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Debug, PartialEq, Serialize)]
 pub enum CiteElement {
     #[serde(rename = "p")]
     Paragraph(Paragraph),
@@ -1245,6 +1246,68 @@ pub enum CiteElement {
     Table(Table),
     #[serde(rename = "empty-line")]
     EmptyLine,
+}
+
+#[derive(Debug, PartialEq, Deserialize)]
+struct CiteInternal {
+    #[serde(rename = "@id")]
+    id: Option<String>,
+    #[serde(rename = "@lang")]
+    lang: Option<LanguageTag>,
+    #[serde(default, rename = "$value")]
+    elements: Vec<CiteChoice>,
+    #[serde(default, rename = "text-author")]
+    text_authors: Vec<Paragraph>,
+}
+
+#[derive(Debug, PartialEq, Deserialize)]
+enum CiteChoice {
+    #[serde(rename = "p")]
+    Paragraph(Paragraph),
+    #[serde(rename = "poem")]
+    Poem(Poem),
+    #[serde(rename = "subtitle")]
+    Subtitle(Paragraph),
+    #[serde(rename = "table")]
+    Table(Table),
+    #[serde(rename = "empty-line")]
+    EmptyLine,
+    #[serde(rename = "$text")]
+    Text(String),
+}
+
+impl From<CiteInternal> for Cite {
+    fn from(
+        CiteInternal {
+            id,
+            lang,
+            elements,
+            text_authors,
+        }: CiteInternal,
+    ) -> Self {
+        let elements = elements
+            .into_iter()
+            .map(|element| match element {
+                CiteChoice::Paragraph(p) => CiteElement::Paragraph(p),
+                CiteChoice::Poem(p) => CiteElement::Poem(p),
+                CiteChoice::Subtitle(s) => CiteElement::Subtitle(s),
+                CiteChoice::Table(t) => CiteElement::Table(t),
+                CiteChoice::EmptyLine => CiteElement::EmptyLine,
+                CiteChoice::Text(t) => CiteElement::Paragraph(Paragraph {
+                    id: None,
+                    lang: None,
+                    style: None,
+                    elements: vec![StyleElement::Text(t)],
+                }),
+            })
+            .collect();
+        Cite {
+            id,
+            lang,
+            elements,
+            text_authors,
+        }
+    }
 }
 
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
