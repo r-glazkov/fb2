@@ -2159,6 +2159,8 @@ enum StyleChoice {
     Strong(Style),
     #[serde(rename = "emphasis")]
     Emphasis(Style),
+    #[serde(rename = "i")]
+    Italics(Style),
     #[serde(rename = "style")]
     Style(NamedStyle),
     #[serde(rename = "a")]
@@ -2204,6 +2206,7 @@ fn parse_style_elements_permissively(choices: Vec<StyleChoice>) -> Vec<StyleElem
             StyleChoice::EmptyLine => {}
             StyleChoice::Strong(s) => elements.push(StyleElement::Strong(s)),
             StyleChoice::Emphasis(e) => elements.push(StyleElement::Emphasis(e)),
+            StyleChoice::Italics(s) => elements.push(StyleElement::Emphasis(s)),
             StyleChoice::Style(s) => elements.push(StyleElement::Style(s)),
             StyleChoice::Link(l) => elements.push(StyleElement::Link(l)),
             StyleChoice::Strikethrough(s) => elements.push(StyleElement::Strikethrough(s)),
