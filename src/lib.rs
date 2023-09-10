@@ -1357,6 +1357,8 @@ struct EpigraphInternal {
 
 #[derive(Debug, PartialEq, Deserialize)]
 enum EpigraphChoice {
+    #[serde(rename = "epigraph")]
+    Epigraph(Epigraph),
     #[serde(rename = "p")]
     Paragraph(Paragraph),
     #[serde(rename = "poem")]
@@ -1386,6 +1388,12 @@ impl From<EpigraphInternal> for Epigraph {
         let mut elements = Vec::with_capacity(choices.len());
         for element in choices {
             match element {
+                EpigraphChoice::Epigraph(e) => {
+                    elements.extend(e.elements);
+                    for text_author in e.text_authors {
+                        elements.push(EpigraphElement::Paragraph(text_author));
+                    }
+                }
                 EpigraphChoice::Paragraph(p) => elements.push(EpigraphElement::Paragraph(p)),
                 EpigraphChoice::Poem(p) => elements.push(EpigraphElement::Poem(p)),
                 EpigraphChoice::Cite(c) => elements.push(EpigraphElement::Cite(c)),
