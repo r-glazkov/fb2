@@ -10,20 +10,17 @@ mod defaults {
     };
 
     const DEFAULT_LINK_TYPE: &str = "simple";
+    pub(super) const DEFAULT_GENRE_MATCH: i32 = 100;
 
     pub(super) fn genres() -> Vec<GenreWithMatch> {
         vec![GenreWithMatch {
-            match_percentage: genre_match(),
+            match_percentage: DEFAULT_GENRE_MATCH,
             value: Genre::default(),
         }]
     }
 
-    pub(super) const fn genre_match() -> i32 {
-        100
-    }
-
     pub(super) fn is_default_genre_match(value: &i32) -> bool {
-        *value == genre_match()
+        *value == DEFAULT_GENRE_MATCH
     }
 
     pub(super) fn link_type() -> String {
@@ -409,14 +406,39 @@ pub struct Covers {
 
 /// Genre of this book, with the optional match percentage
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[serde(from = "GenreWithMatchInternal")]
 pub struct GenreWithMatch {
     /// 100 unless a different percentage is specified
     #[serde(
         rename = "@match",
-        default = "defaults::genre_match",
         skip_serializing_if = "defaults::is_default_genre_match"
     )]
     pub match_percentage: i32,
+    #[serde(rename = "$text")]
+    pub value: Genre,
+}
+
+impl From<GenreWithMatchInternal> for GenreWithMatch {
+    fn from(
+        GenreWithMatchInternal {
+            match_percentage,
+            value,
+        }: GenreWithMatchInternal,
+    ) -> Self {
+        let match_percentage = match_percentage
+            .and_then(|m| m.parse().ok())
+            .unwrap_or(defaults::DEFAULT_GENRE_MATCH);
+        GenreWithMatch {
+            match_percentage,
+            value,
+        }
+    }
+}
+
+#[derive(Debug, PartialEq, Deserialize)]
+struct GenreWithMatchInternal {
+    #[serde(rename = "@match")]
+    pub match_percentage: Option<String>,
     #[serde(default, rename = "$text")]
     pub value: Genre,
 }
