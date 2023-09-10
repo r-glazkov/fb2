@@ -1277,6 +1277,7 @@ pub enum PoemStanza {
 /// Each poem should have at least one stanza. Stanzas are usually separated with empty lines by user
 /// agents.
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[serde(from = "StanzaInternal")]
 pub struct Stanza {
     #[serde(rename = "@lang", skip_serializing_if = "Option::is_none")]
     pub lang: Option<LanguageTag>,
@@ -1284,8 +1285,91 @@ pub struct Stanza {
     pub title: Option<Title>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub subtitle: Option<Paragraph>,
-    #[serde(default, rename = "v")]
+    #[serde(rename = "v")]
     pub lines: Vec<Paragraph>,
+}
+
+#[derive(Debug, PartialEq, Deserialize)]
+struct StanzaInternal {
+    #[serde(rename = "@lang")]
+    lang: Option<LanguageTag>,
+    #[serde(rename = "$value")]
+    elements: Vec<StanzaChoice>,
+}
+
+#[derive(Debug, PartialEq, Deserialize)]
+enum StanzaChoice {
+    #[serde(rename = "title")]
+    Title(Title),
+    #[serde(rename = "subtitle")]
+    Subtitle(Paragraph),
+    #[serde(rename = "v")]
+    Line(Paragraph),
+    #[serde(rename = "empty-line")]
+    EmptyLine,
+}
+
+impl From<StanzaInternal> for Stanza {
+    fn from(StanzaInternal { lang, elements }: StanzaInternal) -> Self {
+        let mut iter = elements.into_iter();
+        let mut element = iter.next();
+
+        let mut title = if let Some(StanzaChoice::Title(t)) = element {
+            element = iter.next();
+            Some(t)
+        } else {
+            None
+        };
+        let mut subtitle = if let Some(StanzaChoice::Subtitle(s)) = element {
+            element = iter.next();
+            Some(s)
+        } else {
+            None
+        };
+        let mut lines = vec![];
+        if let Some(element) = element {
+            process_stanza_element(element, &mut title, &mut subtitle, &mut lines);
+        }
+        for element in iter {
+            process_stanza_element(element, &mut title, &mut subtitle, &mut lines);
+        }
+
+        Stanza {
+            lang,
+            title,
+            subtitle,
+            lines,
+        }
+    }
+}
+
+fn process_stanza_element(
+    element: StanzaChoice,
+    title: &mut Option<Title>,
+    subtitle: &mut Option<Paragraph>,
+    lines: &mut Vec<Paragraph>,
+) {
+    match element {
+        StanzaChoice::Title(t) => {
+            if lines.is_empty() && title.is_none() {
+                *title = Some(t);
+            } else {
+                lines.extend(t.elements.into_iter().filter_map(|element| match element {
+                    TitleElement::Paragraph(p) => Some(p),
+                    TitleElement::EmptyLine => None,
+                }));
+            }
+        }
+        StanzaChoice::Subtitle(s) => {
+            if lines.is_empty() && subtitle.is_none() {
+                *subtitle = Some(s);
+            } else {
+                lines.push(s);
+            }
+        }
+        StanzaChoice::Line(l) => lines.push(l),
+        StanzaChoice::EmptyLine => {}
+    }
 }
 
 /// A title, used in sections, poems and body elements
