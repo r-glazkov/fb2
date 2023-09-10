@@ -1429,6 +1429,7 @@ impl From<TitleInternal> for Title {
 
 /// A basic paragraph, may include simple formatting inside
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[serde(from = "ParagraphInternal")]
 pub struct Paragraph {
     #[serde(rename = "@id", skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -1436,8 +1437,39 @@ pub struct Paragraph {
     pub lang: Option<LanguageTag>,
     #[serde(rename = "@style", skip_serializing_if = "Option::is_none")]
     pub style: Option<String>,
-    #[serde(default, rename = "$value")]
+    #[serde(rename = "$value")]
     pub elements: Vec<StyleElement>,
+}
+
+#[derive(Debug, PartialEq, Deserialize)]
+struct ParagraphInternal {
+    #[serde(rename = "@id")]
+    id: Option<String>,
+    #[serde(rename = "@lang")]
+    lang: Option<LanguageTag>,
+    #[serde(rename = "@style")]
+    style: Option<String>,
+    #[serde(default, rename = "$value")]
+    elements: Vec<StyleChoice>,
+}
+
+impl From<ParagraphInternal> for Paragraph {
+    fn from(
+        ParagraphInternal {
+            id,
+            lang,
+            style,
+            elements,
+        }: ParagraphInternal,
+    ) -> Self {
+        let elements = parse_style_elements_permissively(elements);
+        Paragraph {
+            id,
+            lang,
+            style,
+            elements,
+        }
+    }
 }
 
 /// Basic html-like tables
@@ -1472,6 +1504,7 @@ pub enum TableCellElement {
 }
 
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[serde(from = "TableCellInternal")]
 pub struct TableCell {
     #[serde(rename = "@id", skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -1484,19 +1517,64 @@ pub struct TableCell {
     #[serde(rename = "@rowspan", skip_serializing_if = "Option::is_none")]
     pub row_span: Option<i32>,
     #[serde(
-        default,
         rename = "@align",
         skip_serializing_if = "defaults::is_default_horizontal_align"
     )]
     pub horizontal_align: HorizontalAlign,
     #[serde(
-        default,
         rename = "@valign",
         skip_serializing_if = "defaults::is_default_vertical_align"
     )]
     pub vertical_align: VerticalAlign,
-    #[serde(default, rename = "$value")]
+    #[serde(rename = "$value")]
     pub elements: Vec<StyleElement>,
+}
+
+#[derive(Debug, PartialEq, Deserialize)]
+struct TableCellInternal {
+    #[serde(rename = "@id")]
+    id: Option<String>,
+    #[serde(rename = "@lang")]
+    lang: Option<LanguageTag>,
+    #[serde(rename = "@style")]
+    style: Option<String>,
+    #[serde(rename = "@colspan")]
+    column_span: Option<i32>,
+    #[serde(rename = "@rowspan")]
+    row_span: Option<i32>,
+    #[serde(default, rename = "@align")]
+    horizontal_align: HorizontalAlign,
+    #[serde(default, rename = "@valign")]
+    vertical_align: VerticalAlign,
+    #[serde(default, rename = "$value")]
+    elements: Vec<StyleChoice>,
+}
+
+impl From<TableCellInternal> for TableCell {
+    fn from(
+        TableCellInternal {
+            id,
+            lang,
+            style,
+            column_span,
+            row_span,
+            horizontal_align,
+            vertical_align,
+            elements,
+        }: TableCellInternal,
+    ) -> Self {
+        let elements = parse_style_elements_permissively(elements);
+        TableCell {
+            id,
+            lang,
+            style,
+            column_span,
+            row_span,
+            horizontal_align,
+            vertical_align,
+            elements,
+        }
+    }
 }
 
 /// Align for table cells
@@ -1534,45 +1612,79 @@ impl Default for VerticalAlign {
 }
 
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[serde(from = "NamedStyleInternal")]
 pub struct NamedStyle {
     #[serde(rename = "@name")]
     pub name: String,
     #[serde(rename = "@lang", skip_serializing_if = "Option::is_none")]
     pub lang: Option<LanguageTag>,
-    #[serde(default, rename = "$value")]
+    #[serde(rename = "$value")]
     pub elements: Vec<StyleElement>,
+}
+
+#[derive(Debug, PartialEq, Deserialize)]
+struct NamedStyleInternal {
+    #[serde(rename = "@name")]
+    name: String,
+    #[serde(rename = "@lang")]
+    lang: Option<LanguageTag>,
+    #[serde(default, rename = "$value")]
+    elements: Vec<StyleChoice>,
+}
+
+impl From<NamedStyleInternal> for NamedStyle {
+    fn from(
+        NamedStyleInternal {
+            name,
+            lang,
+            elements,
+        }: NamedStyleInternal,
+    ) -> Self {
+        let elements = parse_style_elements_permissively(elements);
+        NamedStyle {
+            name,
+            lang,
+            elements,
+        }
+    }
 }
 
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[serde(from = "StyleInternal")]
 pub struct Style {
     #[serde(rename = "@lang", skip_serializing_if = "Option::is_none")]
     pub lang: Option<LanguageTag>,
-    #[serde(default, rename = "$value")]
+    #[serde(rename = "$value")]
     pub elements: Vec<StyleElement>,
 }
 
-/// Markup
 #[derive(Debug, PartialEq, Deserialize)]
+struct StyleInternal {
+    #[serde(rename = "@lang")]
+    lang: Option<LanguageTag>,
+    #[serde(default, rename = "$value")]
+    elements: Vec<StyleChoice>,
+}
+
+impl From<StyleInternal> for Style {
+    fn from(StyleInternal { lang, elements }: StyleInternal) -> Self {
+        let elements = parse_style_elements_permissively(elements);
+        Style { lang, elements }
+    }
+}
+
+/// Markup
+#[derive(Debug, PartialEq)]
 pub enum StyleElement {
-    #[serde(rename = "strong")]
     Strong(Style),
-    #[serde(rename = "emphasis")]
     Emphasis(Style),
-    #[serde(rename = "style")]
     Style(NamedStyle),
-    #[serde(rename = "a")]
     Link(Link),
-    #[serde(rename = "strikethrough")]
     Strikethrough(Style),
-    #[serde(rename = "sub")]
     Subscript(Style),
-    #[serde(rename = "sup")]
     Superscript(Style),
-    #[serde(rename = "code")]
     Code(Style),
-    #[serde(rename = "image")]
     Image(InlineImage),
-    #[serde(rename = "$text")]
     Text(String),
 }
 
@@ -1636,6 +1748,62 @@ impl Serialize for StyleElement {
             Text(text) => text.serialize(serializer),
         }
     }
+}
+
+#[derive(Debug, PartialEq, Deserialize)]
+enum StyleChoice {
+    #[serde(rename = "p")]
+    Paragraph(Paragraph),
+    #[serde(rename = "strong")]
+    Strong(Style),
+    #[serde(rename = "emphasis")]
+    Emphasis(Style),
+    #[serde(rename = "style")]
+    Style(NamedStyle),
+    #[serde(rename = "a")]
+    Link(Link),
+    #[serde(rename = "strikethrough")]
+    Strikethrough(Style),
+    #[serde(rename = "sub")]
+    Subscript(Style),
+    #[serde(rename = "sup")]
+    Superscript(Style),
+    #[serde(rename = "code")]
+    Code(Style),
+    #[serde(rename = "image")]
+    Image(InlineImage),
+    #[serde(rename = "$text")]
+    Text(String),
+}
+
+fn parse_style_elements_permissively(choices: Vec<StyleChoice>) -> Vec<StyleElement> {
+    let mut elements = Vec::with_capacity(choices.len());
+    for element in choices {
+        match element {
+            StyleChoice::Paragraph(p) => {
+                if let Some(id) = p.id {
+                    elements.push(StyleElement::Style(NamedStyle {
+                        name: id,
+                        lang: p.lang,
+                        elements: p.elements,
+                    }));
+                } else {
+                    elements.extend(p.elements);
+                }
+            }
+            StyleChoice::Strong(s) => elements.push(StyleElement::Strong(s)),
+            StyleChoice::Emphasis(e) => elements.push(StyleElement::Emphasis(e)),
+            StyleChoice::Style(s) => elements.push(StyleElement::Style(s)),
+            StyleChoice::Link(l) => elements.push(StyleElement::Link(l)),
+            StyleChoice::Strikethrough(s) => elements.push(StyleElement::Strikethrough(s)),
+            StyleChoice::Subscript(s) => elements.push(StyleElement::Subscript(s)),
+            StyleChoice::Superscript(s) => elements.push(StyleElement::Superscript(s)),
+            StyleChoice::Code(c) => elements.push(StyleElement::Code(c)),
+            StyleChoice::Image(i) => elements.push(StyleElement::Image(i)),
+            StyleChoice::Text(t) => elements.push(StyleElement::Text(t)),
+        }
+    }
+    elements
 }
 
 /// Generic hyperlinks. Cannot be nested. Footnotes should be implemented by links referring to additional bodies
