@@ -1282,19 +1282,57 @@ pub struct Stanza {
 
 /// A title, used in sections, poems and body elements
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[serde(from = "TitleInternal")]
 pub struct Title {
     #[serde(rename = "@lang", skip_serializing_if = "Option::is_none")]
     pub lang: Option<LanguageTag>,
-    #[serde(default, rename = "$value")]
+    #[serde(rename = "$value")]
     pub elements: Vec<TitleElement>,
 }
 
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Debug, PartialEq, Serialize)]
 pub enum TitleElement {
     #[serde(rename = "p")]
     Paragraph(Paragraph),
     #[serde(rename = "empty-line")]
     EmptyLine,
+}
+
+#[derive(Debug, PartialEq, Deserialize)]
+struct TitleInternal {
+    #[serde(rename = "@lang")]
+    lang: Option<LanguageTag>,
+    #[serde(default, rename = "$value")]
+    elements: Vec<TitleChoice>,
+}
+
+#[derive(Debug, PartialEq, Deserialize)]
+enum TitleChoice {
+    #[serde(rename = "p")]
+    Paragraph(Paragraph),
+    #[serde(rename = "empty-line")]
+    EmptyLine,
+    #[serde(rename = "$text")]
+    Text(String),
+}
+
+impl From<TitleInternal> for Title {
+    fn from(TitleInternal { lang, elements }: TitleInternal) -> Self {
+        let elements = elements
+            .into_iter()
+            .map(|element| match element {
+                TitleChoice::Paragraph(p) => TitleElement::Paragraph(p),
+                TitleChoice::EmptyLine => TitleElement::EmptyLine,
+                TitleChoice::Text(t) => TitleElement::Paragraph(Paragraph {
+                    id: None,
+                    lang: None,
+                    style: None,
+                    elements: vec![StyleElement::Text(t)],
+                }),
+            })
+            .collect();
+        Title { lang, elements }
+    }
 }
 
 /// A basic paragraph, may include simple formatting inside
