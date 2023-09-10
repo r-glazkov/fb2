@@ -849,6 +849,11 @@ enum SectionChoice {
     #[serde(rename = "empty-line")]
     EmptyLine,
     // will be converted to Paragraph if occurs
+    // some real FB2 files have text authors where it is prohibited
+    // so trying to fix those files without failing parsing
+    #[serde(rename = "text-author")]
+    TextAuthor(Paragraph),
+    // will be converted to Paragraph if occurs
     // some real FB2 files have strong where it is prohibited
     // so trying to fix those files without failing parsing
     #[serde(rename = "strong")]
@@ -1036,6 +1041,8 @@ fn process_section_element(
         SectionChoice::Cite(c) => content.push(SectionPart::Cite(c)),
         SectionChoice::Table(t) => content.push(SectionPart::Table(t)),
         SectionChoice::EmptyLine => content.push(SectionPart::EmptyLine),
+        // trying to fix invalid FB2 without losing information
+        SectionChoice::TextAuthor(p) => content.push(SectionPart::Paragraph(p)),
         // trying to fix invalid FB2 without losing information
         SectionChoice::Strong(s) => content.push(SectionPart::Paragraph(Paragraph {
             id: None,
