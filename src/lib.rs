@@ -1446,6 +1446,8 @@ enum StanzaChoice {
     Subtitle(Paragraph),
     #[serde(rename = "v")]
     Line(Paragraph),
+    #[serde(rename = "image")]
+    Image(InlineImage),
     #[serde(rename = "empty-line")]
     EmptyLine,
 }
@@ -1509,6 +1511,12 @@ fn process_stanza_element(
             }
         }
         StanzaChoice::Line(l) => lines.push(l),
+        StanzaChoice::Image(i) => lines.push(Paragraph {
+            id: None,
+            lang: None,
+            style: None,
+            elements: vec![StyleElement::Image(i)],
+        }),
         StanzaChoice::EmptyLine => {}
     }
 }
