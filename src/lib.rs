@@ -1212,6 +1212,8 @@ enum AnnotationChoice {
     EmptyLine,
     #[serde(rename = "i")]
     Italics(Style),
+    #[serde(rename = "text-author")]
+    TextAuthor(Paragraph),
     #[serde(rename = "$text")]
     Text(String),
 }
@@ -1233,6 +1235,7 @@ impl From<AnnotationInternal> for Annotation {
                     style: None,
                     elements: vec![StyleElement::Emphasis(i)],
                 }),
+                AnnotationChoice::TextAuthor(p) => AnnotationElement::Paragraph(p),
                 AnnotationChoice::Text(text) => AnnotationElement::Paragraph(Paragraph {
                     id: None,
                     lang: None,
