@@ -430,6 +430,8 @@ struct BodyInternal {
 
 #[derive(Debug, PartialEq, Deserialize)]
 enum BodyChoice {
+    #[serde(rename = "annotation")]
+    Annotation(Annotation),
     #[serde(rename = "image")]
     Image(Image),
     #[serde(rename = "title")]
@@ -518,6 +520,32 @@ fn process_body_element(
     sections: &mut Vec<Section>,
 ) {
     match element {
+        BodyChoice::Annotation(a) => {
+            let content = a
+                .elements
+                .into_iter()
+                .map(|element| match element {
+                    AnnotationElement::Paragraph(p) => SectionPart::Paragraph(p),
+                    AnnotationElement::Poem(p) => SectionPart::Poem(p),
+                    AnnotationElement::Cite(c) => SectionPart::Cite(c),
+                    AnnotationElement::Subtitle(s) => SectionPart::Subtitle(s),
+                    AnnotationElement::Table(t) => SectionPart::Table(t),
+                    AnnotationElement::EmptyLine => SectionPart::EmptyLine,
+                })
+                .collect();
+            sections.push(Section {
+                id: a.id,
+                lang: a.lang,
+                content: Some(SectionContent {
+                    title: None,
+                    epigraphs: vec![],
+                    image: None,
+                    annotation: None,
+                    content,
+                    sections: vec![],
+                }),
+            });
+        }
         BodyChoice::Image(i) => {
             if sections.is_empty() && image.is_none() {
                 *image = Some(i);
