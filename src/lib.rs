@@ -443,6 +443,8 @@ enum BodyChoice {
     Subtitle(Paragraph),
     #[serde(rename = "cite")]
     Cite(Cite),
+    #[serde(rename = "poem")]
+    Poem(Poem),
     #[serde(rename = "empty-line")]
     EmptyLine,
 }
@@ -603,6 +605,18 @@ fn process_body_element(
                 image: None,
                 annotation: None,
                 content: vec![SectionPart::Cite(c)],
+                sections: vec![],
+            }),
+        }),
+        BodyChoice::Poem(p) => sections.push(Section {
+            id: None,
+            lang: None,
+            content: Some(SectionContent {
+                title: None,
+                epigraphs: vec![],
+                image: None,
+                annotation: None,
+                content: vec![SectionPart::Poem(p)],
                 sections: vec![],
             }),
         }),
