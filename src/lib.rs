@@ -1661,6 +1661,8 @@ struct StanzaInternal {
 
 #[derive(Debug, PartialEq, Deserialize)]
 enum StanzaChoice {
+    #[serde(rename = "p")]
+    Paragraph(Paragraph),
     #[serde(rename = "epigraph")]
     Epigraph(Epigraph),
     #[serde(rename = "title")]
@@ -1716,6 +1718,7 @@ fn process_stanza_element(
     lines: &mut Vec<Paragraph>,
 ) {
     match element {
+        StanzaChoice::Paragraph(p) => lines.push(p),
         // skip epigraphs because tricky to map to the stanza itself
         StanzaChoice::Epigraph(_) => {}
         StanzaChoice::Title(t) => {
