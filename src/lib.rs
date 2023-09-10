@@ -254,8 +254,11 @@ impl From<DocumentInfoInternal> for DocumentInfo {
 #[serde(from = "PublishInfoInternal")]
 pub struct PublishInfo {
     /// Original (paper) book name
-    #[serde(rename = "book-name", skip_serializing_if = "Option::is_none")]
-    pub book_name: Option<LocalizedText>,
+    #[serde(
+        rename = "book-name",
+        skip_serializing_if = "defaults::should_skip_serializing_text"
+    )]
+    pub book_name: Option<MaybeEmptyLocalizedText>,
     /// Original (paper) book publisher
     #[serde(skip_serializing_if = "defaults::should_skip_serializing_text")]
     pub publisher: Option<MaybeEmptyLocalizedText>,
@@ -274,7 +277,7 @@ pub struct PublishInfo {
 #[derive(Debug, PartialEq, Deserialize)]
 struct PublishInfoInternal {
     #[serde(rename = "book-name")]
-    book_name: Option<LocalizedText>,
+    book_name: Option<MaybeEmptyLocalizedText>,
     publisher: Option<MaybeEmptyLocalizedText>,
     city: Option<MaybeEmptyLocalizedText>,
     year: Option<String>,
@@ -2306,14 +2309,6 @@ pub struct InlineImage {
     pub href: Option<String>,
     #[serde(rename = "@alt", skip_serializing_if = "Option::is_none")]
     pub alt: Option<String>,
-}
-
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
-pub struct LocalizedText {
-    #[serde(rename = "@lang", skip_serializing_if = "Option::is_none")]
-    pub lang: Option<LanguageTag>,
-    #[serde(rename = "$text")]
-    pub value: String,
 }
 
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
