@@ -389,6 +389,12 @@ enum BodyChoice {
     Epigraph(Epigraph),
     #[serde(rename = "section")]
     Section(Section),
+    #[serde(rename = "p")]
+    Paragraph(Paragraph),
+    #[serde(rename = "subtitle")]
+    Subtitle(Paragraph),
+    #[serde(rename = "empty-line")]
+    EmptyLine,
 }
 
 impl From<BodyInternal> for Body {
@@ -514,6 +520,42 @@ fn process_body_element(
             }
         }
         BodyChoice::Section(s) => sections.push(s),
+        BodyChoice::Paragraph(p) => sections.push(Section {
+            id: None,
+            lang: None,
+            content: Some(SectionContent {
+                title: None,
+                epigraphs: vec![],
+                image: None,
+                annotation: None,
+                content: vec![SectionPart::Paragraph(p)],
+                sections: vec![],
+            }),
+        }),
+        BodyChoice::Subtitle(s) => sections.push(Section {
+            id: None,
+            lang: None,
+            content: Some(SectionContent {
+                title: None,
+                epigraphs: vec![],
+                image: None,
+                annotation: None,
+                content: vec![SectionPart::Subtitle(s)],
+                sections: vec![],
+            }),
+        }),
+        BodyChoice::EmptyLine => sections.push(Section {
+            id: None,
+            lang: None,
+            content: Some(SectionContent {
+                title: None,
+                epigraphs: vec![],
+                image: None,
+                annotation: None,
+                content: vec![SectionPart::EmptyLine],
+                sections: vec![],
+            }),
+        }),
     }
 }
 
