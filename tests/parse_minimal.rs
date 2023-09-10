@@ -138,14 +138,14 @@ fn parse_minimal() {
                 sequences: vec![],
             },
             src_title_info: None,
-            document_info: DocumentInfo {
+            document_info: Some(DocumentInfo {
                 authors: vec![
                     Author::Anonymous(
                         AnonymousAuthorDetails {
-                            nickname: LocalizedText {
+                            nickname: Some(LocalizedText {
                                 lang: None,
                                 value: "On84ly".into(),
-                            },
+                            }),
                             home_pages: vec![],
                             emails: vec![],
                             id: None,
@@ -158,11 +158,11 @@ fn parse_minimal() {
                         value: "FictionBook Editor Release 2.6.6".into(),
                     },
                 ),
-                date: Date {
+                date: Some(Date {
                     lang: None,
                     iso_date: NaiveDate::from_ymd_opt(2014, 6, 11),
                     display_date: Some("11 June 2014".into()),
-                },
+                }),
                 src_urls: vec![
                     "http://www.litres.ru/pages/biblio_book/?art=7003942&lfrom=700971545".into(),
                 ],
@@ -172,8 +172,8 @@ fn parse_minimal() {
                         value: "Текст предоставлен издательством".into(),
                     },
                 ),
-                id: "a75a6f71-f140-11e3-871d-0025905a0812".into(),
-                version: 1.0,
+                id: Some("a75a6f71-f140-11e3-871d-0025905a0812".into()),
+                version: Some(1.0),
                 history: Some(
                     Annotation {
                         id: None,
@@ -215,7 +215,7 @@ fn parse_minimal() {
                         },
                     ),
                 ],
-            },
+            }),
             publish_info: Some(
                 PublishInfo {
                     book_name: Some(
@@ -297,8 +297,8 @@ fn parse_minimal() {
                             epigraphs: vec![],
                             image: None,
                             annotation: None,
-                            value: SectionContentValue::SectionParts(
-                                FirstSectionPart::Paragraph(
+                            content: vec![
+                                SectionPart::Paragraph(
                                     Paragraph {
                                         id: None,
                                         lang: None,
@@ -320,296 +320,295 @@ fn parse_minimal() {
                                         ],
                                     },
                                 ),
-                                vec![
-                                    RestSectionPart::Paragraph(
-                                        Paragraph {
-                                            id: None,
-                                            lang: None,
-                                            style: None,
-                                            elements: vec![
-                                                StyleElement::Text(
-                                                    "Технический редактор".into(),
-                                                ),
-                                                StyleElement::Emphasis(
-                                                    Style {
-                                                        lang: None,
-                                                        elements: vec![
-                                                            StyleElement::Text(
-                                                                "Н. Лисицына".into(),
-                                                            ),
-                                                        ],
-                                                    },
-                                                ),
-                                            ],
-                                        },
-                                    ),
-                                    RestSectionPart::Paragraph(
-                                        Paragraph {
-                                            id: None,
-                                            lang: None,
-                                            style: None,
-                                            elements: vec![
-                                                StyleElement::Text(
-                                                    "Корректор".into(),
-                                                ),
-                                                StyleElement::Emphasis(
-                                                    Style {
-                                                        lang: None,
-                                                        elements: vec![
-                                                            StyleElement::Text(
-                                                                "Е. Аксёнова".into(),
-                                                            ),
-                                                        ],
-                                                    },
-                                                ),
-                                            ],
-                                        },
-                                    ),
-                                    RestSectionPart::Paragraph(
-                                        Paragraph {
-                                            id: None,
-                                            lang: None,
-                                            style: None,
-                                            elements: vec![
-                                                StyleElement::Text(
-                                                    "Компьютерная верстка".into(),
-                                                ),
-                                                StyleElement::Emphasis(
-                                                    Style {
-                                                        lang: None,
-                                                        elements: vec![
-                                                            StyleElement::Text(
-                                                                "М. Поташкин, А. Фоминов".into(),
-                                                            ),
-                                                        ],
-                                                    },
-                                                ),
-                                            ],
-                                        },
-                                    ),
-                                    RestSectionPart::Paragraph(
-                                        Paragraph {
-                                            id: None,
-                                            lang: None,
-                                            style: None,
-                                            elements: vec![
-                                                StyleElement::Text(
-                                                    "Художник обложки".into(),
-                                                ),
-                                                StyleElement::Emphasis(
-                                                    Style {
-                                                        lang: None,
-                                                        elements: vec![
-                                                            StyleElement::Text(
-                                                                "Ю. Буга".into(),
-                                                            ),
-                                                        ],
-                                                    },
-                                                ),
-                                            ],
-                                        },
-                                    ),
-                                    RestSectionPart::EmptyLine,
-                                    RestSectionPart::Paragraph(
-                                        Paragraph {
-                                            id: None,
-                                            lang: None,
-                                            style: None,
-                                            elements: vec![
-                                                StyleElement::Text(
-                                                    "I: The Gathering Storm © The Estate of Sir Winston S Churchill".into(),
-                                                ),
-                                            ],
-                                        },
-                                    ),
-                                    RestSectionPart::Paragraph(
-                                        Paragraph {
-                                            id: None,
-                                            lang: None,
-                                            style: None,
-                                            elements: vec![
-                                                StyleElement::Text(
-                                                    "First published by Casell 1948".into(),
-                                                ),
-                                            ],
-                                        },
-                                    ),
-                                    RestSectionPart::Paragraph(
-                                        Paragraph {
-                                            id: None,
-                                            lang: None,
-                                            style: None,
-                                            elements: vec![
-                                                StyleElement::Text(
-                                                    "II: Their Finest Hour © The Estate of Sir Winston S Churchill".into(),
-                                                ),
-                                            ],
-                                        },
-                                    ),
-                                    RestSectionPart::Paragraph(
-                                        Paragraph {
-                                            id: None,
-                                            lang: None,
-                                            style: None,
-                                            elements: vec![
-                                                StyleElement::Text(
-                                                    "First published by Casell 1949".into(),
-                                                ),
-                                            ],
-                                        },
-                                    ),
-                                    RestSectionPart::Paragraph(
-                                        Paragraph {
-                                            id: None,
-                                            lang: None,
-                                            style: None,
-                                            elements: vec![
-                                                StyleElement::Text(
-                                                    "III: The Grand Alliance © The Estate of Sir Winston S Churchill".into(),
-                                                ),
-                                            ],
-                                        },
-                                    ),
-                                    RestSectionPart::Paragraph(
-                                        Paragraph {
-                                            id: None,
-                                            lang: None,
-                                            style: None,
-                                            elements: vec![
-                                                StyleElement::Text(
-                                                    "First published by Casell 1950".into(),
-                                                ),
-                                            ],
-                                        },
-                                    ),
-                                    RestSectionPart::Paragraph(
-                                        Paragraph {
-                                            id: None,
-                                            lang: None,
-                                            style: None,
-                                            elements: vec![
-                                                StyleElement::Text(
-                                                    "IV: The Hinge of Fate © The Estate of Sir Winston S Churchill".into(),
-                                                ),
-                                            ],
-                                        },
-                                    ),
-                                    RestSectionPart::Paragraph(
-                                        Paragraph {
-                                            id: None,
-                                            lang: None,
-                                            style: None,
-                                            elements: vec![
-                                                StyleElement::Text(
-                                                    "First published by Casell 1950".into(),
-                                                ),
-                                            ],
-                                        },
-                                    ),
-                                    RestSectionPart::Paragraph(
-                                        Paragraph {
-                                            id: None,
-                                            lang: None,
-                                            style: None,
-                                            elements: vec![
-                                                StyleElement::Text(
-                                                    "V: Triumph and Tragedy © The Estate of Sir Winston S Churchill".into(),
-                                                ),
-                                            ],
-                                        },
-                                    ),
-                                    RestSectionPart::Paragraph(
-                                        Paragraph {
-                                            id: None,
-                                            lang: None,
-                                            style: None,
-                                            elements: vec![
-                                                StyleElement::Text(
-                                                    "First published by Casell 1951".into(),
-                                                ),
-                                            ],
-                                        },
-                                    ),
-                                    RestSectionPart::Paragraph(
-                                        Paragraph {
-                                            id: None,
-                                            lang: None,
-                                            style: None,
-                                            elements: vec![
-                                                StyleElement::Text(
-                                                    "VI: Closing the Ring © The Estate of Sir Winston S Churchill".into(),
-                                                ),
-                                            ],
-                                        },
-                                    ),
-                                    RestSectionPart::Paragraph(
-                                        Paragraph {
-                                            id: None,
-                                            lang: None,
-                                            style: None,
-                                            elements: vec![
-                                                StyleElement::Text(
-                                                    "First published by Casell 1953".into(),
-                                                ),
-                                            ],
-                                        },
-                                    ),
-                                    RestSectionPart::EmptyLine,
-                                    RestSectionPart::Paragraph(
-                                        Paragraph {
-                                            id: None,
-                                            lang: None,
-                                            style: None,
-                                            elements: vec![
-                                                StyleElement::Text(
-                                                    "© Издание на русском языке, оформление. «Альпина нон-фикшн», 2010".into(),
-                                                ),
-                                            ],
-                                        },
-                                    ),
-                                    RestSectionPart::EmptyLine,
-                                    RestSectionPart::Paragraph(
-                                        Paragraph {
-                                            id: None,
-                                            lang: None,
-                                            style: None,
-                                            elements: vec![
-                                                StyleElement::Emphasis(
-                                                    Style {
-                                                        lang: None,
-                                                        elements: vec![
-                                                            StyleElement::Text(
-                                                                "Все права защищены. Никакая часть электронной версии этой книги не может быть воспроизведена в какой бы то ни было форме и какими бы то ни было средствами, включая размещение в сети Интернет и в корпоративных сетях, для частного и публичного использования без письменного разрешения владельца авторских прав.".into(),
-                                                            ),
-                                                        ],
-                                                    },
-                                                ),
-                                            ],
-                                        },
-                                    ),
-                                    RestSectionPart::EmptyLine,
-                                    RestSectionPart::Paragraph(
-                                        Paragraph {
-                                            id: None,
-                                            lang: None,
-                                            style: None,
-                                            elements: vec![],
-                                        },
-                                    ),
-                                    RestSectionPart::Subtitle(
-                                        Paragraph {
-                                            id: None,
-                                            lang: None,
-                                            style: None,
-                                            elements: vec![
-                                                StyleElement::Text(
-                                                    "* * *".into(),
-                                                ),
-                                            ],
-                                        },
-                                    ),
-                                ],
-                            ),
+                                SectionPart::Paragraph(
+                                    Paragraph {
+                                        id: None,
+                                        lang: None,
+                                        style: None,
+                                        elements: vec![
+                                            StyleElement::Text(
+                                                "Технический редактор".into(),
+                                            ),
+                                            StyleElement::Emphasis(
+                                                Style {
+                                                    lang: None,
+                                                    elements: vec![
+                                                        StyleElement::Text(
+                                                            "Н. Лисицына".into(),
+                                                        ),
+                                                    ],
+                                                },
+                                            ),
+                                        ],
+                                    },
+                                ),
+                                SectionPart::Paragraph(
+                                    Paragraph {
+                                        id: None,
+                                        lang: None,
+                                        style: None,
+                                        elements: vec![
+                                            StyleElement::Text(
+                                                "Корректор".into(),
+                                            ),
+                                            StyleElement::Emphasis(
+                                                Style {
+                                                    lang: None,
+                                                    elements: vec![
+                                                        StyleElement::Text(
+                                                            "Е. Аксёнова".into(),
+                                                        ),
+                                                    ],
+                                                },
+                                            ),
+                                        ],
+                                    },
+                                ),
+                                SectionPart::Paragraph(
+                                    Paragraph {
+                                        id: None,
+                                        lang: None,
+                                        style: None,
+                                        elements: vec![
+                                            StyleElement::Text(
+                                                "Компьютерная верстка".into(),
+                                            ),
+                                            StyleElement::Emphasis(
+                                                Style {
+                                                    lang: None,
+                                                    elements: vec![
+                                                        StyleElement::Text(
+                                                            "М. Поташкин, А. Фоминов".into(),
+                                                        ),
+                                                    ],
+                                                },
+                                            ),
+                                        ],
+                                    },
+                                ),
+                                SectionPart::Paragraph(
+                                    Paragraph {
+                                        id: None,
+                                        lang: None,
+                                        style: None,
+                                        elements: vec![
+                                            StyleElement::Text(
+                                                "Художник обложки".into(),
+                                            ),
+                                            StyleElement::Emphasis(
+                                                Style {
+                                                    lang: None,
+                                                    elements: vec![
+                                                        StyleElement::Text(
+                                                            "Ю. Буга".into(),
+                                                        ),
+                                                    ],
+                                                },
+                                            ),
+                                        ],
+                                    },
+                                ),
+                                SectionPart::EmptyLine,
+                                SectionPart::Paragraph(
+                                    Paragraph {
+                                        id: None,
+                                        lang: None,
+                                        style: None,
+                                        elements: vec![
+                                            StyleElement::Text(
+                                                "I: The Gathering Storm © The Estate of Sir Winston S Churchill".into(),
+                                            ),
+                                        ],
+                                    },
+                                ),
+                                SectionPart::Paragraph(
+                                    Paragraph {
+                                        id: None,
+                                        lang: None,
+                                        style: None,
+                                        elements: vec![
+                                            StyleElement::Text(
+                                                "First published by Casell 1948".into(),
+                                            ),
+                                        ],
+                                    },
+                                ),
+                                SectionPart::Paragraph(
+                                    Paragraph {
+                                        id: None,
+                                        lang: None,
+                                        style: None,
+                                        elements: vec![
+                                            StyleElement::Text(
+                                                "II: Their Finest Hour © The Estate of Sir Winston S Churchill".into(),
+                                            ),
+                                        ],
+                                    },
+                                ),
+                                SectionPart::Paragraph(
+                                    Paragraph {
+                                        id: None,
+                                        lang: None,
+                                        style: None,
+                                        elements: vec![
+                                            StyleElement::Text(
+                                                "First published by Casell 1949".into(),
+                                            ),
+                                        ],
+                                    },
+                                ),
+                                SectionPart::Paragraph(
+                                    Paragraph {
+                                        id: None,
+                                        lang: None,
+                                        style: None,
+                                        elements: vec![
+                                            StyleElement::Text(
+                                                "III: The Grand Alliance © The Estate of Sir Winston S Churchill".into(),
+                                            ),
+                                        ],
+                                    },
+                                ),
+                                SectionPart::Paragraph(
+                                    Paragraph {
+                                        id: None,
+                                        lang: None,
+                                        style: None,
+                                        elements: vec![
+                                            StyleElement::Text(
+                                                "First published by Casell 1950".into(),
+                                            ),
+                                        ],
+                                    },
+                                ),
+                                SectionPart::Paragraph(
+                                    Paragraph {
+                                        id: None,
+                                        lang: None,
+                                        style: None,
+                                        elements: vec![
+                                            StyleElement::Text(
+                                                "IV: The Hinge of Fate © The Estate of Sir Winston S Churchill".into(),
+                                            ),
+                                        ],
+                                    },
+                                ),
+                                SectionPart::Paragraph(
+                                    Paragraph {
+                                        id: None,
+                                        lang: None,
+                                        style: None,
+                                        elements: vec![
+                                            StyleElement::Text(
+                                                "First published by Casell 1950".into(),
+                                            ),
+                                        ],
+                                    },
+                                ),
+                                SectionPart::Paragraph(
+                                    Paragraph {
+                                        id: None,
+                                        lang: None,
+                                        style: None,
+                                        elements: vec![
+                                            StyleElement::Text(
+                                                "V: Triumph and Tragedy © The Estate of Sir Winston S Churchill".into(),
+                                            ),
+                                        ],
+                                    },
+                                ),
+                                SectionPart::Paragraph(
+                                    Paragraph {
+                                        id: None,
+                                        lang: None,
+                                        style: None,
+                                        elements: vec![
+                                            StyleElement::Text(
+                                                "First published by Casell 1951".into(),
+                                            ),
+                                        ],
+                                    },
+                                ),
+                                SectionPart::Paragraph(
+                                    Paragraph {
+                                        id: None,
+                                        lang: None,
+                                        style: None,
+                                        elements: vec![
+                                            StyleElement::Text(
+                                                "VI: Closing the Ring © The Estate of Sir Winston S Churchill".into(),
+                                            ),
+                                        ],
+                                    },
+                                ),
+                                SectionPart::Paragraph(
+                                    Paragraph {
+                                        id: None,
+                                        lang: None,
+                                        style: None,
+                                        elements: vec![
+                                            StyleElement::Text(
+                                                "First published by Casell 1953".into(),
+                                            ),
+                                        ],
+                                    },
+                                ),
+                                SectionPart::EmptyLine,
+                                SectionPart::Paragraph(
+                                    Paragraph {
+                                        id: None,
+                                        lang: None,
+                                        style: None,
+                                        elements: vec![
+                                            StyleElement::Text(
+                                                "© Издание на русском языке, оформление. «Альпина нон-фикшн», 2010".into(),
+                                            ),
+                                        ],
+                                    },
+                                ),
+                                SectionPart::EmptyLine,
+                                SectionPart::Paragraph(
+                                    Paragraph {
+                                        id: None,
+                                        lang: None,
+                                        style: None,
+                                        elements: vec![
+                                            StyleElement::Emphasis(
+                                                Style {
+                                                    lang: None,
+                                                    elements: vec![
+                                                        StyleElement::Text(
+                                                            "Все права защищены. Никакая часть электронной версии этой книги не может быть воспроизведена в какой бы то ни было форме и какими бы то ни было средствами, включая размещение в сети Интернет и в корпоративных сетях, для частного и публичного использования без письменного разрешения владельца авторских прав.".into(),
+                                                        ),
+                                                    ],
+                                                },
+                                            ),
+                                        ],
+                                    },
+                                ),
+                                SectionPart::EmptyLine,
+                                SectionPart::Paragraph(
+                                    Paragraph {
+                                        id: None,
+                                        lang: None,
+                                        style: None,
+                                        elements: vec![],
+                                    },
+                                ),
+                                SectionPart::Subtitle(
+                                    Paragraph {
+                                        id: None,
+                                        lang: None,
+                                        style: None,
+                                        elements: vec![
+                                            StyleElement::Text(
+                                                "* * *".into(),
+                                            ),
+                                        ],
+                                    },
+                                ),
+                            ],
+                            sections: vec![],
                         },
                     ),
                 },

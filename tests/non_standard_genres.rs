@@ -130,14 +130,14 @@ fn parse_prose_contemporary_genre() {
                 sequences: vec![],
             },
             src_title_info: None,
-            document_info: DocumentInfo {
+            document_info: Some(DocumentInfo {
                 authors: vec![
                     Author::Anonymous(
                         AnonymousAuthorDetails {
-                            nickname: LocalizedText {
+                            nickname: Some(LocalizedText {
                                 lang: None,
                                 value: "On84ly".into(),
-                            },
+                            }),
                             home_pages: vec![],
                             emails: vec![],
                             id: None,
@@ -150,11 +150,11 @@ fn parse_prose_contemporary_genre() {
                         value: "FictionBook Editor Release 2.6.6".into(),
                     },
                 ),
-                date: Date {
+                date: Some(Date {
                     lang: None,
                     iso_date: NaiveDate::from_ymd_opt(2014, 6, 11),
                     display_date: Some("11 June 2014".into()),
-                },
+                }),
                 src_urls: vec![
                     "http://www.litres.ru/pages/biblio_book/?art=7003942&lfrom=700971545".into(),
                 ],
@@ -164,8 +164,8 @@ fn parse_prose_contemporary_genre() {
                         value: "Текст предоставлен издательством".into(),
                     },
                 ),
-                id: "a75a6f71-f140-11e3-871d-0025905a0812".into(),
-                version: 1.0,
+                id: Some("a75a6f71-f140-11e3-871d-0025905a0812".into()),
+                version: Some(1.0),
                 history: Some(
                     Annotation {
                         id: None,
@@ -207,7 +207,7 @@ fn parse_prose_contemporary_genre() {
                         },
                     ),
                 ],
-            },
+            }),
             publish_info: Some(
                 PublishInfo {
                     book_name: Some(
@@ -289,31 +289,30 @@ fn parse_prose_contemporary_genre() {
                             epigraphs: vec![],
                             image: None,
                             annotation: None,
-                            value: SectionContentValue::SectionParts(
-                                FirstSectionPart::Paragraph(
-                                    Paragraph {
-                                        id: None,
-                                        lang: None,
-                                        style: None,
-                                        elements: vec![
-                                            StyleElement::Text(
-                                                "Руководитель проекта".into(),
-                                            ),
-                                            StyleElement::Emphasis(
-                                                Style {
-                                                    lang: None,
-                                                    elements: vec![
-                                                        StyleElement::Text(
-                                                            "А. Шувалова".into(),
-                                                        ),
-                                                    ],
-                                                },
-                                            ),
-                                        ],
-                                    },
-                                ),
-                                vec![
-                                    RestSectionPart::Paragraph(
+                            content: vec![
+                                    SectionPart::Paragraph(
+                                        Paragraph {
+                                            id: None,
+                                            lang: None,
+                                            style: None,
+                                            elements: vec![
+                                                StyleElement::Text(
+                                                    "Руководитель проекта".into(),
+                                                ),
+                                                StyleElement::Emphasis(
+                                                    Style {
+                                                        lang: None,
+                                                        elements: vec![
+                                                            StyleElement::Text(
+                                                                "А. Шувалова".into(),
+                                                            ),
+                                                        ],
+                                                    },
+                                                ),
+                                            ],
+                                        },
+                                    ),
+                                    SectionPart::Paragraph(
                                         Paragraph {
                                             id: None,
                                             lang: None,
@@ -335,7 +334,7 @@ fn parse_prose_contemporary_genre() {
                                             ],
                                         },
                                     ),
-                                    RestSectionPart::Paragraph(
+                                    SectionPart::Paragraph(
                                         Paragraph {
                                             id: None,
                                             lang: None,
@@ -357,7 +356,7 @@ fn parse_prose_contemporary_genre() {
                                             ],
                                         },
                                     ),
-                                    RestSectionPart::Paragraph(
+                                    SectionPart::Paragraph(
                                         Paragraph {
                                             id: None,
                                             lang: None,
@@ -379,7 +378,7 @@ fn parse_prose_contemporary_genre() {
                                             ],
                                         },
                                     ),
-                                    RestSectionPart::Paragraph(
+                                    SectionPart::Paragraph(
                                         Paragraph {
                                             id: None,
                                             lang: None,
@@ -401,8 +400,8 @@ fn parse_prose_contemporary_genre() {
                                             ],
                                         },
                                     ),
-                                    RestSectionPart::EmptyLine,
-                                    RestSectionPart::Paragraph(
+                                    SectionPart::EmptyLine,
+                                    SectionPart::Paragraph(
                                         Paragraph {
                                             id: None,
                                             lang: None,
@@ -414,7 +413,7 @@ fn parse_prose_contemporary_genre() {
                                             ],
                                         },
                                     ),
-                                    RestSectionPart::Paragraph(
+                                    SectionPart::Paragraph(
                                         Paragraph {
                                             id: None,
                                             lang: None,
@@ -426,7 +425,7 @@ fn parse_prose_contemporary_genre() {
                                             ],
                                         },
                                     ),
-                                    RestSectionPart::Paragraph(
+                                    SectionPart::Paragraph(
                                         Paragraph {
                                             id: None,
                                             lang: None,
@@ -438,7 +437,7 @@ fn parse_prose_contemporary_genre() {
                                             ],
                                         },
                                     ),
-                                    RestSectionPart::Paragraph(
+                                    SectionPart::Paragraph(
                                         Paragraph {
                                             id: None,
                                             lang: None,
@@ -450,7 +449,7 @@ fn parse_prose_contemporary_genre() {
                                             ],
                                         },
                                     ),
-                                    RestSectionPart::Paragraph(
+                                    SectionPart::Paragraph(
                                         Paragraph {
                                             id: None,
                                             lang: None,
@@ -462,7 +461,7 @@ fn parse_prose_contemporary_genre() {
                                             ],
                                         },
                                     ),
-                                    RestSectionPart::Paragraph(
+                                    SectionPart::Paragraph(
                                         Paragraph {
                                             id: None,
                                             lang: None,
@@ -474,7 +473,7 @@ fn parse_prose_contemporary_genre() {
                                             ],
                                         },
                                     ),
-                                    RestSectionPart::Paragraph(
+                                    SectionPart::Paragraph(
                                         Paragraph {
                                             id: None,
                                             lang: None,
@@ -486,7 +485,7 @@ fn parse_prose_contemporary_genre() {
                                             ],
                                         },
                                     ),
-                                    RestSectionPart::Paragraph(
+                                    SectionPart::Paragraph(
                                         Paragraph {
                                             id: None,
                                             lang: None,
@@ -498,7 +497,7 @@ fn parse_prose_contemporary_genre() {
                                             ],
                                         },
                                     ),
-                                    RestSectionPart::Paragraph(
+                                    SectionPart::Paragraph(
                                         Paragraph {
                                             id: None,
                                             lang: None,
@@ -510,7 +509,7 @@ fn parse_prose_contemporary_genre() {
                                             ],
                                         },
                                     ),
-                                    RestSectionPart::Paragraph(
+                                    SectionPart::Paragraph(
                                         Paragraph {
                                             id: None,
                                             lang: None,
@@ -522,7 +521,7 @@ fn parse_prose_contemporary_genre() {
                                             ],
                                         },
                                     ),
-                                    RestSectionPart::Paragraph(
+                                    SectionPart::Paragraph(
                                         Paragraph {
                                             id: None,
                                             lang: None,
@@ -534,7 +533,7 @@ fn parse_prose_contemporary_genre() {
                                             ],
                                         },
                                     ),
-                                    RestSectionPart::Paragraph(
+                                    SectionPart::Paragraph(
                                         Paragraph {
                                             id: None,
                                             lang: None,
@@ -546,8 +545,8 @@ fn parse_prose_contemporary_genre() {
                                             ],
                                         },
                                     ),
-                                    RestSectionPart::EmptyLine,
-                                    RestSectionPart::Paragraph(
+                                    SectionPart::EmptyLine,
+                                    SectionPart::Paragraph(
                                         Paragraph {
                                             id: None,
                                             lang: None,
@@ -559,8 +558,8 @@ fn parse_prose_contemporary_genre() {
                                             ],
                                         },
                                     ),
-                                    RestSectionPart::EmptyLine,
-                                    RestSectionPart::Paragraph(
+                                    SectionPart::EmptyLine,
+                                    SectionPart::Paragraph(
                                         Paragraph {
                                             id: None,
                                             lang: None,
@@ -579,8 +578,8 @@ fn parse_prose_contemporary_genre() {
                                             ],
                                         },
                                     ),
-                                    RestSectionPart::EmptyLine,
-                                    RestSectionPart::Paragraph(
+                                    SectionPart::EmptyLine,
+                                    SectionPart::Paragraph(
                                         Paragraph {
                                             id: None,
                                             lang: None,
@@ -588,7 +587,7 @@ fn parse_prose_contemporary_genre() {
                                             elements: vec![],
                                         },
                                     ),
-                                    RestSectionPart::Subtitle(
+                                    SectionPart::Subtitle(
                                         Paragraph {
                                             id: None,
                                             lang: None,
@@ -600,8 +599,8 @@ fn parse_prose_contemporary_genre() {
                                             ],
                                         },
                                     ),
-                                ],
-                            ),
+                            ],
+                            sections: vec![],
                         },
                     ),
                 },

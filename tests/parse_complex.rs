@@ -74,10 +74,10 @@ fn parse_complex() {
                     ),
                     Author::Anonymous(
                         AnonymousAuthorDetails {
-                            nickname: LocalizedText {
+                            nickname: Some(LocalizedText {
                                 lang: Some(LanguageTag::parse("en").unwrap()),
                                 value: "vovchik".into(),
-                            },
+                            }),
                             home_pages: vec![
                                 "profile.example.com".into(),
                                 "blog.example.com".into(),
@@ -203,10 +203,10 @@ fn parse_complex() {
                     ),
                     Author::Anonymous(
                         AnonymousAuthorDetails {
-                            nickname: LocalizedText {
+                            nickname: Some(LocalizedText {
                                 lang: None,
                                 value: "alfa".into(),
-                            },
+                            }),
                             home_pages: vec![
                                 "orlov.example.com".into(),
                                 "alex.example.com".into(),
@@ -275,14 +275,14 @@ fn parse_complex() {
                 ],
             },
             src_title_info: None,
-            document_info: DocumentInfo {
+            document_info: Some(DocumentInfo {
                 authors: vec![
                     Author::Anonymous(
                         AnonymousAuthorDetails {
-                            nickname: LocalizedText {
+                            nickname: Some(LocalizedText {
                                 lang: None,
                                 value: "On84ly".into(),
-                            },
+                            }),
                             home_pages: vec![],
                             emails: vec![],
                             id: None,
@@ -295,11 +295,11 @@ fn parse_complex() {
                         value: "FictionBook Editor Release 2.6.6".into(),
                     },
                 ),
-                date: Date {
+                date: Some(Date {
                     lang: Some(LanguageTag::parse("en").unwrap()),
                     iso_date: NaiveDate::from_ymd_opt(2014, 6, 11),
                     display_date: Some("11 June 2014".into()),
-                },
+                }),
                 src_urls: vec![
                     "http://www.litres.ru/pages/biblio_book/?art=7003942&lfrom=700971545".into(),
                     "http://example.com".into(),
@@ -310,8 +310,8 @@ fn parse_complex() {
                         value: "Текст предоставлен издательством".into(),
                     },
                 ),
-                id: "a75a6f71-f140-11e3-871d-0025905a0812".into(),
-                version: 1.0,
+                id: Some("a75a6f71-f140-11e3-871d-0025905a0812".into()),
+                version: Some(1.0),
                 history: Some(
                     Annotation {
                         id: Some(
@@ -359,7 +359,7 @@ fn parse_complex() {
                         },
                     ),
                 ],
-            },
+            }),
             publish_info: Some(
                 PublishInfo {
                     book_name: Some(
@@ -473,351 +473,352 @@ fn parse_complex() {
                 },
             ],
         },
-        bodies: vec![Body {
-            name: None,
-            lang: Some(LanguageTag::parse("ru").unwrap()),
-            image: Some(
-                Image {
-                    kind: "simple".into(),
-                    href: Some("#body.jpg".into()),
-                    alt: Some(
-                        "подмена".into(),
-                    ),
-                    title: Some(
-                        "Заголовок".into(),
-                    ),
-                    id: Some(
-                        "ID-5".into(),
-                    ),
-                },
-            ),
-            title: Some(
-                Title {
-                    lang: Some(LanguageTag::parse("ru").unwrap()),
-                    elements: vec![
-                        TitleElement::Paragraph(
+        bodies: vec![
+            Body {
+                name: None,
+                lang: Some(LanguageTag::parse("ru").unwrap()),
+                image: Some(
+                    Image {
+                        kind: "simple".into(),
+                        href: Some("#body.jpg".into()),
+                        alt: Some(
+                            "подмена".into(),
+                        ),
+                        title: Some(
+                            "Заголовок".into(),
+                        ),
+                        id: Some(
+                            "ID-5".into(),
+                        ),
+                    },
+                ),
+                title: Some(
+                    Title {
+                        lang: Some(LanguageTag::parse("ru").unwrap()),
+                        elements: vec![
+                            TitleElement::Paragraph(
+                                Paragraph {
+                                    id: Some(
+                                        "ID-6".into(),
+                                    ),
+                                    lang: Some(LanguageTag::parse("ru").unwrap()),
+                                    style: Some(
+                                        "wip".into(),
+                                    ),
+                                    elements: vec![
+                                        StyleElement::Text(
+                                            "Уинстон Черчилль".into(),
+                                        ),
+                                    ],
+                                },
+                            ),
+                            TitleElement::EmptyLine,
+                        ],
+                    },
+                ),
+                epigraphs: vec![
+                    Epigraph {
+                        id: Some(
+                            "ep-1".into(),
+                        ),
+                        elements: vec![
+                            EpigraphElement::Paragraph(
+                                Paragraph {
+                                    id: Some(
+                                        "pg-1".into(),
+                                    ),
+                                    lang: Some(LanguageTag::parse("ru").unwrap()),
+                                    style: Some(
+                                        "pg-s-1".into(),
+                                    ),
+                                    elements: vec![
+                                        StyleElement::Text(
+                                            "Content".into(),
+                                        ),
+                                    ],
+                                },
+                            ),
+                            EpigraphElement::Poem(
+                                Poem {
+                                    id: Some(
+                                        "po-1".into(),
+                                    ),
+                                    lang: Some(LanguageTag::parse("ru").unwrap()),
+                                    title: Some(
+                                        Title {
+                                            lang: Some(LanguageTag::parse("ru").unwrap()),
+                                            elements: vec![
+                                                TitleElement::Paragraph(
+                                                    Paragraph {
+                                                        id: None,
+                                                        lang: None,
+                                                        style: None,
+                                                        elements: vec![
+                                                            StyleElement::Text(
+                                                                "Some title".into(),
+                                                            ),
+                                                        ],
+                                                    },
+                                                ),
+                                            ],
+                                        },
+                                    ),
+                                    epigraphs: vec![
+                                        Epigraph {
+                                            id: Some(
+                                                "ep-2".into(),
+                                            ),
+                                            elements: vec![
+                                                EpigraphElement::EmptyLine,
+                                            ],
+                                            text_authors: vec![],
+                                        },
+                                        Epigraph {
+                                            id: Some(
+                                                "ep-3".into(),
+                                            ),
+                                            elements: vec![
+                                                EpigraphElement::EmptyLine,
+                                            ],
+                                            text_authors: vec![],
+                                        },
+                                    ],
+                                    stanzas: vec![
+                                        PoemStanza::Subtitle(
+                                            Paragraph {
+                                                id: Some(
+                                                    "st-1".into(),
+                                                ),
+                                                lang: Some(LanguageTag::parse("en").unwrap()),
+                                                style: Some(
+                                                    "st-s-1".into(),
+                                                ),
+                                                elements: vec![
+                                                    StyleElement::Text(
+                                                        "fasdf".into(),
+                                                    ),
+                                                ],
+                                            },
+                                        ),
+                                        PoemStanza::Stanza(
+                                            Stanza {
+                                                lang: Some(LanguageTag::parse("ru").unwrap()),
+                                                title: Some(
+                                                    Title {
+                                                        lang: Some(LanguageTag::parse("ru").unwrap()),
+                                                        elements: vec![
+                                                            TitleElement::Paragraph(
+                                                                Paragraph {
+                                                                    id: None,
+                                                                    lang: None,
+                                                                    style: None,
+                                                                    elements: vec![
+                                                                        StyleElement::Text(
+                                                                            "Танечка".into(),
+                                                                        ),
+                                                                    ],
+                                                                },
+                                                            ),
+                                                        ],
+                                                    },
+                                                ),
+                                                subtitle: Some(
+                                                    Paragraph {
+                                                        id: Some(
+                                                            "st-2".into(),
+                                                        ),
+                                                        lang: Some(LanguageTag::parse("en").unwrap()),
+                                                        style: Some(
+                                                            "st-s-2".into(),
+                                                        ),
+                                                        elements: vec![
+                                                            StyleElement::Text(
+                                                                "Subtitle".into(),
+                                                            ),
+                                                        ],
+                                                    },
+                                                ),
+                                                lines: vec![
+                                                    Paragraph {
+                                                        id: Some(
+                                                            "v-1".into(),
+                                                        ),
+                                                        lang: Some(LanguageTag::parse("ru").unwrap()),
+                                                        style: Some(
+                                                            "v-s-1".into(),
+                                                        ),
+                                                        elements: vec![
+                                                            StyleElement::Text(
+                                                                "Плач".into(),
+                                                            ),
+                                                        ],
+                                                    },
+                                                    Paragraph {
+                                                        id: Some(
+                                                            "v-2".into(),
+                                                        ),
+                                                        lang: Some(LanguageTag::parse("ru").unwrap()),
+                                                        style: Some(
+                                                            "v-s-2".into(),
+                                                        ),
+                                                        elements: vec![
+                                                            StyleElement::Text(
+                                                                "Мяч".into(),
+                                                            ),
+                                                        ],
+                                                    },
+                                                ],
+                                            },
+                                        ),
+                                    ],
+                                    text_authors: vec![
+                                        Paragraph {
+                                            id: Some(
+                                                "ta-2".into(),
+                                            ),
+                                            lang: Some(LanguageTag::parse("ru").unwrap()),
+                                            style: Some(
+                                                "ta-s-2".into(),
+                                            ),
+                                            elements: vec![
+                                                StyleElement::Text(
+                                                    "Барто".into(),
+                                                ),
+                                            ],
+                                        },
+                                        Paragraph {
+                                            id: Some(
+                                                "ta-3".into(),
+                                            ),
+                                            lang: Some(LanguageTag::parse("ru").unwrap()),
+                                            style: Some(
+                                                "ta-s-3".into(),
+                                            ),
+                                            elements: vec![
+                                                StyleElement::Text(
+                                                    "Агния".into(),
+                                                ),
+                                            ],
+                                        },
+                                    ],
+                                    date: Some(
+                                        Date {
+                                            lang: Some(LanguageTag::parse("ru").unwrap()),
+                                            iso_date: NaiveDate::from_ymd_opt(10, 10, 21),
+                                            display_date: Some("Лохматые".into()),
+                                        },
+                                    ),
+                                },
+                            ),
+                            EpigraphElement::Cite(
+                                Cite {
+                                    id: Some(
+                                        "ci-1".into(),
+                                    ),
+                                    lang: Some(LanguageTag::parse("ru").unwrap()),
+                                    elements: vec![
+                                        CiteElement::Paragraph(
+                                            Paragraph {
+                                                id: None,
+                                                lang: None,
+                                                style: None,
+                                                elements: vec![
+                                                    StyleElement::Text(
+                                                        "fasdf".into(),
+                                                    ),
+                                                ],
+                                            },
+                                        ),
+                                        CiteElement::Poem(
+                                            Poem {
+                                                id: None,
+                                                lang: None,
+                                                title: None,
+                                                epigraphs: vec![],
+                                                stanzas: vec![
+                                                    PoemStanza::Stanza(
+                                                        Stanza {
+                                                            title: None,
+                                                            subtitle: None,
+                                                            lines: vec![
+                                                                Paragraph {
+                                                                    id: None,
+                                                                    lang: None,
+                                                                    style: None,
+                                                                    elements: vec![
+                                                                        StyleElement::Text(
+                                                                            "s".into(),
+                                                                        ),
+                                                                    ],
+                                                                },
+                                                            ],
+                                                            lang: None,
+                                                        },
+                                                    ),
+                                                ],
+                                                text_authors: vec![],
+                                                date: None,
+                                            },
+                                        ),
+                                    ],
+                                    text_authors: vec![],
+                                },
+                            ),
+                            EpigraphElement::EmptyLine,
+                        ],
+                        text_authors: vec![
                             Paragraph {
                                 id: Some(
-                                    "ID-6".into(),
+                                    "ta-1".into(),
                                 ),
                                 lang: Some(LanguageTag::parse("ru").unwrap()),
                                 style: Some(
-                                    "wip".into(),
+                                    "ta-style".into(),
                                 ),
                                 elements: vec![
                                     StyleElement::Text(
-                                        "Уинстон Черчилль".into(),
+                                        "Автор".into(),
                                     ),
                                 ],
                             },
-                        ),
-                        TitleElement::EmptyLine,
-                    ],
-                },
-            ),
-            epigraphs: vec![
-                Epigraph {
-                    id: Some(
-                        "ep-1".into(),
-                    ),
-                    elements: vec![
-                        EpigraphElement::Paragraph(
                             Paragraph {
                                 id: Some(
-                                    "pg-1".into(),
+                                    "ta-4".into(),
                                 ),
                                 lang: Some(LanguageTag::parse("ru").unwrap()),
                                 style: Some(
-                                    "pg-s-1".into(),
+                                    "ta-s-4".into(),
                                 ),
                                 elements: vec![
                                     StyleElement::Text(
-                                        "Content".into(),
+                                        "Ещё Автор".into(),
                                     ),
                                 ],
                             },
+                        ],
+                    },
+                ],
+                sections: vec![
+                    Section {
+                        id: Some(
+                            "ID-8".into(),
                         ),
-                        EpigraphElement::Poem(
-                            Poem {
-                                id: Some(
-                                    "po-1".into(),
-                                ),
-                                lang: Some(LanguageTag::parse("ru").unwrap()),
+                        lang: Some(LanguageTag::parse("ru").unwrap()),
+                        content: Some(
+                            SectionContent {
                                 title: Some(
                                     Title {
                                         lang: Some(LanguageTag::parse("ru").unwrap()),
                                         elements: vec![
-                                            TitleElement::Paragraph(
-                                                Paragraph {
-                                                    id: None,
-                                                    lang: None,
-                                                    style: None,
-                                                    elements: vec![
-                                                        StyleElement::Text(
-                                                            "Some title".into(),
-                                                        ),
-                                                    ],
-                                                },
-                                            ),
+                                            TitleElement::EmptyLine,
                                         ],
                                     },
                                 ),
-                                epigraphs: vec![
-                                    Epigraph {
-                                        id: Some(
-                                            "ep-2".into(),
-                                        ),
-                                        elements: vec![
-                                            EpigraphElement::EmptyLine,
-                                        ],
-                                        text_authors: vec![],
-                                    },
-                                    Epigraph {
-                                        id: Some(
-                                            "ep-3".into(),
-                                        ),
-                                        elements: vec![
-                                            EpigraphElement::EmptyLine,
-                                        ],
-                                        text_authors: vec![],
-                                    },
-                                ],
-                                stanzas: vec![
-                                    PoemStanza::Subtitle(
-                                        Paragraph {
-                                            id: Some(
-                                                "st-1".into(),
-                                            ),
-                                            lang: Some(LanguageTag::parse("en").unwrap()),
-                                            style: Some(
-                                                "st-s-1".into(),
-                                            ),
-                                            elements: vec![
-                                                StyleElement::Text(
-                                                    "fasdf".into(),
-                                                ),
-                                            ],
-                                        },
-                                    ),
-                                    PoemStanza::Stanza(
-                                        Stanza {
-                                            lang: Some(LanguageTag::parse("ru").unwrap()),
-                                            title: Some(
-                                                Title {
-                                                    lang: Some(LanguageTag::parse("ru").unwrap()),
-                                                    elements: vec![
-                                                        TitleElement::Paragraph(
-                                                            Paragraph {
-                                                                id: None,
-                                                                lang: None,
-                                                                style: None,
-                                                                elements: vec![
-                                                                    StyleElement::Text(
-                                                                        "Танечка".into(),
-                                                                    ),
-                                                                ],
-                                                            },
-                                                        ),
-                                                    ],
-                                                },
-                                            ),
-                                            subtitle: Some(
-                                                Paragraph {
-                                                    id: Some(
-                                                        "st-2".into(),
-                                                    ),
-                                                    lang: Some(LanguageTag::parse("en").unwrap()),
-                                                    style: Some(
-                                                        "st-s-2".into(),
-                                                    ),
-                                                    elements: vec![
-                                                        StyleElement::Text(
-                                                            "Subtitle".into(),
-                                                        ),
-                                                    ],
-                                                },
-                                            ),
-                                            lines: vec![
-                                                Paragraph {
-                                                    id: Some(
-                                                        "v-1".into(),
-                                                    ),
-                                                    lang: Some(LanguageTag::parse("ru").unwrap()),
-                                                    style: Some(
-                                                        "v-s-1".into(),
-                                                    ),
-                                                    elements: vec![
-                                                        StyleElement::Text(
-                                                            "Плач".into(),
-                                                        ),
-                                                    ],
-                                                },
-                                                Paragraph {
-                                                    id: Some(
-                                                        "v-2".into(),
-                                                    ),
-                                                    lang: Some(LanguageTag::parse("ru").unwrap()),
-                                                    style: Some(
-                                                        "v-s-2".into(),
-                                                    ),
-                                                    elements: vec![
-                                                        StyleElement::Text(
-                                                            "Мяч".into(),
-                                                        ),
-                                                    ],
-                                                },
-                                            ],
-                                        },
-                                    ),
-                                ],
-                                text_authors: vec![
-                                    Paragraph {
-                                        id: Some(
-                                            "ta-2".into(),
-                                        ),
-                                        lang: Some(LanguageTag::parse("ru").unwrap()),
-                                        style: Some(
-                                            "ta-s-2".into(),
-                                        ),
-                                        elements: vec![
-                                            StyleElement::Text(
-                                                "Барто".into(),
-                                            ),
-                                        ],
-                                    },
-                                    Paragraph {
-                                        id: Some(
-                                            "ta-3".into(),
-                                        ),
-                                        lang: Some(LanguageTag::parse("ru").unwrap()),
-                                        style: Some(
-                                            "ta-s-3".into(),
-                                        ),
-                                        elements: vec![
-                                            StyleElement::Text(
-                                                "Агния".into(),
-                                            ),
-                                        ],
-                                    },
-                                ],
-                                date: Some(
-                                    Date {
-                                        lang: Some(LanguageTag::parse("ru").unwrap()),
-                                        iso_date: NaiveDate::from_ymd_opt(10, 10, 21),
-                                        display_date: Some("Лохматые".into()),
-                                    },
-                                ),
-                            },
-                        ),
-                        EpigraphElement::Cite(
-                            Cite {
-                                id: Some(
-                                    "ci-1".into(),
-                                ),
-                                lang: Some(LanguageTag::parse("ru").unwrap()),
-                                elements: vec![
-                                    CiteElement::Paragraph(
-                                        Paragraph {
-                                            id: None,
-                                            lang: None,
-                                            style: None,
-                                            elements: vec![
-                                                StyleElement::Text(
-                                                    "fasdf".into(),
-                                                ),
-                                            ],
-                                        },
-                                    ),
-                                    CiteElement::Poem(
-                                        Poem {
-                                            id: None,
-                                            lang: None,
-                                            title: None,
-                                            epigraphs: vec![],
-                                            stanzas: vec![
-                                                PoemStanza::Stanza(
-                                                    Stanza {
-                                                        title: None,
-                                                        subtitle: None,
-                                                        lines: vec![
-                                                            Paragraph {
-                                                                id: None,
-                                                                lang: None,
-                                                                style: None,
-                                                                elements: vec![
-                                                                    StyleElement::Text(
-                                                                        "s".into(),
-                                                                    ),
-                                                                ],
-                                                            },
-                                                        ],
-                                                        lang: None,
-                                                    },
-                                                ),
-                                            ],
-                                            text_authors: vec![],
-                                            date: None,
-                                        },
-                                    ),
-                                ],
-                                text_authors: vec![],
-                            },
-                        ),
-                        EpigraphElement::EmptyLine,
-                    ],
-                    text_authors: vec![
-                        Paragraph {
-                            id: Some(
-                                "ta-1".into(),
-                            ),
-                            lang: Some(LanguageTag::parse("ru").unwrap()),
-                            style: Some(
-                                "ta-style".into(),
-                            ),
-                            elements: vec![
-                                StyleElement::Text(
-                                    "Автор".into(),
-                                ),
-                            ],
-                        },
-                        Paragraph {
-                            id: Some(
-                                "ta-4".into(),
-                            ),
-                            lang: Some(LanguageTag::parse("ru").unwrap()),
-                            style: Some(
-                                "ta-s-4".into(),
-                            ),
-                            elements: vec![
-                                StyleElement::Text(
-                                    "Ещё Автор".into(),
-                                ),
-                            ],
-                        },
-                    ],
-                },
-            ],
-            sections: vec![
-                Section {
-                    id: Some(
-                        "ID-8".into(),
-                    ),
-                    lang: Some(LanguageTag::parse("ru").unwrap()),
-                    content: Some(
-                        SectionContent {
-                            title: Some(
-                                Title {
-                                    lang: Some(LanguageTag::parse("ru").unwrap()),
-                                    elements: vec![
-                                        TitleElement::EmptyLine,
-                                    ],
-                                },
-                            ),
-                            epigraphs: vec![],
-                            image: None,
-                            annotation: None,
-                            value: SectionContentValue::NestedSections(
-                                vec![
+                                epigraphs: vec![],
+                                image: None,
+                                annotation: None,
+                                content: vec![],
+                                sections: vec![
                                     Section {
                                         id: None,
                                         lang: None,
@@ -863,8 +864,8 @@ fn parse_complex() {
                                                 ],
                                                 image: None,
                                                 annotation: None,
-                                                value: SectionContentValue::SectionParts(
-                                                    FirstSectionPart::Subtitle(
+                                                content: vec![
+                                                    SectionPart::Subtitle(
                                                         Paragraph {
                                                             id: None,
                                                             lang: None,
@@ -876,56 +877,55 @@ fn parse_complex() {
                                                             ],
                                                         },
                                                     ),
-                                                    vec![],
-                                                ),
+                                                ],
+                                                sections: vec![],
                                             },
                                         ),
                                     },
                                 ],
-                            ),
-                        },
-                    ),
-                },
-            ],
-        },
-                     Body {
-                         name: Some(
-                             "notes".into(),
-                         ),
-                         lang: None,
-                         image: None,
-                         title: None,
-                         epigraphs: vec![],
-                         sections: vec![
-                             Section {
-                                 id: None,
-                                 lang: None,
-                                 content: Some(
-                                     SectionContent {
-                                         title: None,
-                                         epigraphs: vec![],
-                                         image: None,
-                                         annotation: None,
-                                         value: SectionContentValue::SectionParts(
-                                             FirstSectionPart::Paragraph(
-                                                 Paragraph {
-                                                     id: None,
-                                                     lang: None,
-                                                     style: None,
-                                                     elements: vec![
-                                                         StyleElement::Text(
-                                                             "yep".into(),
-                                                         ),
-                                                     ],
-                                                 },
-                                             ),
-                                             vec![],
-                                         ),
-                                     },
-                                 ),
-                             },
-                         ],
-                     },
+                            },
+                        ),
+                    },
+                ],
+            },
+            Body {
+                name: Some(
+                    "notes".into(),
+                ),
+                lang: None,
+                image: None,
+                title: None,
+                epigraphs: vec![],
+                sections: vec![
+                    Section {
+                        id: None,
+                        lang: None,
+                        content: Some(
+                            SectionContent {
+                                title: None,
+                                epigraphs: vec![],
+                                image: None,
+                                annotation: None,
+                                content: vec![
+                                    SectionPart::Paragraph(
+                                        Paragraph {
+                                            id: None,
+                                            lang: None,
+                                            style: None,
+                                            elements: vec![
+                                                StyleElement::Text(
+                                                    "yep".into(),
+                                                ),
+                                            ],
+                                        },
+                                    ),
+                                ],
+                                sections: vec![],
+                            },
+                        ),
+                    },
+                ],
+            },
         ],
         binaries: vec![
             Binary {
