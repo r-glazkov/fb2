@@ -1890,6 +1890,8 @@ impl Serialize for StyleElement {
 enum StyleChoice {
     #[serde(rename = "p")]
     Paragraph(Paragraph),
+    #[serde(rename = "empty-line")]
+    EmptyLine,
     #[serde(rename = "strong")]
     Strong(Style),
     #[serde(rename = "emphasis")]
@@ -1927,6 +1929,7 @@ fn parse_style_elements_permissively(choices: Vec<StyleChoice>) -> Vec<StyleElem
                     elements.extend(p.elements);
                 }
             }
+            StyleChoice::EmptyLine => {}
             StyleChoice::Strong(s) => elements.push(StyleElement::Strong(s)),
             StyleChoice::Emphasis(e) => elements.push(StyleElement::Emphasis(e)),
             StyleChoice::Style(s) => elements.push(StyleElement::Style(s)),
