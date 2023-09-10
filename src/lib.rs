@@ -2144,6 +2144,8 @@ impl Serialize for StyleElement {
 enum StyleChoice {
     #[serde(rename = "p")]
     Paragraph(Paragraph),
+    #[serde(rename = "v")]
+    StanzaLine(Paragraph),
     // skipping because difficult to encode in a readable way
     #[serde(rename = "poem")]
     Poem(Poem),
@@ -2192,6 +2194,21 @@ fn parse_style_elements_permissively(choices: Vec<StyleChoice>) -> Vec<StyleElem
                     }));
                 } else {
                     elements.extend(p.elements);
+                }
+            }
+            StyleChoice::StanzaLine(p) => {
+                let element = StyleElement::Emphasis(Style {
+                    lang: p.lang,
+                    elements: p.elements,
+                });
+                if let Some(id) = p.id {
+                    elements.push(StyleElement::Style(NamedStyle {
+                        name: id,
+                        lang: None,
+                        elements: vec![element],
+                    }));
+                } else {
+                    elements.push(element);
                 }
             }
             // it's difficult to encode an arbitrary poem
