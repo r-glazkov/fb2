@@ -1360,6 +1360,8 @@ enum CiteChoice {
     Table(Table),
     #[serde(rename = "empty-line")]
     EmptyLine,
+    #[serde(rename = "image")]
+    Image(InlineImage),
     #[serde(rename = "$text")]
     Text(String),
 }
@@ -1381,6 +1383,12 @@ impl From<CiteInternal> for Cite {
                 CiteChoice::Subtitle(s) => CiteElement::Subtitle(s),
                 CiteChoice::Table(t) => CiteElement::Table(t),
                 CiteChoice::EmptyLine => CiteElement::EmptyLine,
+                CiteChoice::Image(i) => CiteElement::Paragraph(Paragraph {
+                    id: None,
+                    lang: None,
+                    style: None,
+                    elements: vec![StyleElement::Image(i)],
+                }),
                 CiteChoice::Text(t) => CiteElement::Paragraph(Paragraph {
                     id: None,
                     lang: None,
