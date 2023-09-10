@@ -162,9 +162,10 @@ pub struct TitleInfo {
 }
 
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[serde(from = "DocumentInfoInternal")]
 pub struct DocumentInfo {
     /// Author(s) of this particular document
-    #[serde(default, rename = "author")]
+    #[serde(rename = "author")]
     pub authors: Vec<Author>,
     /// Any software used in preparation of this document, in free format
     #[serde(
@@ -178,7 +179,7 @@ pub struct DocumentInfo {
     pub date: Option<Date>,
     /// Source URL if this document is a conversion of some other (online)
     /// document
-    #[serde(default, rename = "src-url")]
+    #[serde(rename = "src-url")]
     pub src_urls: Vec<String>,
     /// Author of the original (online) document, if this is a conversion
     #[serde(
@@ -198,8 +199,55 @@ pub struct DocumentInfo {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub history: Option<Annotation>,
     /// Owner of the fb2 document copyrights
-    #[serde(default, rename = "publisher")]
+    #[serde(rename = "publisher")]
     pub publishers: Vec<Author>,
+}
+
+#[derive(Debug, PartialEq, Deserialize)]
+struct DocumentInfoInternal {
+    #[serde(default, rename = "author")]
+    authors: Vec<Author>,
+    #[serde(rename = "program-used")]
+    program_used: Option<MaybeEmptyLocalizedText>,
+    date: Option<Date>,
+    #[serde(default, rename = "src-url")]
+    src_urls: Vec<String>,
+    #[serde(rename = "src-ocr")]
+    src_ocr: Option<MaybeEmptyLocalizedText>,
+    id: Option<String>,
+    version: Option<String>,
+    history: Option<Annotation>,
+    #[serde(default, rename = "publisher")]
+    publishers: Vec<Author>,
+}
+
+impl From<DocumentInfoInternal> for DocumentInfo {
+    fn from(
+        DocumentInfoInternal {
+            authors,
+            program_used,
+            date,
+            src_urls,
+            src_ocr,
+            id,
+            version,
+            history,
+            publishers,
+        }: DocumentInfoInternal,
+    ) -> Self {
+        let version = version.and_then(|v| v.parse().ok());
+        DocumentInfo {
+            authors,
+            program_used,
+            date,
+            src_urls,
+            src_ocr,
+            id,
+            version,
+            history,
+            publishers,
+        }
+    }
 }
 
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
