@@ -1287,12 +1287,13 @@ impl From<AnnotationInternal> for Annotation {
 
 /// An epigraph
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[serde(from = "EpigraphInternal")]
 pub struct Epigraph {
     #[serde(rename = "@id", skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
-    #[serde(default, rename = "$value")]
+    #[serde(rename = "$value")]
     pub elements: Vec<EpigraphElement>,
-    #[serde(default, rename = "text-author")]
+    #[serde(rename = "text-author")]
     pub text_authors: Vec<Paragraph>,
 }
 
@@ -1306,6 +1307,75 @@ pub enum EpigraphElement {
     Cite(Cite),
     #[serde(rename = "empty-line")]
     EmptyLine,
+}
+
+#[derive(Debug, PartialEq, Deserialize)]
+struct EpigraphInternal {
+    #[serde(rename = "@id")]
+    id: Option<String>,
+    #[serde(default, rename = "$value")]
+    elements: Vec<EpigraphChoice>,
+    #[serde(default, rename = "text-author")]
+    text_authors: Vec<Paragraph>,
+}
+
+#[derive(Debug, PartialEq, Deserialize)]
+enum EpigraphChoice {
+    #[serde(rename = "p")]
+    Paragraph(Paragraph),
+    #[serde(rename = "poem")]
+    Poem(Poem),
+    #[serde(rename = "cite")]
+    Cite(Cite),
+    #[serde(rename = "stanza")]
+    Stanza(Stanza),
+    #[serde(rename = "empty-line")]
+    EmptyLine,
+}
+
+impl From<EpigraphInternal> for Epigraph {
+    fn from(
+        EpigraphInternal {
+            id,
+            elements: choices,
+            text_authors,
+        }: EpigraphInternal,
+    ) -> Self {
+        let mut elements = Vec::with_capacity(choices.len());
+        for element in choices {
+            match element {
+                EpigraphChoice::Paragraph(p) => elements.push(EpigraphElement::Paragraph(p)),
+                EpigraphChoice::Poem(p) => elements.push(EpigraphElement::Poem(p)),
+                EpigraphChoice::Cite(c) => elements.push(EpigraphElement::Cite(c)),
+                EpigraphChoice::Stanza(s) => {
+                    if let Some(title) = s.title {
+                        for element in title.elements {
+                            match element {
+                                TitleElement::Paragraph(p) => {
+                                    elements.push(EpigraphElement::Paragraph(p))
+                                }
+                                TitleElement::EmptyLine => {
+                                    elements.push(EpigraphElement::EmptyLine)
+                                }
+                            }
+                        }
+                    }
+                    if let Some(subtitle) = s.subtitle {
+                        elements.push(EpigraphElement::Paragraph(subtitle));
+                    }
+                    for line in s.lines {
+                        elements.push(EpigraphElement::Paragraph(line));
+                    }
+                }
+                EpigraphChoice::EmptyLine => elements.push(EpigraphElement::EmptyLine),
+            }
+        }
+        Epigraph {
+            id,
+            elements,
+            text_authors,
+        }
+    }
 }
 
 /// A citation with an optional citation author at the end
