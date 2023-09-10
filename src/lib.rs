@@ -1496,11 +1496,37 @@ pub struct Poem {
 }
 
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[serde(from = "PoemStanzaInternal")]
 pub enum PoemStanza {
     #[serde(rename = "subtitle")]
     Subtitle(Paragraph),
     #[serde(rename = "stanza")]
     Stanza(Stanza),
+}
+
+#[derive(Debug, PartialEq, Deserialize)]
+enum PoemStanzaInternal {
+    #[serde(rename = "p")]
+    Paragraph(Paragraph),
+    #[serde(rename = "subtitle")]
+    Subtitle(Paragraph),
+    #[serde(rename = "stanza")]
+    Stanza(Stanza),
+}
+
+impl From<PoemStanzaInternal> for PoemStanza {
+    fn from(value: PoemStanzaInternal) -> Self {
+        match value {
+            PoemStanzaInternal::Paragraph(p) => PoemStanza::Stanza(Stanza {
+                lang: None,
+                title: None,
+                subtitle: None,
+                lines: vec![p],
+            }),
+            PoemStanzaInternal::Subtitle(s) => PoemStanza::Subtitle(s),
+            PoemStanzaInternal::Stanza(s) => PoemStanza::Stanza(s),
+        }
+    }
 }
 
 /// Each poem should have at least one stanza. Stanzas are usually separated with empty lines by user
