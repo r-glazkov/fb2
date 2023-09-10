@@ -1515,6 +1515,8 @@ enum TitleChoice {
     Paragraph(Paragraph),
     #[serde(rename = "empty-line")]
     EmptyLine,
+    #[serde(rename = "image")]
+    Image(InlineImage),
     #[serde(rename = "$text")]
     Text(String),
 }
@@ -1526,6 +1528,12 @@ impl From<TitleInternal> for Title {
             .map(|element| match element {
                 TitleChoice::Paragraph(p) => TitleElement::Paragraph(p),
                 TitleChoice::EmptyLine => TitleElement::EmptyLine,
+                TitleChoice::Image(i) => TitleElement::Paragraph(Paragraph {
+                    id: None,
+                    lang: None,
+                    style: None,
+                    elements: vec![StyleElement::Image(i)],
+                }),
                 TitleChoice::Text(t) => TitleElement::Paragraph(Paragraph {
                     id: None,
                     lang: None,
