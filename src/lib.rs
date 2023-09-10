@@ -1162,6 +1162,8 @@ enum AnnotationChoice {
     Table(Table),
     #[serde(rename = "empty-line")]
     EmptyLine,
+    #[serde(rename = "i")]
+    Italics(Style),
     #[serde(rename = "$text")]
     Text(String),
 }
@@ -1177,6 +1179,12 @@ impl From<AnnotationInternal> for Annotation {
                 AnnotationChoice::Subtitle(s) => AnnotationElement::Subtitle(s),
                 AnnotationChoice::Table(t) => AnnotationElement::Table(t),
                 AnnotationChoice::EmptyLine => AnnotationElement::EmptyLine,
+                AnnotationChoice::Italics(i) => AnnotationElement::Paragraph(Paragraph {
+                    id: None,
+                    lang: None,
+                    style: None,
+                    elements: vec![StyleElement::Emphasis(i)],
+                }),
                 AnnotationChoice::Text(text) => AnnotationElement::Paragraph(Paragraph {
                     id: None,
                     lang: None,
