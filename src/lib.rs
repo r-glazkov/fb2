@@ -658,6 +658,46 @@ enum SectionChoice {
     #[serde(rename = "empty-line")]
     EmptyLine,
     // will be converted to Paragraph if occurs
+    // some real FB2 files have strong where it is prohibited
+    // so trying to fix those files without failing parsing
+    #[serde(rename = "strong")]
+    Strong(Style),
+    // will be converted to Paragraph if occurs
+    // some real FB2 files have emphasis where it is prohibited
+    // so trying to fix those files without failing parsing
+    #[serde(rename = "emphasis")]
+    Emphasis(Style),
+    // will be converted to Paragraph if occurs
+    // some real FB2 files have style where it is prohibited
+    // so trying to fix those files without failing parsing
+    #[serde(rename = "style")]
+    Style(NamedStyle),
+    // will be converted to Paragraph if occurs
+    // some real FB2 files have links where it is prohibited
+    // so trying to fix those files without failing parsing
+    #[serde(rename = "a")]
+    Link(Link),
+    // will be converted to Paragraph if occurs
+    // some real FB2 files have strikethrough where it is prohibited
+    // so trying to fix those files without failing parsing
+    #[serde(rename = "strikethrough")]
+    Strikethrough(Style),
+    // will be converted to Paragraph if occurs
+    // some real FB2 files have subscript where it is prohibited
+    // so trying to fix those files without failing parsing
+    #[serde(rename = "sub")]
+    Subscript(Style),
+    // will be converted to Paragraph if occurs
+    // some real FB2 files have superscript where it is prohibited
+    // so trying to fix those files without failing parsing
+    #[serde(rename = "sup")]
+    Superscript(Style),
+    // will be converted to Paragraph if occurs
+    // some real FB2 files have code where it is prohibited
+    // so trying to fix those files without failing parsing
+    #[serde(rename = "code")]
+    Code(Style),
+    // will be converted to Paragraph if occurs
     // some real FB2 files have text where it is prohibited
     // so trying to fix those files without failing parsing
     #[serde(rename = "$text")]
@@ -675,7 +715,7 @@ impl From<SectionInternal> for Section {
         }
         let mut iter = elements.into_iter();
         let mut element = iter.next();
-        let title = if let Some(SectionChoice::Title(t)) = element {
+        let mut title = if let Some(SectionChoice::Title(t)) = element {
             element = iter.next();
             Some(t)
         } else {
@@ -692,7 +732,7 @@ impl From<SectionInternal> for Section {
         } else {
             None
         };
-        let annotation = if let Some(SectionChoice::Annotation(a)) = element {
+        let mut annotation = if let Some(SectionChoice::Annotation(a)) = element {
             element = iter.next();
             Some(a)
         } else {
@@ -702,127 +742,26 @@ impl From<SectionInternal> for Section {
         let mut content = Vec::new();
 
         if let Some(element) = element {
-            match element {
-                SectionChoice::Title(t) => {
-                    for element in t.elements {
-                        match element {
-                            TitleElement::Paragraph(p) => content.push(SectionPart::Paragraph(p)),
-                            TitleElement::EmptyLine => content.push(SectionPart::EmptyLine),
-                        }
-                    }
-                }
-                SectionChoice::Epigraph(e) => {
-                    for element in e.elements {
-                        match element {
-                            EpigraphElement::Paragraph(p) => {
-                                content.push(SectionPart::Paragraph(p))
-                            }
-                            EpigraphElement::Poem(p) => content.push(SectionPart::Poem(p)),
-                            EpigraphElement::Cite(c) => content.push(SectionPart::Cite(c)),
-                            EpigraphElement::EmptyLine => content.push(SectionPart::EmptyLine),
-                        }
-                    }
-                }
-                SectionChoice::Image(i) => {
-                    if image.is_none() {
-                        image = Some(i);
-                    } else {
-                        content.push(SectionPart::Image(i));
-                    }
-                }
-                SectionChoice::Annotation(a) => {
-                    for element in a.elements {
-                        match element {
-                            AnnotationElement::Paragraph(p) => {
-                                content.push(SectionPart::Paragraph(p))
-                            }
-                            AnnotationElement::Poem(p) => content.push(SectionPart::Poem(p)),
-                            AnnotationElement::Cite(c) => content.push(SectionPart::Cite(c)),
-                            AnnotationElement::Subtitle(s) => {
-                                content.push(SectionPart::Subtitle(s))
-                            }
-                            AnnotationElement::Table(t) => content.push(SectionPart::Table(t)),
-                            AnnotationElement::EmptyLine => content.push(SectionPart::EmptyLine),
-                        }
-                    }
-                }
-                SectionChoice::Section(s) => sections.push(s),
-                SectionChoice::Paragraph(p) => content.push(SectionPart::Paragraph(p)),
-                SectionChoice::Poem(p) => content.push(SectionPart::Poem(p)),
-                SectionChoice::Subtitle(s) => content.push(SectionPart::Subtitle(s)),
-                SectionChoice::Cite(c) => content.push(SectionPart::Cite(c)),
-                SectionChoice::Table(t) => content.push(SectionPart::Table(t)),
-                SectionChoice::EmptyLine => content.push(SectionPart::EmptyLine),
-                // trying to fix invalid FB2 without losing information
-                SectionChoice::Text(text) => content.push(SectionPart::Paragraph(Paragraph {
-                    id: None,
-                    lang: None,
-                    style: None,
-                    elements: vec![StyleElement::Text(text)],
-                })),
-            }
+            process_section_element(
+                element,
+                &mut title,
+                &mut epigraphs,
+                &mut image,
+                &mut annotation,
+                &mut sections,
+                &mut content,
+            );
         }
-
         for element in iter {
-            match element {
-                SectionChoice::Title(t) => {
-                    for element in t.elements {
-                        match element {
-                            TitleElement::Paragraph(p) => content.push(SectionPart::Paragraph(p)),
-                            TitleElement::EmptyLine => content.push(SectionPart::EmptyLine),
-                        }
-                    }
-                }
-                SectionChoice::Epigraph(e) => {
-                    for element in e.elements {
-                        match element {
-                            EpigraphElement::Paragraph(p) => {
-                                content.push(SectionPart::Paragraph(p))
-                            }
-                            EpigraphElement::Poem(p) => content.push(SectionPart::Poem(p)),
-                            EpigraphElement::Cite(c) => content.push(SectionPart::Cite(c)),
-                            EpigraphElement::EmptyLine => content.push(SectionPart::EmptyLine),
-                        }
-                    }
-                }
-                SectionChoice::Image(i) => {
-                    if content.is_empty() && image.is_none() {
-                        image = Some(i);
-                    } else {
-                        content.push(SectionPart::Image(i));
-                    }
-                }
-                SectionChoice::Annotation(a) => {
-                    for element in a.elements {
-                        match element {
-                            AnnotationElement::Paragraph(p) => {
-                                content.push(SectionPart::Paragraph(p))
-                            }
-                            AnnotationElement::Poem(p) => content.push(SectionPart::Poem(p)),
-                            AnnotationElement::Cite(c) => content.push(SectionPart::Cite(c)),
-                            AnnotationElement::Subtitle(s) => {
-                                content.push(SectionPart::Subtitle(s))
-                            }
-                            AnnotationElement::Table(t) => content.push(SectionPart::Table(t)),
-                            AnnotationElement::EmptyLine => content.push(SectionPart::EmptyLine),
-                        }
-                    }
-                }
-                SectionChoice::Section(s) => sections.push(s),
-                SectionChoice::Paragraph(p) => content.push(SectionPart::Paragraph(p)),
-                SectionChoice::Poem(p) => content.push(SectionPart::Poem(p)),
-                SectionChoice::Subtitle(s) => content.push(SectionPart::Subtitle(s)),
-                SectionChoice::Cite(c) => content.push(SectionPart::Cite(c)),
-                SectionChoice::Table(t) => content.push(SectionPart::Table(t)),
-                SectionChoice::EmptyLine => content.push(SectionPart::EmptyLine),
-                // trying to fix invalid FB2 without losing information
-                SectionChoice::Text(text) => content.push(SectionPart::Paragraph(Paragraph {
-                    id: None,
-                    lang: None,
-                    style: None,
-                    elements: vec![StyleElement::Text(text)],
-                })),
-            }
+            process_section_element(
+                element,
+                &mut title,
+                &mut epigraphs,
+                &mut image,
+                &mut annotation,
+                &mut sections,
+                &mut content,
+            );
         }
 
         Section {
@@ -837,6 +776,138 @@ impl From<SectionInternal> for Section {
                 sections,
             }),
         }
+    }
+}
+
+fn process_section_element(
+    element: SectionChoice,
+    title: &mut Option<Title>,
+    epigraphs: &mut Vec<Epigraph>,
+    image: &mut Option<Image>,
+    annotation: &mut Option<Annotation>,
+    sections: &mut Vec<Section>,
+    content: &mut Vec<SectionPart>,
+) {
+    match element {
+        SectionChoice::Title(t) => {
+            if content.is_empty() && title.is_none() {
+                *title = Some(t);
+            } else {
+                for element in t.elements {
+                    match element {
+                        TitleElement::Paragraph(p) => content.push(SectionPart::Paragraph(p)),
+                        TitleElement::EmptyLine => content.push(SectionPart::EmptyLine),
+                    }
+                }
+            }
+        }
+        SectionChoice::Epigraph(e) => {
+            if content.is_empty() {
+                epigraphs.push(e);
+            } else {
+                for element in e.elements {
+                    match element {
+                        EpigraphElement::Paragraph(p) => content.push(SectionPart::Paragraph(p)),
+                        EpigraphElement::Poem(p) => content.push(SectionPart::Poem(p)),
+                        EpigraphElement::Cite(c) => content.push(SectionPart::Cite(c)),
+                        EpigraphElement::EmptyLine => content.push(SectionPart::EmptyLine),
+                    }
+                }
+            }
+        }
+        SectionChoice::Image(i) => {
+            if content.is_empty() && image.is_none() {
+                *image = Some(i);
+            } else {
+                content.push(SectionPart::Image(i));
+            }
+        }
+        SectionChoice::Annotation(a) => {
+            if content.is_empty() && annotation.is_none() {
+                *annotation = Some(a);
+            } else {
+                for element in a.elements {
+                    match element {
+                        AnnotationElement::Paragraph(p) => content.push(SectionPart::Paragraph(p)),
+                        AnnotationElement::Poem(p) => content.push(SectionPart::Poem(p)),
+                        AnnotationElement::Cite(c) => content.push(SectionPart::Cite(c)),
+                        AnnotationElement::Subtitle(s) => content.push(SectionPart::Subtitle(s)),
+                        AnnotationElement::Table(t) => content.push(SectionPart::Table(t)),
+                        AnnotationElement::EmptyLine => content.push(SectionPart::EmptyLine),
+                    }
+                }
+            }
+        }
+        SectionChoice::Section(s) => sections.push(s),
+        SectionChoice::Paragraph(p) => content.push(SectionPart::Paragraph(p)),
+        SectionChoice::Poem(p) => content.push(SectionPart::Poem(p)),
+        SectionChoice::Subtitle(s) => content.push(SectionPart::Subtitle(s)),
+        SectionChoice::Cite(c) => content.push(SectionPart::Cite(c)),
+        SectionChoice::Table(t) => content.push(SectionPart::Table(t)),
+        SectionChoice::EmptyLine => content.push(SectionPart::EmptyLine),
+        // trying to fix invalid FB2 without losing information
+        SectionChoice::Strong(s) => content.push(SectionPart::Paragraph(Paragraph {
+            id: None,
+            lang: None,
+            style: None,
+            elements: vec![StyleElement::Strong(s)],
+        })),
+        // trying to fix invalid FB2 without losing information
+        SectionChoice::Emphasis(e) => content.push(SectionPart::Paragraph(Paragraph {
+            id: None,
+            lang: None,
+            style: None,
+            elements: vec![StyleElement::Emphasis(e)],
+        })),
+        // trying to fix invalid FB2 without losing information
+        SectionChoice::Style(s) => content.push(SectionPart::Paragraph(Paragraph {
+            id: None,
+            lang: None,
+            style: None,
+            elements: vec![StyleElement::Style(s)],
+        })),
+        // trying to fix invalid FB2 without losing information
+        SectionChoice::Link(link) => content.push(SectionPart::Paragraph(Paragraph {
+            id: None,
+            lang: None,
+            style: None,
+            elements: vec![StyleElement::Link(link)],
+        })),
+        // trying to fix invalid FB2 without losing information
+        SectionChoice::Strikethrough(s) => content.push(SectionPart::Paragraph(Paragraph {
+            id: None,
+            lang: None,
+            style: None,
+            elements: vec![StyleElement::Strikethrough(s)],
+        })),
+        // trying to fix invalid FB2 without losing information
+        SectionChoice::Subscript(s) => content.push(SectionPart::Paragraph(Paragraph {
+            id: None,
+            lang: None,
+            style: None,
+            elements: vec![StyleElement::Subscript(s)],
+        })),
+        // trying to fix invalid FB2 without losing information
+        SectionChoice::Superscript(s) => content.push(SectionPart::Paragraph(Paragraph {
+            id: None,
+            lang: None,
+            style: None,
+            elements: vec![StyleElement::Superscript(s)],
+        })),
+        // trying to fix invalid FB2 without losing information
+        SectionChoice::Code(c) => content.push(SectionPart::Paragraph(Paragraph {
+            id: None,
+            lang: None,
+            style: None,
+            elements: vec![StyleElement::Code(c)],
+        })),
+        // trying to fix invalid FB2 without losing information
+        SectionChoice::Text(text) => content.push(SectionPart::Paragraph(Paragraph {
+            id: None,
+            lang: None,
+            style: None,
+            elements: vec![StyleElement::Text(text)],
+        })),
     }
 }
 
