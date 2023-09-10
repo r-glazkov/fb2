@@ -1543,6 +1543,8 @@ struct TitleInternal {
 enum TitleChoice {
     #[serde(rename = "p")]
     Paragraph(Paragraph),
+    #[serde(rename = "title")]
+    Title(Title),
     #[serde(rename = "empty-line")]
     EmptyLine,
     #[serde(rename = "image")]
@@ -1552,26 +1554,32 @@ enum TitleChoice {
 }
 
 impl From<TitleInternal> for Title {
-    fn from(TitleInternal { lang, elements }: TitleInternal) -> Self {
-        let elements = elements
-            .into_iter()
-            .map(|element| match element {
-                TitleChoice::Paragraph(p) => TitleElement::Paragraph(p),
-                TitleChoice::EmptyLine => TitleElement::EmptyLine,
-                TitleChoice::Image(i) => TitleElement::Paragraph(Paragraph {
+    fn from(
+        TitleInternal {
+            lang,
+            elements: choices,
+        }: TitleInternal,
+    ) -> Self {
+        let mut elements = Vec::with_capacity(choices.len());
+        for element in choices {
+            match element {
+                TitleChoice::Paragraph(p) => elements.push(TitleElement::Paragraph(p)),
+                TitleChoice::Title(t) => elements.extend(t.elements),
+                TitleChoice::EmptyLine => elements.push(TitleElement::EmptyLine),
+                TitleChoice::Image(i) => elements.push(TitleElement::Paragraph(Paragraph {
                     id: None,
                     lang: None,
                     style: None,
                     elements: vec![StyleElement::Image(i)],
-                }),
-                TitleChoice::Text(t) => TitleElement::Paragraph(Paragraph {
+                })),
+                TitleChoice::Text(t) => elements.push(TitleElement::Paragraph(Paragraph {
                     id: None,
                     lang: None,
                     style: None,
                     elements: vec![StyleElement::Text(t)],
-                }),
-            })
-            .collect();
+                })),
+            }
+        }
         Title { lang, elements }
     }
 }
