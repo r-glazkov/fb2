@@ -2145,6 +2145,9 @@ enum StyleChoice {
     #[serde(rename = "p")]
     Paragraph(Paragraph),
     // skipping because difficult to encode in a readable way
+    #[serde(rename = "poem")]
+    Poem(Poem),
+    // skipping because difficult to encode in a readable way
     #[serde(rename = "cite")]
     Cite(Cite),
     // skipping because difficult to encode in a readable way
@@ -2189,6 +2192,9 @@ fn parse_style_elements_permissively(choices: Vec<StyleChoice>) -> Vec<StyleElem
                     elements.extend(p.elements);
                 }
             }
+            // it's difficult to encode an arbitrary poem
+            // in a readable way, so skipping...
+            StyleChoice::Poem(_) => {}
             // it's difficult to encode an arbitrary cite
             // in a readable way, so skipping...
             StyleChoice::Cite(_) => {}
