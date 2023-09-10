@@ -1401,6 +1401,8 @@ enum EpigraphChoice {
     Subtitle(Paragraph),
     #[serde(rename = "emphasis")]
     Emphasis(Style),
+    #[serde(rename = "image")]
+    Image(InlineImage),
     #[serde(rename = "$text")]
     Text(String),
 }
@@ -1455,6 +1457,12 @@ impl From<EpigraphInternal> for Epigraph {
                         elements: vec![StyleElement::Emphasis(e)],
                     }))
                 }
+                EpigraphChoice::Image(i) => elements.push(EpigraphElement::Paragraph(Paragraph {
+                    id: None,
+                    lang: None,
+                    style: None,
+                    elements: vec![StyleElement::Image(i)],
+                })),
                 EpigraphChoice::Text(t) => elements.push(EpigraphElement::Paragraph(Paragraph {
                     id: None,
                     lang: None,
