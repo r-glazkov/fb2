@@ -1356,7 +1356,7 @@ pub struct Stanza {
 struct StanzaInternal {
     #[serde(rename = "@lang")]
     lang: Option<LanguageTag>,
-    #[serde(rename = "$value")]
+    #[serde(default, rename = "$value")]
     elements: Vec<StanzaChoice>,
 }
 
