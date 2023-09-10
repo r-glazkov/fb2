@@ -2101,6 +2101,12 @@ impl Serialize for StyleElement {
 enum StyleChoice {
     #[serde(rename = "p")]
     Paragraph(Paragraph),
+    // skipping because difficult to encode in a readable way
+    #[serde(rename = "cite")]
+    Cite(Cite),
+    // skipping because difficult to encode in a readable way
+    #[serde(rename = "table")]
+    Table(Table),
     #[serde(rename = "empty-line")]
     EmptyLine,
     #[serde(rename = "strong")]
@@ -2140,6 +2146,12 @@ fn parse_style_elements_permissively(choices: Vec<StyleChoice>) -> Vec<StyleElem
                     elements.extend(p.elements);
                 }
             }
+            // it's difficult to encode an arbitrary cite
+            // in a readable way, so skipping...
+            StyleChoice::Cite(_) => {}
+            // it's difficult to encode table
+            // in a readable way, so skipping...
+            StyleChoice::Table(_) => {}
             StyleChoice::EmptyLine => {}
             StyleChoice::Strong(s) => elements.push(StyleElement::Strong(s)),
             StyleChoice::Emphasis(e) => elements.push(StyleElement::Emphasis(e)),
