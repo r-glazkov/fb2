@@ -92,7 +92,7 @@ pub struct FictionBook {
 pub struct Stylesheet {
     #[serde(rename = "@type")]
     pub kind: String,
-    #[serde(rename = "$text")]
+    #[serde(default, rename = "$text")]
     pub content: String,
 }
 
