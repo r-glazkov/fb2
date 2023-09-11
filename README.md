@@ -8,7 +8,7 @@ This model tries to follow the third approach where it makes sense.
 The library model almost conforms to the [standard XSD schema](https://github.com/gribuser/fb2)
 with a few exceptions:
 
-- the first section content element can have be an image
+- the first section content element can be an image
 - sections can have both content and nested sections
 - most fields are optional contrary to the XSD schema
 - validation of strings is not performed besides structured dates, versions, sequence number, and language tags
