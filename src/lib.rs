@@ -974,6 +974,9 @@ struct SectionInternal {
 
 #[derive(Deserialize)]
 enum SectionChoice {
+    // tricky to encode in a single section, skipping
+    #[serde(rename = "body")]
+    Body(Body),
     #[serde(rename = "title")]
     Title(Title),
     #[serde(rename = "epigraph")]
@@ -1137,6 +1140,8 @@ fn process_section_element(
     content: &mut Vec<SectionPart>,
 ) {
     match element {
+        // tricky to encode in a single section, skipping
+        SectionChoice::Body(_) => {}
         SectionChoice::Title(t) => {
             if content.is_empty() && title.is_none() {
                 *title = Some(t);
