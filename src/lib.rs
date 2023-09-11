@@ -2197,6 +2197,8 @@ enum StyleChoice {
     StanzaLine(Paragraph),
     #[serde(rename = "text-author")]
     TextAuthor(Paragraph),
+    #[serde(rename = "title")]
+    Title(Title),
     // skipping because difficult to encode in a readable way
     #[serde(rename = "poem")]
     Poem(Poem),
@@ -2275,6 +2277,28 @@ fn parse_style_elements_permissively(choices: Vec<StyleChoice>) -> Vec<StyleElem
                     }));
                 } else {
                     elements.push(element);
+                }
+            }
+            StyleChoice::Title(t) => {
+                for element in t.elements {
+                    match element {
+                        TitleElement::Paragraph(p) => {
+                            let element = StyleElement::Strong(Style {
+                                lang: p.lang,
+                                elements: p.elements,
+                            });
+                            if let Some(id) = p.id {
+                                elements.push(StyleElement::Style(NamedStyle {
+                                    name: id,
+                                    lang: None,
+                                    elements: vec![element],
+                                }));
+                            } else {
+                                elements.push(element);
+                            }
+                        }
+                        TitleElement::EmptyLine => {}
+                    }
                 }
             }
             // it's difficult to encode an arbitrary poem
