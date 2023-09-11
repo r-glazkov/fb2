@@ -1704,6 +1704,8 @@ enum StanzaChoice {
     Image(InlineImage),
     #[serde(rename = "empty-line")]
     EmptyLine,
+    #[serde(rename = "$text")]
+    Text(String),
 }
 
 impl From<StanzaInternal> for Stanza {
@@ -1781,6 +1783,12 @@ fn process_stanza_element(
             elements: vec![StyleElement::Image(i)],
         }),
         StanzaChoice::EmptyLine => {}
+        StanzaChoice::Text(t) => lines.push(Paragraph {
+            id: None,
+            lang: None,
+            style: None,
+            elements: vec![StyleElement::Text(t)],
+        }),
     }
 }
 
