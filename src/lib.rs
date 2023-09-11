@@ -977,6 +977,8 @@ enum SectionChoice {
     Table(Table),
     #[serde(rename = "empty-line")]
     EmptyLine,
+    #[serde(rename = "stanza")]
+    Stanza(Stanza),
     // will be converted to Paragraph if occurs
     // some real FB2 files have text authors where it is prohibited
     // so trying to fix those files without failing parsing
@@ -1170,6 +1172,15 @@ fn process_section_element(
         SectionChoice::Cite(c) => content.push(SectionPart::Cite(c)),
         SectionChoice::Table(t) => content.push(SectionPart::Table(t)),
         SectionChoice::EmptyLine => content.push(SectionPart::EmptyLine),
+        SectionChoice::Stanza(s) => content.push(SectionPart::Poem(Poem {
+            id: None,
+            lang: None,
+            title: None,
+            epigraphs: vec![],
+            stanzas: vec![PoemStanza::Stanza(s)],
+            text_authors: vec![],
+            date: None,
+        })),
         // trying to fix invalid FB2 without losing information
         SectionChoice::TextAuthor(p) => content.push(SectionPart::Paragraph(p)),
         // trying to fix invalid FB2 without losing information
