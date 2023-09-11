@@ -1323,6 +1323,8 @@ enum AnnotationChoice {
     Table(Table),
     #[serde(rename = "empty-line")]
     EmptyLine,
+    #[serde(rename = "title")]
+    Title(Title),
     #[serde(rename = "image")]
     Image(InlineImage),
     #[serde(rename = "i")]
@@ -1351,6 +1353,16 @@ impl From<AnnotationInternal> for Annotation {
                 AnnotationChoice::Subtitle(s) => elements.push(AnnotationElement::Subtitle(s)),
                 AnnotationChoice::Table(t) => elements.push(AnnotationElement::Table(t)),
                 AnnotationChoice::EmptyLine => elements.push(AnnotationElement::EmptyLine),
+                AnnotationChoice::Title(t) => {
+                    for element in t.elements {
+                        match element {
+                            TitleElement::Paragraph(p) => {
+                                elements.push(AnnotationElement::Paragraph(p))
+                            }
+                            TitleElement::EmptyLine => elements.push(AnnotationElement::EmptyLine),
+                        }
+                    }
+                }
                 AnnotationChoice::Image(i) => {
                     elements.push(AnnotationElement::Paragraph(Paragraph {
                         id: None,
