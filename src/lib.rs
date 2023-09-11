@@ -1317,6 +1317,9 @@ struct AnnotationInternal {
 
 #[derive(Deserialize)]
 enum AnnotationChoice {
+    // tricky to encode in annotation, skipping
+    #[serde(rename = "body")]
+    Body(Body),
     #[serde(rename = "annotation")]
     Annotation(Annotation),
     #[serde(rename = "p")]
@@ -1356,6 +1359,8 @@ impl From<AnnotationInternal> for Annotation {
         let mut elements = Vec::with_capacity(choices.len());
         for element in choices {
             match element {
+                // tricky to encode in annotation, skipping
+                AnnotationChoice::Body(_) => {}
                 AnnotationChoice::Annotation(a) => elements.extend(a.elements),
                 AnnotationChoice::Paragraph(p) => elements.push(AnnotationElement::Paragraph(p)),
                 AnnotationChoice::Poem(p) => elements.push(AnnotationElement::Poem(p)),
