@@ -2195,6 +2195,8 @@ enum StyleChoice {
     Paragraph(Paragraph),
     #[serde(rename = "v")]
     StanzaLine(Paragraph),
+    #[serde(rename = "text-author")]
+    TextAuthor(Paragraph),
     // skipping because difficult to encode in a readable way
     #[serde(rename = "poem")]
     Poem(Poem),
@@ -2246,6 +2248,21 @@ fn parse_style_elements_permissively(choices: Vec<StyleChoice>) -> Vec<StyleElem
                 }
             }
             StyleChoice::StanzaLine(p) => {
+                let element = StyleElement::Emphasis(Style {
+                    lang: p.lang,
+                    elements: p.elements,
+                });
+                if let Some(id) = p.id {
+                    elements.push(StyleElement::Style(NamedStyle {
+                        name: id,
+                        lang: None,
+                        elements: vec![element],
+                    }));
+                } else {
+                    elements.push(element);
+                }
+            }
+            StyleChoice::TextAuthor(p) => {
                 let element = StyleElement::Emphasis(Style {
                     lang: p.lang,
                     elements: p.elements,
