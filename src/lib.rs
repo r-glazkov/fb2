@@ -201,7 +201,7 @@ pub struct DocumentInfo {
     pub publishers: Vec<Author>,
 }
 
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Deserialize)]
 struct DocumentInfoInternal {
     #[serde(default, rename = "author")]
     authors: Vec<Author>,
@@ -272,7 +272,7 @@ pub struct PublishInfo {
     pub sequences: Vec<Sequence>,
 }
 
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Deserialize)]
 struct PublishInfoInternal {
     #[serde(rename = "book-name")]
     book_name: Option<LocalizedText>,
@@ -418,7 +418,7 @@ pub struct Body {
     pub sections: Vec<Section>,
 }
 
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Deserialize)]
 struct BodyInternal {
     #[serde(rename = "@name")]
     name: Option<String>,
@@ -428,7 +428,7 @@ struct BodyInternal {
     elements: Vec<BodyChoice>,
 }
 
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Deserialize)]
 enum BodyChoice {
     #[serde(rename = "body")]
     Body(Body),
@@ -700,7 +700,7 @@ pub struct Sequence {
     pub sequences: Vec<Sequence>,
 }
 
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Deserialize)]
 struct SequenceInternal {
     #[serde(rename = "@name")]
     name: Option<String>,
@@ -774,7 +774,7 @@ impl From<GenreWithMatchInternal> for GenreWithMatch {
     }
 }
 
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Deserialize)]
 struct GenreWithMatchInternal {
     #[serde(rename = "@match")]
     pub match_percentage: Option<String>,
@@ -841,7 +841,7 @@ pub struct AnonymousAuthorDetails {
     pub id: Option<String>,
 }
 
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Deserialize)]
 struct AuthorInternal {
     #[serde(rename = "first-name")]
     first_name: Option<LocalizedText>,
@@ -962,7 +962,7 @@ pub enum SectionPart {
 }
 
 /// A basic block of a book, can contain more child sections or textual content
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Deserialize)]
 struct SectionInternal {
     #[serde(rename = "@id")]
     id: Option<String>,
@@ -972,7 +972,7 @@ struct SectionInternal {
     elements: Vec<SectionChoice>,
 }
 
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Deserialize)]
 enum SectionChoice {
     #[serde(rename = "title")]
     Title(Title),
@@ -1297,7 +1297,7 @@ pub enum AnnotationElement {
 }
 
 /// A cut-down version of section used in annotations
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Deserialize)]
 struct AnnotationInternal {
     #[serde(rename = "@id")]
     id: Option<String>,
@@ -1307,7 +1307,7 @@ struct AnnotationInternal {
     elements: Vec<AnnotationChoice>,
 }
 
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Deserialize)]
 enum AnnotationChoice {
     #[serde(rename = "annotation")]
     Annotation(Annotation),
@@ -1418,7 +1418,7 @@ pub enum EpigraphElement {
     EmptyLine,
 }
 
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Deserialize)]
 struct EpigraphInternal {
     #[serde(rename = "@id")]
     id: Option<String>,
@@ -1428,7 +1428,7 @@ struct EpigraphInternal {
     text_authors: Vec<Paragraph>,
 }
 
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Deserialize)]
 enum EpigraphChoice {
     #[serde(rename = "epigraph")]
     Epigraph(Epigraph),
@@ -1555,7 +1555,7 @@ pub enum CiteElement {
     EmptyLine,
 }
 
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Deserialize)]
 struct CiteInternal {
     #[serde(rename = "@id")]
     id: Option<String>,
@@ -1567,7 +1567,7 @@ struct CiteInternal {
     text_authors: Vec<Paragraph>,
 }
 
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Deserialize)]
 enum CiteChoice {
     #[serde(rename = "p")]
     Paragraph(Paragraph),
@@ -1653,7 +1653,7 @@ pub enum PoemStanza {
     Stanza(Stanza),
 }
 
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Deserialize)]
 enum PoemStanzaInternal {
     #[serde(rename = "p")]
     Paragraph(Paragraph),
@@ -1709,7 +1709,7 @@ pub struct Stanza {
     pub lines: Vec<Paragraph>,
 }
 
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Deserialize)]
 struct StanzaInternal {
     #[serde(rename = "@lang")]
     lang: Option<LanguageTag>,
@@ -1717,7 +1717,7 @@ struct StanzaInternal {
     elements: Vec<StanzaChoice>,
 }
 
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Deserialize)]
 enum StanzaChoice {
     #[serde(rename = "p")]
     Paragraph(Paragraph),
@@ -1841,7 +1841,7 @@ pub enum TitleElement {
     EmptyLine,
 }
 
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Deserialize)]
 struct TitleInternal {
     #[serde(rename = "@lang")]
     lang: Option<LanguageTag>,
@@ -1849,7 +1849,7 @@ struct TitleInternal {
     elements: Vec<TitleChoice>,
 }
 
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Deserialize)]
 enum TitleChoice {
     #[serde(rename = "p")]
     Paragraph(Paragraph),
@@ -1911,7 +1911,7 @@ pub struct Paragraph {
     pub elements: Vec<StyleElement>,
 }
 
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Deserialize)]
 struct ParagraphInternal {
     #[serde(rename = "@id")]
     id: Option<String>,
@@ -2000,7 +2000,7 @@ pub struct TableCell {
     pub elements: Vec<StyleElement>,
 }
 
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Deserialize)]
 struct TableCellInternal {
     #[serde(rename = "@id")]
     id: Option<String>,
@@ -2092,7 +2092,7 @@ pub struct NamedStyle {
     pub elements: Vec<StyleElement>,
 }
 
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Deserialize)]
 struct NamedStyleInternal {
     #[serde(rename = "@name")]
     name: String,
@@ -2128,7 +2128,7 @@ pub struct Style {
     pub elements: Vec<StyleElement>,
 }
 
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Deserialize)]
 struct StyleInternal {
     #[serde(rename = "@lang")]
     lang: Option<LanguageTag>,
@@ -2220,7 +2220,7 @@ impl Serialize for StyleElement {
     }
 }
 
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Deserialize)]
 enum StyleChoice {
     #[serde(rename = "p")]
     Paragraph(Paragraph),
@@ -2490,7 +2490,7 @@ pub struct Date {
     pub display_date: Option<String>,
 }
 
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Deserialize)]
 struct DateInternal {
     #[serde(rename = "@lang")]
     lang: Option<LanguageTag>,
