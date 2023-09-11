@@ -2277,6 +2277,9 @@ enum StyleChoice {
     #[serde(rename = "title")]
     Title(Title),
     // skipping because difficult to encode in a readable way
+    #[serde(rename = "body")]
+    Body(Body),
+    // skipping because difficult to encode in a readable way
     #[serde(rename = "stanza")]
     Stanza(Stanza),
     // skipping because difficult to encode in a readable way
@@ -2381,6 +2384,9 @@ fn parse_style_elements_permissively(choices: Vec<StyleChoice>) -> Vec<StyleElem
                     }
                 }
             }
+            // it's difficult to encode an arbitrary body
+            // in a readable way, so skipping...
+            StyleChoice::Body(_) => {}
             // it's difficult to encode an arbitrary poem
             // in a readable way, so skipping...
             StyleChoice::Stanza(_) => {}
