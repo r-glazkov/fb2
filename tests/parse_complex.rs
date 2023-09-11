@@ -223,14 +223,14 @@ fn parse_complex() {
                 ],
                 sequences: vec![
                     Sequence {
-                        name: "Книга, чё".into(),
+                        name: Some("Книга, чё".into()),
                         number: Some(
                             1,
                         ),
                         lang: Some(LanguageTag::parse("ru").unwrap()),
                         sequences: vec![
                             Sequence {
-                                name: "Два".into(),
+                                name: Some("Два".into()),
                                 number: Some(
                                     2,
                                 ),
@@ -238,7 +238,7 @@ fn parse_complex() {
                                 sequences: vec![],
                             },
                             Sequence {
-                                name: "Three".into(),
+                                name: Some("Three".into()),
                                 number: Some(
                                     3,
                                 ),
@@ -248,14 +248,14 @@ fn parse_complex() {
                         ],
                     },
                     Sequence {
-                        name: "Зачем это нужно".into(),
+                        name: Some("Зачем это нужно".into()),
                         number: Some(
                             1,
                         ),
                         lang: Some(LanguageTag::parse("ru-KZ").unwrap()),
                         sequences: vec![
                             Sequence {
-                                name: "Два".into(),
+                                name: Some("Два".into()),
                                 number: Some(
                                     2,
                                 ),
@@ -263,7 +263,7 @@ fn parse_complex() {
                                 sequences: vec![],
                             },
                             Sequence {
-                                name: "Three".into(),
+                                name: Some("Three".into()),
                                 number: Some(
                                     3,
                                 ),
@@ -391,7 +391,7 @@ fn parse_complex() {
                     ),
                     sequences: vec![
                         Sequence {
-                            name: "Очередная последовательность".into(),
+                            name: Some("Очередная последовательность".into()),
                             number: Some(
                                 6,
                             ),
@@ -399,14 +399,14 @@ fn parse_complex() {
                             sequences: vec![],
                         },
                         Sequence {
-                            name: "Очередная посредственность".into(),
+                            name: Some("Очередная посредственность".into()),
                             number: Some(
                                 7,
                             ),
                             lang: Some(LanguageTag::parse("ru").unwrap()),
                             sequences: vec![
                                 Sequence {
-                                    name: "yep".into(),
+                                    name: Some("yep".into()),
                                     number: Some(
                                         8,
                                     ),
@@ -414,7 +414,7 @@ fn parse_complex() {
                                     sequences: vec![],
                                 },
                                 Sequence {
-                                    name: "nope".into(),
+                                    name: Some("nope".into()),
                                     number: Some(
                                         9,
                                     ),
