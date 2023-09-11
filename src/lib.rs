@@ -1760,6 +1760,8 @@ enum StanzaChoice {
     Image(InlineImage),
     #[serde(rename = "empty-line")]
     EmptyLine,
+    #[serde(rename = "text-author")]
+    TextAuthor(Paragraph),
     #[serde(rename = "$text")]
     Text(String),
 }
@@ -1838,6 +1840,7 @@ fn process_stanza_element(
             style: None,
             elements: vec![StyleElement::Image(i)],
         }),
+        StanzaChoice::TextAuthor(p) => lines.push(p),
         StanzaChoice::EmptyLine => {}
         StanzaChoice::Text(t) => lines.push(Paragraph {
             id: None,
