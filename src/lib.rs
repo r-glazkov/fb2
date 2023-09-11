@@ -452,6 +452,8 @@ enum BodyChoice {
     Poem(Poem),
     #[serde(rename = "empty-line")]
     EmptyLine,
+    #[serde(rename = "$text")]
+    Text(String),
 }
 
 impl From<BodyInternal> for Body {
@@ -661,6 +663,23 @@ fn process_body_element(
                 image: None,
                 annotation: None,
                 content: vec![SectionPart::EmptyLine],
+                sections: vec![],
+            }),
+        }),
+        BodyChoice::Text(t) => sections.push(Section {
+            id: None,
+            lang: None,
+            content: Some(SectionContent {
+                title: None,
+                epigraphs: vec![],
+                image: None,
+                annotation: None,
+                content: vec![SectionPart::Paragraph(Paragraph {
+                    id: None,
+                    lang: None,
+                    style: None,
+                    elements: vec![StyleElement::Text(t)],
+                })],
                 sections: vec![],
             }),
         }),
