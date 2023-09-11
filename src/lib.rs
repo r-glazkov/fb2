@@ -1630,6 +1630,8 @@ enum PoemStanzaInternal {
     Subtitle(Paragraph),
     #[serde(rename = "stanza")]
     Stanza(Stanza),
+    #[serde(rename = "v")]
+    StanzaLine(Paragraph),
 }
 
 impl From<PoemStanzaInternal> for PoemStanza {
@@ -1643,6 +1645,12 @@ impl From<PoemStanzaInternal> for PoemStanza {
             }),
             PoemStanzaInternal::Subtitle(s) => PoemStanza::Subtitle(s),
             PoemStanzaInternal::Stanza(s) => PoemStanza::Stanza(s),
+            PoemStanzaInternal::StanzaLine(s) => PoemStanza::Stanza(Stanza {
+                lang: None,
+                title: None,
+                subtitle: None,
+                lines: vec![s],
+            }),
         }
     }
 }
