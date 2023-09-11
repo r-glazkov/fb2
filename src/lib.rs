@@ -1325,6 +1325,8 @@ enum AnnotationChoice {
     EmptyLine,
     #[serde(rename = "title")]
     Title(Title),
+    #[serde(rename = "stanza")]
+    Stanza(Stanza),
     #[serde(rename = "image")]
     Image(InlineImage),
     #[serde(rename = "i")]
@@ -1361,6 +1363,26 @@ impl From<AnnotationInternal> for Annotation {
                             }
                             TitleElement::EmptyLine => elements.push(AnnotationElement::EmptyLine),
                         }
+                    }
+                }
+                AnnotationChoice::Stanza(s) => {
+                    if let Some(title) = s.title {
+                        for element in title.elements {
+                            match element {
+                                TitleElement::Paragraph(p) => {
+                                    elements.push(AnnotationElement::Paragraph(p))
+                                }
+                                TitleElement::EmptyLine => {
+                                    elements.push(AnnotationElement::EmptyLine)
+                                }
+                            }
+                        }
+                    }
+                    if let Some(p) = s.subtitle {
+                        elements.push(AnnotationElement::Paragraph(p));
+                    }
+                    for line in s.lines {
+                        elements.push(AnnotationElement::Paragraph(line));
                     }
                 }
                 AnnotationChoice::Image(i) => {
