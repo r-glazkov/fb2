@@ -998,6 +998,8 @@ enum SectionChoice {
     EmptyLine,
     #[serde(rename = "stanza")]
     Stanza(Stanza),
+    #[serde(rename = "v")]
+    StanzaLine(Paragraph),
     // will be converted to Paragraph if occurs
     // some real FB2 files have text authors where it is prohibited
     // so trying to fix those files without failing parsing
@@ -1200,6 +1202,7 @@ fn process_section_element(
             text_authors: vec![],
             date: None,
         })),
+        SectionChoice::StanzaLine(s) => content.push(SectionPart::Paragraph(s)),
         // trying to fix invalid FB2 without losing information
         SectionChoice::TextAuthor(p) => content.push(SectionPart::Paragraph(p)),
         // trying to fix invalid FB2 without losing information
