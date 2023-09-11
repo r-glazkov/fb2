@@ -2283,7 +2283,7 @@ fn parse_style_elements_permissively(choices: Vec<StyleChoice>) -> Vec<StyleElem
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
 pub struct Link {
     #[serde(rename = "@href")]
-    pub href: String,
+    pub href: Option<String>,
     #[serde(rename = "@type", skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
     #[serde(default, rename = "$value")]
