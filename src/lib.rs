@@ -2199,6 +2199,45 @@ impl From<StyleInternal> for Style {
     }
 }
 
+trait NoneIfUseless {
+    fn none_if_useless(self) -> Option<Self>
+    where
+        Self: Sized;
+}
+
+impl<T: NoneIfUseless> NoneIfUseless for Vec<T> {
+    fn none_if_useless(self) -> Option<Self> {
+        Some(
+            self.into_iter()
+                .filter_map(T::none_if_useless)
+                .collect::<Vec<_>>(),
+        )
+        .filter(|result| !result.is_empty())
+    }
+}
+
+impl NoneIfUseless for String {
+    fn none_if_useless(self) -> Option<Self> {
+        // we don't trim, this is already done by quick-xml
+        // String::trim() may also remove extra characters like NBSP \u{a0}
+        if self.is_empty() {
+            None
+        } else {
+            Some(self)
+        }
+    }
+}
+
+impl NoneIfUseless for Style {
+    fn none_if_useless(self) -> Option<Self> {
+        let elements = self.elements.none_if_useless()?;
+        Some(Style {
+            lang: self.lang,
+            elements,
+        })
+    }
+}
+
 /// Markup
 #[derive(Debug, PartialEq)]
 pub enum StyleElement {
@@ -2212,6 +2251,212 @@ pub enum StyleElement {
     Code(Style),
     Image(InlineImage),
     Text(String),
+}
+
+impl StyleElement {
+    fn prepend_whitespace(&mut self) {
+        use StyleElement::*;
+        match self {
+            Strong(s) => {
+                if let Some(e) = s.elements.first_mut() {
+                    e.prepend_whitespace();
+                }
+            }
+            Emphasis(e) => {
+                if let Some(e) = e.elements.first_mut() {
+                    e.prepend_whitespace();
+                }
+            }
+            Style(s) => {
+                if let Some(e) = s.elements.first_mut() {
+                    e.prepend_whitespace();
+                }
+            }
+            Link(l) => {
+                if let Some(e) = l.elements.first_mut() {
+                    e.prepend_whitespace();
+                }
+            }
+            Strikethrough(s) => {
+                if let Some(e) = s.elements.first_mut() {
+                    e.prepend_whitespace();
+                }
+            }
+            Subscript(s) => {
+                if let Some(e) = s.elements.first_mut() {
+                    e.prepend_whitespace();
+                }
+            }
+            Superscript(s) => {
+                if let Some(e) = s.elements.first_mut() {
+                    e.prepend_whitespace();
+                }
+            }
+            Code(c) => {
+                if let Some(e) = c.elements.first_mut() {
+                    e.prepend_whitespace();
+                }
+            }
+            Image(_) => {}
+            Text(t) => {
+                if t.trim_start() == t {
+                    t.insert(0, ' ');
+                }
+            }
+        }
+    }
+
+    fn append_whitespace(&mut self) {
+        use StyleElement::*;
+        match self {
+            Strong(s) => {
+                if let Some(e) = s.elements.last_mut() {
+                    e.append_whitespace();
+                }
+            }
+            Emphasis(e) => {
+                if let Some(e) = e.elements.last_mut() {
+                    e.append_whitespace();
+                }
+            }
+            Style(s) => {
+                if let Some(e) = s.elements.last_mut() {
+                    e.append_whitespace();
+                }
+            }
+            Link(l) => {
+                if let Some(e) = l.elements.last_mut() {
+                    e.append_whitespace();
+                }
+            }
+            Strikethrough(s) => {
+                if let Some(e) = s.elements.last_mut() {
+                    e.append_whitespace();
+                }
+            }
+            Subscript(s) => {
+                if let Some(e) = s.elements.last_mut() {
+                    e.append_whitespace();
+                }
+            }
+            Superscript(s) => {
+                if let Some(e) = s.elements.last_mut() {
+                    e.append_whitespace();
+                }
+            }
+            Code(c) => {
+                if let Some(e) = c.elements.last_mut() {
+                    e.append_whitespace();
+                }
+            }
+            Image(_) => {}
+            Text(t) => {
+                if t.trim_end() == t {
+                    t.push(' ');
+                }
+            }
+        }
+    }
+}
+
+impl NoneIfUseless for StyleElement {
+    fn none_if_useless(self) -> Option<Self> {
+        use StyleElement::*;
+        match self {
+            Strong(s) => s.none_if_useless().map(Strong),
+            Emphasis(e) => e.none_if_useless().map(Emphasis),
+            Style(NamedStyle {
+                name,
+                lang,
+                elements,
+            }) => elements.none_if_useless().map(|elements| {
+                Style(NamedStyle {
+                    name,
+                    lang,
+                    elements,
+                })
+            }),
+            Link(l) => Some(Link(l)),
+            Strikethrough(s) => s.none_if_useless().map(Strikethrough),
+            Subscript(s) => s.none_if_useless().map(Subscript),
+            Superscript(s) => s.none_if_useless().map(Superscript),
+            Code(c) => c.none_if_useless().map(Code),
+            Image(i) => Some(Image(i)),
+            Text(t) => t.none_if_useless().map(Text),
+        }
+    }
+}
+
+fn fix_whitespaces(mut elements: Vec<StyleElement>) -> Vec<StyleElement> {
+    use StyleElement::*;
+    elements = elements
+        .into_iter()
+        .map(|e| match e {
+            Strong(mut s) => {
+                s.elements = fix_whitespaces(s.elements);
+                Strong(s)
+            }
+            Emphasis(mut s) => {
+                s.elements = fix_whitespaces(s.elements);
+                Emphasis(s)
+            }
+            Style(mut s) => {
+                s.elements = fix_whitespaces(s.elements);
+                Style(s)
+            }
+            Link(l) => Link(l),
+            Strikethrough(mut s) => {
+                s.elements = fix_whitespaces(s.elements);
+                Strikethrough(s)
+            }
+            Subscript(mut s) => {
+                s.elements = fix_whitespaces(s.elements);
+                Subscript(s)
+            }
+            Superscript(mut s) => {
+                s.elements = fix_whitespaces(s.elements);
+                Superscript(s)
+            }
+            Code(mut c) => {
+                c.elements = fix_whitespaces(c.elements);
+                Code(c)
+            }
+            Image(i) => Image(i),
+            Text(t) => Text(t),
+        })
+        .collect();
+
+    let mut decisions = vec![];
+    for w in elements.windows(2) {
+        decisions.push(match (&w[0], &w[1]) {
+            (_, Subscript(_)) | (_, Superscript(_)) | (Image(_), _) | (_, Image(_)) => 0,
+            (Subscript(_), _) | (Superscript(_), _) => 2,
+            (_, Link(_)) => 1,
+            (Link(_), _) => 2,
+            (_, Strikethrough(_)) => 1,
+            (Strikethrough(_), _) => 2,
+            (_, Code(_)) => 1,
+            (Code(_), _) => 2,
+            (_, Strong(_)) => 1,
+            (Strong(_), _) => 2,
+            (_, Emphasis(_)) => 1,
+            (Emphasis(_), _) => 2,
+            (_, Style(_)) => 1,
+            (Style(_), _) => 2,
+            (Text(_), Text(_)) => 1,
+        });
+    }
+
+    for (i, decision) in decisions.into_iter().enumerate() {
+        match decision {
+            0 => {}
+            1 => elements[i].append_whitespace(),
+            2 => elements[i + 1].prepend_whitespace(),
+            _ => {}
+        }
+    }
+
+    elements
 }
 
 impl Serialize for StyleElement {
@@ -2423,19 +2668,118 @@ fn parse_style_elements_permissively(choices: Vec<StyleChoice>) -> Vec<StyleElem
             StyleChoice::Text(t) => elements.push(StyleElement::Text(t)),
         }
     }
-    elements
+    let elements = elements.none_if_useless().unwrap_or_default();
+    fix_whitespaces(elements)
 }
 
 /// Generic hyperlinks. Cannot be nested. Footnotes should be implemented by links referring to additional bodies
 /// in the same document
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[serde(from = "LinkInternal")]
 pub struct Link {
     #[serde(rename = "@href")]
     pub href: Option<String>,
     #[serde(rename = "@type", skip_serializing_if = "Option::is_none")]
     pub kind: Option<String>,
-    #[serde(default, rename = "$value")]
+    #[serde(rename = "$value")]
     pub elements: Vec<StyleLinkElement>,
+}
+
+impl From<LinkInternal> for Link {
+    fn from(
+        LinkInternal {
+            href,
+            kind,
+            mut elements,
+        }: LinkInternal,
+    ) -> Self {
+        elements = elements.none_if_useless().unwrap_or_default();
+        elements = fix_whitespaces_link(elements);
+        Link {
+            href,
+            kind,
+            elements,
+        }
+    }
+}
+
+#[derive(Debug, PartialEq, Deserialize)]
+struct LinkInternal {
+    #[serde(rename = "@href")]
+    href: Option<String>,
+    #[serde(rename = "@type")]
+    kind: Option<String>,
+    #[serde(default, rename = "$value")]
+    elements: Vec<StyleLinkElement>,
+}
+
+fn fix_whitespaces_link(mut elements: Vec<StyleLinkElement>) -> Vec<StyleLinkElement> {
+    use StyleLinkElement::*;
+    elements = elements
+        .into_iter()
+        .map(|e| match e {
+            Strong { mut elements } => {
+                elements = fix_whitespaces_link(elements);
+                Strong { elements }
+            }
+            Emphasis { mut elements } => {
+                elements = fix_whitespaces_link(elements);
+                Emphasis { elements }
+            }
+            Style { mut elements } => {
+                elements = fix_whitespaces_link(elements);
+                Style { elements }
+            }
+            Strikethrough { mut elements } => {
+                elements = fix_whitespaces_link(elements);
+                Strikethrough { elements }
+            }
+            Subscript { mut elements } => {
+                elements = fix_whitespaces_link(elements);
+                Subscript { elements }
+            }
+            Superscript { mut elements } => {
+                elements = fix_whitespaces_link(elements);
+                Superscript { elements }
+            }
+            Code { mut elements } => {
+                elements = fix_whitespaces_link(elements);
+                Code { elements }
+            }
+            Image(i) => Image(i),
+            Text(t) => Text(t),
+        })
+        .collect();
+
+    let mut decisions = vec![];
+    for w in elements.windows(2) {
+        decisions.push(match (&w[0], &w[1]) {
+            (_, Subscript { .. }) | (_, Superscript { .. }) | (Image(_), _) | (_, Image(_)) => 0,
+            (Subscript { .. }, _) | (Superscript { .. }, _) => 2,
+            (_, Strikethrough { .. }) => 1,
+            (Strikethrough { .. }, _) => 2,
+            (_, Code { .. }) => 1,
+            (Code { .. }, _) => 2,
+            (_, Strong { .. }) => 1,
+            (Strong { .. }, _) => 2,
+            (_, Emphasis { .. }) => 1,
+            (Emphasis { .. }, _) => 2,
+            (_, Style { .. }) => 1,
+            (Style { .. }, _) => 2,
+            (Text(_), Text(_)) => 1,
+        });
+    }
+
+    for (i, decision) in decisions.into_iter().enumerate() {
+        match decision {
+            0 => {}
+            1 => elements[i].append_whitespace(),
+            2 => elements[i + 1].prepend_whitespace(),
+            _ => {}
+        }
+    }
+
+    elements
 }
 
 /// Markup
@@ -2480,6 +2824,131 @@ pub enum StyleLinkElement {
     Image(InlineImage),
     #[serde(rename = "$text")]
     Text(String),
+}
+
+impl NoneIfUseless for StyleLinkElement {
+    fn none_if_useless(self) -> Option<Self> {
+        use StyleLinkElement::*;
+        match self {
+            Strong { elements } => elements
+                .none_if_useless()
+                .map(|elements| Strong { elements }),
+            Emphasis { elements } => elements
+                .none_if_useless()
+                .map(|elements| Emphasis { elements }),
+            Style { elements } => elements
+                .none_if_useless()
+                .map(|elements| Style { elements }),
+            Strikethrough { elements } => elements
+                .none_if_useless()
+                .map(|elements| Strikethrough { elements }),
+            Subscript { elements } => elements
+                .none_if_useless()
+                .map(|elements| Subscript { elements }),
+            Superscript { elements } => elements
+                .none_if_useless()
+                .map(|elements| Superscript { elements }),
+            Code { elements } => elements.none_if_useless().map(|elements| Code { elements }),
+            Image(i) => Some(Image(i)),
+            Text(t) => t.none_if_useless().map(Text),
+        }
+    }
+}
+
+impl StyleLinkElement {
+    fn prepend_whitespace(&mut self) {
+        use StyleLinkElement::*;
+        match self {
+            Strong { elements } => {
+                if let Some(e) = elements.first_mut() {
+                    e.prepend_whitespace();
+                }
+            }
+            Emphasis { elements } => {
+                if let Some(e) = elements.first_mut() {
+                    e.prepend_whitespace();
+                }
+            }
+            Style { elements } => {
+                if let Some(e) = elements.first_mut() {
+                    e.prepend_whitespace();
+                }
+            }
+            Strikethrough { elements } => {
+                if let Some(e) = elements.first_mut() {
+                    e.prepend_whitespace();
+                }
+            }
+            Subscript { elements } => {
+                if let Some(e) = elements.first_mut() {
+                    e.prepend_whitespace();
+                }
+            }
+            Superscript { elements } => {
+                if let Some(e) = elements.first_mut() {
+                    e.prepend_whitespace();
+                }
+            }
+            Code { elements } => {
+                if let Some(e) = elements.first_mut() {
+                    e.prepend_whitespace();
+                }
+            }
+            Image(_) => {}
+            Text(t) => {
+                if t.trim_start() == t {
+                    t.insert(0, ' ');
+                }
+            }
+        }
+    }
+
+    fn append_whitespace(&mut self) {
+        use StyleLinkElement::*;
+        match self {
+            Strong { elements } => {
+                if let Some(e) = elements.last_mut() {
+                    e.append_whitespace();
+                }
+            }
+            Emphasis { elements } => {
+                if let Some(e) = elements.last_mut() {
+                    e.append_whitespace();
+                }
+            }
+            Style { elements } => {
+                if let Some(e) = elements.last_mut() {
+                    e.append_whitespace();
+                }
+            }
+            Strikethrough { elements } => {
+                if let Some(e) = elements.last_mut() {
+                    e.append_whitespace();
+                }
+            }
+            Subscript { elements } => {
+                if let Some(e) = elements.last_mut() {
+                    e.append_whitespace();
+                }
+            }
+            Superscript { elements } => {
+                if let Some(e) = elements.last_mut() {
+                    e.append_whitespace();
+                }
+            }
+            Code { elements } => {
+                if let Some(e) = elements.last_mut() {
+                    e.append_whitespace();
+                }
+            }
+            Image(_) => {}
+            Text(t) => {
+                if t.trim_end() == t {
+                    t.push(' ');
+                }
+            }
+        }
+    }
 }
 
 impl Serialize for StyleLinkElement {
