@@ -2299,7 +2299,7 @@ impl StyleElement {
             }
             Image(_) => {}
             Text(t) => {
-                if t.trim_start() == t {
+                if should_prepend_whitespace(t) {
                     t.insert(0, ' ');
                 }
             }
@@ -2896,7 +2896,7 @@ impl StyleLinkElement {
             }
             Image(_) => {}
             Text(t) => {
-                if t.trim_start() == t {
+                if should_prepend_whitespace(t) {
                     t.insert(0, ' ');
                 }
             }
@@ -3329,4 +3329,9 @@ impl Default for Genre {
     fn default() -> Self {
         Genre::Unrecognised
     }
+}
+
+fn should_prepend_whitespace(value: &str) -> bool {
+    let first_char = value.chars().next().unwrap_or('\0');
+    value.trim_start() == value && !matches!(first_char, ':' | ';' | '.' | ',' | '?' | '!')
 }
