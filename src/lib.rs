@@ -2351,7 +2351,7 @@ impl StyleElement {
             }
             Image(_) => {}
             Text(t) => {
-                if t.trim_end() == t {
+                if should_append_whitespace(t) {
                     t.push(' ');
                 }
             }
@@ -2943,7 +2943,7 @@ impl StyleLinkElement {
             }
             Image(_) => {}
             Text(t) => {
-                if t.trim_end() == t {
+                if should_append_whitespace(t) {
                     t.push(' ');
                 }
             }
@@ -3333,5 +3333,14 @@ impl Default for Genre {
 
 fn should_prepend_whitespace(value: &str) -> bool {
     let first_char = value.chars().next().unwrap_or('\0');
-    value.trim_start() == value && !matches!(first_char, ':' | ';' | '.' | ',' | '?' | '!')
+    value.trim_start() == value
+        && !matches!(
+            first_char,
+            ':' | ';' | '.' | ',' | '?' | '!' | ')' | ']' | '}'
+        )
+}
+
+fn should_append_whitespace(value: &str) -> bool {
+    let last_char = value.chars().last().unwrap_or('\0');
+    value.trim_end() == value && !matches!(last_char, '(' | '[' | '{')
 }
