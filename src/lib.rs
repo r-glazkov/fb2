@@ -68,7 +68,7 @@ mod defaults {
 }
 
 /// Root element
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub struct FictionBook {
     /// This element contains an arbitrary stylesheet that is interpreted by a some processing programs,
     /// e.g. text/css stylesheets can be used by XSLT stylesheets to generate better looking html
@@ -88,7 +88,7 @@ pub struct FictionBook {
     pub binaries: Vec<Binary>,
 }
 
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub struct Stylesheet {
     #[serde(rename = "@type")]
     pub kind: String,
@@ -96,7 +96,7 @@ pub struct Stylesheet {
     pub content: String,
 }
 
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub struct Description {
     /// Generic information about the book
     #[serde(rename = "title-info")]
@@ -121,7 +121,7 @@ pub struct Description {
 }
 
 /// Book (as a book opposite a document) description
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub struct TitleInfo {
     /// Genre of this book, with the optional match percentage
     #[serde(rename = "genre", default = "defaults::genres")]
@@ -159,7 +159,7 @@ pub struct TitleInfo {
     pub sequences: Vec<Sequence>,
 }
 
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 #[serde(from = "DocumentInfoInternal")]
 pub struct DocumentInfo {
     /// Author(s) of this particular document
@@ -248,7 +248,7 @@ impl From<DocumentInfoInternal> for DocumentInfo {
     }
 }
 
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 #[serde(from = "PublishInfoInternal")]
 pub struct PublishInfo {
     /// Original (paper) book name
@@ -308,7 +308,7 @@ impl From<PublishInfoInternal> for PublishInfo {
 }
 
 /// Any other information about the book/document that didnt fit in the above groups
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub struct CustomInfo {
     #[serde(rename = "@lang", skip_serializing_if = "Option::is_none")]
     pub lang: Option<LanguageTag>,
@@ -319,7 +319,7 @@ pub struct CustomInfo {
 }
 
 /// In-document instruction for generating output free and payed documents
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub struct ShareInstruction {
     #[serde(rename = "@mode")]
     pub mode: ShareMode,
@@ -333,7 +333,7 @@ pub struct ShareInstruction {
     pub elements: Vec<ShareInstructionElement>,
 }
 
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub enum ShareInstructionElement {
     #[serde(rename = "part")]
     Part(PartShareInstruction),
@@ -342,7 +342,7 @@ pub enum ShareInstructionElement {
 }
 
 /// Modes for document sharing (free|paid for now)
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub enum ShareMode {
     #[serde(rename = "free")]
     Free,
@@ -351,7 +351,7 @@ pub enum ShareMode {
 }
 
 /// Selector for output documents. Defines, which rule to apply to any specific output documents
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub struct OutputDocumentClass {
     #[serde(rename = "@name")]
     pub name: String,
@@ -364,7 +364,7 @@ pub struct OutputDocumentClass {
 }
 
 /// Pointer to specific document section, explaining how to deal with it
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub struct PartShareInstruction {
     #[serde(
         rename = "@type",
@@ -379,7 +379,7 @@ pub struct PartShareInstruction {
 }
 
 /// List of instructions to process sections (allow|deny|require)
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub enum DocGenerationInstruction {
     #[serde(rename = "require")]
     Require,
@@ -392,7 +392,7 @@ pub enum DocGenerationInstruction {
 /// Main content of the book, multiple bodies are used for additional information, like footnotes, that do not
 /// appear in the main book flow (extended from this class). The first body is presented to the reader by default, and content
 /// in the other bodies should be accessible by hyperlinks.
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 #[serde(from = "BodyInternal")]
 pub struct Body {
     /// Body name, used for footnotes.
@@ -687,7 +687,7 @@ fn process_body_element(
 }
 
 /// Book sequences
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 #[serde(try_from = "SequenceInternal")]
 pub struct Sequence {
     #[serde(rename = "@name")]
@@ -737,14 +737,14 @@ impl TryFrom<SequenceInternal> for Sequence {
     }
 }
 
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub struct Covers {
     #[serde(rename = "image")]
     pub images: Vec<InlineImage>,
 }
 
 /// Genre of this book, with the optional match percentage
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 #[serde(from = "GenreWithMatchInternal")]
 pub struct GenreWithMatch {
     /// 100 unless a different percentage is specified
@@ -783,7 +783,7 @@ struct GenreWithMatchInternal {
 }
 
 /// Information about a single author
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize)]
 #[serde(from = "AuthorInternal")]
 pub enum Author {
     Verbose(VerboseAuthorDetails),
@@ -802,7 +802,7 @@ impl Serialize for Author {
     }
 }
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Clone, Debug, PartialEq, Serialize)]
 pub struct VerboseAuthorDetails {
     #[serde(rename = "first-name")]
     pub first_name: LocalizedText,
@@ -826,7 +826,7 @@ pub struct VerboseAuthorDetails {
     pub id: Option<String>,
 }
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Clone, Debug, PartialEq, Serialize)]
 pub struct AnonymousAuthorDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub nickname: Option<LocalizedText>,
@@ -901,7 +901,7 @@ impl From<AuthorInternal> for Author {
 
 /// Any binary data that is required for the presentation of this book in base64 format. Currently
 /// only images are used.
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub struct Binary {
     #[serde(rename = "@id")]
     pub id: String,
@@ -912,7 +912,7 @@ pub struct Binary {
 }
 
 /// A basic block of a book, can contain more child sections or textual content
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 #[serde(from = "SectionInternal")]
 pub struct Section {
     #[serde(rename = "@id", skip_serializing_if = "Option::is_none")]
@@ -923,7 +923,7 @@ pub struct Section {
     pub content: Option<SectionContent>,
 }
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Clone, Debug, PartialEq, Serialize)]
 pub struct SectionContent {
     /// Section's title
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -943,7 +943,7 @@ pub struct SectionContent {
     pub sections: Vec<Section>,
 }
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Clone, Debug, PartialEq, Serialize)]
 pub enum SectionPart {
     #[serde(rename = "p")]
     Paragraph(Paragraph),
@@ -1277,7 +1277,7 @@ fn process_section_element(
 }
 
 /// A cut-down version of section used in annotations
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 #[serde(from = "AnnotationInternal")]
 pub struct Annotation {
     #[serde(rename = "@id", skip_serializing_if = "Option::is_none")]
@@ -1288,7 +1288,7 @@ pub struct Annotation {
     pub elements: Vec<AnnotationElement>,
 }
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Clone, Debug, PartialEq, Serialize)]
 pub enum AnnotationElement {
     #[serde(rename = "p")]
     Paragraph(Paragraph),
@@ -1430,7 +1430,7 @@ impl From<AnnotationInternal> for Annotation {
 }
 
 /// An epigraph
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 #[serde(from = "EpigraphInternal")]
 pub struct Epigraph {
     #[serde(rename = "@id", skip_serializing_if = "Option::is_none")]
@@ -1441,7 +1441,7 @@ pub struct Epigraph {
     pub text_authors: Vec<Paragraph>,
 }
 
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub enum EpigraphElement {
     #[serde(rename = "p")]
     Paragraph(Paragraph),
@@ -1563,7 +1563,7 @@ impl From<EpigraphInternal> for Epigraph {
 }
 
 /// A citation with an optional citation author at the end
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 #[serde(from = "CiteInternal")]
 pub struct Cite {
     #[serde(rename = "@id", skip_serializing_if = "Option::is_none")]
@@ -1576,7 +1576,7 @@ pub struct Cite {
     pub text_authors: Vec<Paragraph>,
 }
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Clone, Debug, PartialEq, Serialize)]
 pub enum CiteElement {
     #[serde(rename = "p")]
     Paragraph(Paragraph),
@@ -1660,7 +1660,7 @@ impl From<CiteInternal> for Cite {
     }
 }
 
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub struct Poem {
     #[serde(rename = "@id", skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -1679,7 +1679,7 @@ pub struct Poem {
     pub date: Option<Date>,
 }
 
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 #[serde(from = "PoemStanzaInternal")]
 pub enum PoemStanza {
     #[serde(rename = "subtitle")]
@@ -1731,7 +1731,7 @@ impl From<PoemStanzaInternal> for PoemStanza {
 
 /// Each poem should have at least one stanza. Stanzas are usually separated with empty lines by user
 /// agents.
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 #[serde(from = "StanzaInternal")]
 pub struct Stanza {
     #[serde(rename = "@lang", skip_serializing_if = "Option::is_none")]
@@ -1880,7 +1880,7 @@ fn process_stanza_element(
 }
 
 /// A title, used in sections, poems and body elements
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 #[serde(from = "TitleInternal")]
 pub struct Title {
     #[serde(rename = "@lang", skip_serializing_if = "Option::is_none")]
@@ -1889,7 +1889,7 @@ pub struct Title {
     pub elements: Vec<TitleElement>,
 }
 
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Clone, Debug, PartialEq, Serialize)]
 pub enum TitleElement {
     #[serde(rename = "p")]
     Paragraph(Paragraph),
@@ -1954,7 +1954,7 @@ impl From<TitleInternal> for Title {
 }
 
 /// A basic paragraph, may include simple formatting inside
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 #[serde(from = "ParagraphInternal")]
 pub struct Paragraph {
     #[serde(rename = "@id", skip_serializing_if = "Option::is_none")]
@@ -1999,7 +1999,7 @@ impl From<ParagraphInternal> for Paragraph {
 }
 
 /// Basic html-like tables
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub struct Table {
     #[serde(rename = "@id", skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -2009,7 +2009,7 @@ pub struct Table {
     pub rows: Vec<TableRow>,
 }
 
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub struct TableRow {
     #[serde(
         default,
@@ -2021,7 +2021,7 @@ pub struct TableRow {
     pub cells: Vec<TableCellElement>,
 }
 
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub enum TableCellElement {
     #[serde(rename = "th")]
     Head(TableCell),
@@ -2029,7 +2029,7 @@ pub enum TableCellElement {
     Data(TableCell),
 }
 
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 #[serde(from = "TableCellInternal")]
 pub struct TableCell {
     #[serde(rename = "@id", skip_serializing_if = "Option::is_none")]
@@ -2104,7 +2104,7 @@ impl From<TableCellInternal> for TableCell {
 }
 
 /// Align for table cells
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub enum HorizontalAlign {
     #[serde(rename = "left")]
     Left,
@@ -2121,7 +2121,7 @@ impl Default for HorizontalAlign {
 }
 
 /// Align for table cells
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub enum VerticalAlign {
     #[serde(rename = "top")]
     Top,
@@ -2137,7 +2137,7 @@ impl Default for VerticalAlign {
     }
 }
 
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 #[serde(from = "NamedStyleInternal")]
 pub struct NamedStyle {
     #[serde(rename = "@name")]
@@ -2175,7 +2175,7 @@ impl From<NamedStyleInternal> for NamedStyle {
     }
 }
 
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 #[serde(from = "StyleInternal")]
 pub struct Style {
     #[serde(rename = "@lang", skip_serializing_if = "Option::is_none")]
@@ -2239,7 +2239,7 @@ impl NoneIfUseless for Style {
 }
 
 /// Markup
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum StyleElement {
     Strong(Style),
     Emphasis(Style),
@@ -2674,7 +2674,7 @@ fn parse_style_elements_permissively(choices: Vec<StyleChoice>) -> Vec<StyleElem
 
 /// Generic hyperlinks. Cannot be nested. Footnotes should be implemented by links referring to additional bodies
 /// in the same document
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 #[serde(from = "LinkInternal")]
 pub struct Link {
     #[serde(rename = "@href")]
@@ -2703,7 +2703,7 @@ impl From<LinkInternal> for Link {
     }
 }
 
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize)]
 struct LinkInternal {
     #[serde(rename = "@href")]
     href: Option<String>,
@@ -2783,7 +2783,7 @@ fn fix_whitespaces_link(mut elements: Vec<StyleLinkElement>) -> Vec<StyleLinkEle
 }
 
 /// Markup
-#[derive(Debug, PartialEq, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize)]
 pub enum StyleLinkElement {
     #[serde(rename = "strong")]
     Strong {
@@ -3016,7 +3016,7 @@ impl Serialize for StyleLinkElement {
 }
 
 /// A human readable date, maybe not exact, with an optional computer readable variant
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 #[serde(from = "DateInternal")]
 pub struct Date {
     #[serde(rename = "@lang", skip_serializing_if = "Option::is_none")]
@@ -3055,7 +3055,7 @@ impl From<DateInternal> for Date {
 }
 
 /// An empty element with an image name as an attribute
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub struct Image {
     #[serde(
         rename = "@type",
@@ -3073,7 +3073,7 @@ pub struct Image {
     pub id: Option<String>,
 }
 
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub struct InlineImage {
     #[serde(
         rename = "@type",
@@ -3087,7 +3087,7 @@ pub struct InlineImage {
     pub alt: Option<String>,
 }
 
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub struct LocalizedText {
     #[serde(rename = "@lang", skip_serializing_if = "Option::is_none")]
     pub lang: Option<LanguageTag>,
@@ -3096,7 +3096,7 @@ pub struct LocalizedText {
     pub value: String,
 }
 
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum Genre {
     Accounting,
